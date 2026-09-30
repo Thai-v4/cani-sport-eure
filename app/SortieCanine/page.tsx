@@ -1,561 +1,161 @@
 "use client";
 
-import React from "react"; // Ajoutez cet import
-import { useEffect, useState, useMemo } from "react";
-import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
-import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaRunning,
-  FaSearch,
-  FaSort,
-  FaCalendarAlt,
-  FaMapMarkedAlt,
-  FaRoute,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import supabase from "@/lib/supabaseClient";
+import { sportLabel } from "@/lib/sports";
+import { DEMO, demoTracks } from "@/lib/demo";
+import PageHeader from "../components/site/PageHeader";
+import OutingRow, { type Track } from "../components/sorties/OutingRow";
 
-// Composants d'interface utilisateur
-import Sidebar from "../components/sidebars/Sidebar";
-import Footer from "../components/sidebars/Footer";
-import WhiteBackground from "../components/backgrounds/WhiteBackground";
+const PAGE = 6;
 
-// Chargement dynamique pour éviter les erreurs côté serveur
-const MapWithStats = dynamic(() => import("../components/MapWithStats"), {
-  ssr: false,
-});
-const Filter = dynamic(() => import("../components/SportFilter"), {
-  ssr: false,
-});
-
-// Initialisation du client Supabase
-
-// Interface pour les données de sortie
-interface Track {
-  id: string;
-  name: string;
-  sport: string;
-  date_time: string;
-  file_url: string;
-}
-
-// Composant de carte squelette pour le chargement
-const SkeletonCard = () => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
-    <div className="h-48 bg-gray-200"></div>
-    <div className="p-4">
-      <div className="h-5 bg-gray-200 rounded-sm w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded-sm w-1/2 mb-3"></div>
-      <div className="h-3 bg-gray-200 rounded-sm w-full mb-2"></div>
-      <div className="h-3 bg-gray-200 rounded-sm w-5/6"></div>
-    </div>
-  </div>
-);
-
-// Badge pour les types de sport
-const SportBadge = ({ sport }: { sport: string }) => {
-  const sportColors: Record<string, string> = {
-    canicross: "bg-green-100 text-green-800 border-green-300",
-    canimarche: "bg-blue-100 text-blue-800 border-blue-300",
-    canivtt: "bg-red-100 text-red-800 border-red-300",
-    balade: "bg-purple-100 text-purple-800 border-purple-300",
-    default: "bg-gray-100 text-gray-800 border-gray-300",
-  };
-
-  const sportIcons: Record<string, React.ReactElement> = {
-    canicross: <FaRunning className="mr-1" />,
-    canimarche: <FaRoute className="mr-1" />,
-    canivtt: <FaMapMarkedAlt className="mr-1" />,
-    balade: <FaCalendarAlt className="mr-1" />,
-  };
-
-  const colorClass = sportColors[sport.toLowerCase()] || sportColors.default;
-  const icon = sportIcons[sport.toLowerCase()] || null;
-
-  // Ajout du préfixe "cani" s'il n'est pas déjà présent
-  const displayName = sport.toLowerCase().startsWith("Cani")
-    ? sport
-    : `Cani-${sport}`;
-
-  return (
-    <span
-      className={`inline-flex items-center text-xs px-2 py-1 rounded-full border ${colorClass}`}
-    >
-      {icon}
-      {displayName}
-    </span>
-  );
-};
-
-const SortiesPage = () => {
-  // États pour les données et filtres
+export default function SortiesPage() {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [sport, setSport] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [pastShown, setPastShown] = useState(PAGE);
+  const [now] = useState(() => Date.now());
 
-  // Stats globales
-  const [stats, setStats] = useState({
-    total: 0,
-    sportCounts: {} as Record<string, number>,
-  });
-
-  // États pour la pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6); // 6 éléments par page
-
-  // Chargement des données
   useEffect(() => {
-    const fetchTracks = async () => {
-      setIsLoading(true);
-
-      try {
-        const { data, error } = await supabase.rpc("get_gpx_tracks_geojson");
-
-        if (error) {
-          console.error("❌ Erreur de récupération :", error);
-          return;
-        }
-
-        if (!data || data.length === 0) {
-          console.error("❌ Aucune sortie trouvée !");
-          return;
-        }
-
-        // Trier les sorties par date (plus récentes d'abord)
-        const sortedTracks = data.sort(
-          (a: Track, b: Track) =>
-            new Date(b.date_time).getTime() - new Date(a.date_time).getTime()
-        );
-
-        setTracks(sortedTracks);
-
-        // Calculer les statistiques
-        const sportCounts = sortedTracks.reduce(
-          (acc: Record<string, number>, track: Track) => {
-            acc[track.sport] = (acc[track.sport] || 0) + 1;
-            return acc;
-          },
-          {}
-        );
-
-        setStats({
-          total: sortedTracks.length,
-          sportCounts,
-        });
-      } catch (err) {
-        console.error("Erreur inattendue:", err);
-      } finally {
-        setIsLoading(false);
+    if (DEMO) {
+      setTracks(demoTracks as Track[]);
+      setStatus("ready");
+      return;
+    }
+    // La fonction SQL renvoie les traces avec leur géométrie en GeoJSON
+    supabase.rpc("get_gpx_tracks_geojson").then(({ data, error }) => {
+      if (error) {
+        setStatus("error");
+        return;
       }
-    };
-
-    fetchTracks();
+      setTracks((data as Track[]) ?? []);
+      setStatus("ready");
+    });
   }, []);
 
-  // Réinitialiser la pagination quand les filtres changent
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedSport, searchQuery, sortOrder]);
-
-  // Fonction pour gérer les changements de filtre de sport
-  const handleSportFilter = (sport: string | null) => {
-    setSelectedSport(sport);
-  };
-
-  // Application des filtres et du tri
-  const filteredAndSortedTracks = useMemo(() => {
-    let filtered = tracks;
-
-    // Appliquer le filtre de sport
-    if (selectedSport) {
-      filtered = filtered.filter((track) => track.sport === selectedSport);
-    }
-
-    // Appliquer la recherche
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((track) =>
-        track.name.toLowerCase().includes(query)
-      );
-    }
-
-    // Appliquer le tri
-    return [...filtered].sort((a, b) => {
-      const dateA = new Date(a.date_time).getTime();
-      const dateB = new Date(b.date_time).getTime();
-      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
-    });
-  }, [tracks, selectedSport, searchQuery, sortOrder]);
-
-  // Calcul de la pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredAndSortedTracks.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  const sports = useMemo(
+    () => Array.from(new Set(tracks.map((t) => t.sport).filter((s): s is string => Boolean(s)))),
+    [tracks]
   );
-  const totalPages = Math.ceil(filteredAndSortedTracks.length / itemsPerPage);
 
-  // Fonction de pagination à corriger
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+  const { upcoming, past } = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = tracks.filter((t) => (!sport || t.sport === sport) && (!q || t.name.toLowerCase().includes(q)));
+    return {
+      upcoming: list
+        .filter((t) => new Date(t.date_time).getTime() >= now)
+        .sort((a, b) => +new Date(a.date_time) - +new Date(b.date_time)),
+      past: list
+        .filter((t) => new Date(t.date_time).getTime() < now)
+        .sort((a, b) => +new Date(b.date_time) - +new Date(a.date_time)),
+    };
+  }, [tracks, sport, query, now]);
 
-    // Version corrigée avec vérification stricte
-    const listElement = document.getElementById("tracks-list");
-    window.scrollTo({
-      top: listElement ? listElement.offsetTop - 100 : 0,
-      behavior: "smooth",
-    });
-  };
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      paginate(currentPage + 1);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      paginate(currentPage - 1);
-    }
-  };
-
-  // Composant de pagination
-  const Pagination = () => {
-    if (totalPages <= 1) return null;
-
-    const pageNumbers = [];
-    const maxPageNumbersToShow = 5;
-
-    let startPage = Math.max(
-      1,
-      currentPage - Math.floor(maxPageNumbersToShow / 2)
-    );
-    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
-
-    if (endPage - startPage + 1 < maxPageNumbersToShow) {
-      startPage = Math.max(1, endPage - maxPageNumbersToShow + 1);
-    }
-
-    // Première page et ellipsis
-    if (startPage > 1) {
-      pageNumbers.push(
-        <button
-          key="first"
-          onClick={() => paginate(1)}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200"
-        >
-          1
-        </button>
-      );
-
-      if (startPage > 2) {
-        pageNumbers.push(
-          <span key="start-ellipsis" className="px-1 text-gray-500">
-            ...
-          </span>
-        );
-      }
-    }
-
-    // Pages centrales
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(
-        <button
-          key={i}
-          onClick={() => paginate(i)}
-          className={`w-9 h-9 rounded-full flex items-center justify-center ${
-            i === currentPage
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-          aria-current={i === currentPage ? "page" : undefined}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    // Dernière page et ellipsis
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        pageNumbers.push(
-          <span key="end-ellipsis" className="px-1 text-gray-500">
-            ...
-          </span>
-        );
-      }
-
-      pageNumbers.push(
-        <button
-          key="last"
-          onClick={() => paginate(totalPages)}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200"
-        >
-          {totalPages}
-        </button>
-      );
-    }
-
-    return (
-      <div className="flex justify-center mt-10 mb-4">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className={`w-9 h-9 rounded-full flex items-center justify-center ${
-              currentPage === 1
-                ? "text-gray-400 bg-gray-100 cursor-not-allowed"
-                : "text-gray-700 bg-gray-100 hover:bg-gray-200"
-            }`}
-            aria-label="Page précédente"
-          >
-            <FaChevronLeft className="w-4 h-4" />
-          </button>
-
-          <div className="hidden sm:flex items-center space-x-2">
-            {pageNumbers}
-          </div>
-
-          <div className="sm:hidden flex items-center space-x-1">
-            <span className="text-sm text-gray-500">
-              Page {currentPage} sur {totalPages}
-            </span>
-          </div>
-
-          <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className={`w-9 h-9 rounded-full flex items-center justify-center ${
-              currentPage === totalPages
-                ? "text-gray-400 bg-gray-100 cursor-not-allowed"
-                : "text-gray-700 bg-gray-100 hover:bg-gray-200"
-            }`}
-            aria-label="Page suivante"
-          >
-            <FaChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  // Fonction pour formater la date
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("fr-FR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+  const tabClass = (active: boolean) =>
+    `relative whitespace-nowrap py-3 text-[0.9375rem] font-medium ${active ? "text-ink" : "text-ink-2 hover:text-ink"}`;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Sidebar />
-      <WhiteBackground>
-        <div className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-2">
-              Sorties canines
-            </h1>
-            <p className="text-gray-600 mb-8">
-              Explorez les parcours réalisés par notre communauté
-            </p>
-          </motion.div>
-
-          {/* Statistiques globales */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white rounded-lg shadow-xs p-4 border border-gray-100"
-            >
-              <h3 className="text-lg font-medium text-gray-800 mb-2">
-                Total des sorties
-              </h3>
-              <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
-            </motion.div>
-
-            {/* Stats par type de sport */}
-            {Object.entries(stats.sportCounts).map(([sport, count], index) => (
-              <motion.div
-                key={sport}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
-                className="bg-white rounded-lg shadow-xs p-4 border border-gray-100"
-              >
-                <h3 className="text-lg font-medium text-gray-800 mb-2 flex items-center">
-                  <SportBadge sport={sport} />
-                </h3>
-                <p className="text-3xl font-bold text-blue-600">{count}</p>
-              </motion.div>
+    <>
+      <PageHeader
+        title="Sorties"
+        description="Les parcours du club, avec leur trace GPX, leur distance et leur dénivelé. Choisissez une date et venez avec votre chien."
+      >
+        <div className="mt-10 flex flex-col gap-4 border-y border-rule md:flex-row md:items-center md:justify-between">
+          <div role="group" aria-label="Filtrer par discipline" className="-mb-px flex gap-6 overflow-x-auto [scrollbar-width:none]">
+            <button type="button" aria-pressed={sport === null} onClick={() => setSport(null)} className={tabClass(sport === null)}>
+              Toutes
+              {sport === null && <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-line" />}
+            </button>
+            {sports.map((s) => (
+              <button key={s} type="button" aria-pressed={sport === s} onClick={() => setSport(s)} className={tabClass(sport === s)}>
+                {sportLabel(s)}
+                {sport === s && <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-line" />}
+              </button>
             ))}
           </div>
-
-          {/* Barre de recherche et filtres */}
-          <div className="bg-white rounded-lg shadow-xs border border-gray-100 p-4 mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Recherche */}
-              <div className="relative grow">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaSearch className="text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Rechercher par nom..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Filtre de sport */}
-              <div className="min-w-[200px]">
-                <Filter
-                  selectedSport={selectedSport}
-                  onSportChange={handleSportFilter}
-                />
-              </div>
-
-              {/* Ordre de tri */}
-              <div className="w-full md:w-auto"></div>
-            </div>
-          </div>
-
-          {/* Résultats */}
-          <div className="mb-4 flex justify-between items-center">
-            <p className="text-gray-600">
-              {filteredAndSortedTracks.length === 0
-                ? "Aucune sortie trouvée"
-                : `${filteredAndSortedTracks.length} sortie${filteredAndSortedTracks.length > 1 ? "s" : ""} trouvée${filteredAndSortedTracks.length > 1 ? "s" : ""}`}
-            </p>
-
-            {/* Sélecteur d'éléments par page */}
-            {filteredAndSortedTracks.length > itemsPerPage && (
-              <div className="flex items-center gap-2">
-                <label htmlFor="itemsPerPage" className="text-sm text-gray-500">
-                  Sorties par page :
-                </label>
-                <select
-                  id="itemsPerPage"
-                  value={itemsPerPage}
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                  className="border border-gray-300 rounded-md text-sm p-1 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value={6}>6</option>
-                  <option value={12}>12</option>
-                  <option value={24}>24</option>
-                </select>
-              </div>
-            )}
-          </div>
-
-          {/* Liste des sorties */}
-          <div id="tracks-list">
-            <AnimatePresence>
-              {isLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(itemsPerPage)].map((_, index) => (
-                    <SkeletonCard key={index} />
-                  ))}
-                </div>
-              ) : filteredAndSortedTracks.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentItems.map((track, index) => (
-                      <motion.div
-                        key={track.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{
-                          duration: 0.3,
-                          delay: (index % 6) * 0.05,
-                        }}
-                        className="relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                      >
-                        <div className="absolute top-2 right-2 z-10">
-                          <SportBadge sport={track.sport} />
-                        </div>
-                        <MapWithStats trackData={track} />
-                        <div className="p-4">
-                          <h3 className="font-semibold text-lg text-gray-900 mb-1">
-                            {track.name || "Sortie sans nom"}
-                          </h3>
-                          <p className="text-gray-600 text-sm flex items-center">
-                            <FaCalendarAlt className="mr-1" size={14} />
-                            {formatDate(track.date_time)}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Composant pagination */}
-                  <Pagination />
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-16 bg-white rounded-lg shadow-xs border border-gray-100"
-                >
-                  <div className="text-gray-400 mb-4">
-                    <svg
-                      className="mx-auto h-12 w-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
-                    Aucune sortie trouvée
-                  </h3>
-                  <p className="text-gray-500 max-w-md mx-auto">
-                    {selectedSport || searchQuery
-                      ? "Aucune sortie ne correspond à vos critères de recherche. Essayez de modifier vos filtres."
-                      : "Il n'y a actuellement aucune sortie enregistrée."}
-                  </p>
-                  {(selectedSport || searchQuery) && (
-                    <button
-                      onClick={() => {
-                        setSelectedSport(null);
-                        setSearchQuery("");
-                      }}
-                      className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      Réinitialiser les filtres
-                    </button>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <div className="relative pb-4 md:w-72 md:pb-0">
+            <label htmlFor="recherche-sortie" className="sr-only">
+              Rechercher une sortie
+            </label>
+            <Search aria-hidden className="pointer-events-none absolute left-3 top-[1.375rem] size-4 -translate-y-1/2 text-ink-3" />
+            <input
+              id="recherche-sortie"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Rechercher une sortie"
+              className="field pl-9"
+            />
           </div>
         </div>
-      </WhiteBackground>
-      <Footer />
-    </div>
-  );
-};
+      </PageHeader>
 
-export default SortiesPage;
+      <div className="site-container pb-24">
+        {status === "loading" && (
+          <div aria-hidden className="grid gap-10 md:grid-cols-12">
+            <div className="space-y-4 md:col-span-5">
+              <div className="h-4 w-32 bg-wash" />
+              <div className="h-8 w-3/4 bg-wash" />
+              <div className="h-24 w-full bg-wash" />
+            </div>
+            <div className="aspect-[16/10] bg-wash md:col-span-7" />
+          </div>
+        )}
+
+        {status === "error" && (
+          <p className="text-ink-2">Les sorties ne se chargent pas pour le moment. Réessayez un peu plus tard.</p>
+        )}
+
+        {status === "ready" && (
+          <>
+            <section aria-labelledby="titre-a-venir">
+              <h2 id="titre-a-venir" className="text-sm font-semibold">
+                À venir
+              </h2>
+              {upcoming.length === 0 ? (
+                <p className="mt-4 border-t border-ink pt-6 text-ink-2">
+                  Aucune sortie programmée{sport ? " dans cette discipline" : ""} pour le moment. Consultez{" "}
+                  <Link href="/listeEvenement" className="link-line">
+                    l&apos;agenda
+                  </Link>{" "}
+                  ou écrivez-nous à{" "}
+                  <a href="mailto:cani.sports.eure@gmail.com" className="link-line">
+                    cani.sports.eure@gmail.com
+                  </a>
+                  .
+                </p>
+              ) : (
+                <div className="mt-4 divide-y divide-rule border-t border-ink">
+                  {upcoming.map((track) => (
+                    <OutingRow key={track.id} track={track} />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {past.length > 0 && (
+              <section aria-labelledby="titre-passees" className="mt-20">
+                <h2 id="titre-passees" className="text-sm font-semibold">
+                  Sorties passées
+                </h2>
+                <div className="mt-4 divide-y divide-rule border-t border-ink">
+                  {past.slice(0, pastShown).map((track) => (
+                    <OutingRow key={track.id} track={track} />
+                  ))}
+                </div>
+                {past.length > pastShown && (
+                  <button type="button" onClick={() => setPastShown((n) => n + PAGE)} className="btn-quiet mt-8">
+                    Afficher plus de sorties ({past.length - pastShown})
+                  </button>
+                )}
+              </section>
+            )}
+          </>
+        )}
+      </div>
+    </>
+  );
+}
