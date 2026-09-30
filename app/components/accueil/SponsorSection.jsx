@@ -116,7 +116,7 @@ export default function Sponsor() {
                 height={400}
                 className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="opacity-0 group-hover:opacity-100 absolute -bottom-10 left-0 right-0 bg-blue-600 text-white p-2 rounded text-xs text-center transition-opacity duration-300 z-10">
+              <div className="opacity-0 group-hover:opacity-100 absolute -bottom-10 left-0 right-0 bg-blue-600 text-white p-2 rounded-sm text-xs text-center transition-opacity duration-300 z-10">
                 {sponsor.description}
               </div>
             </a>
@@ -138,7 +138,7 @@ export default function Sponsor() {
               {sponsors.map((sponsor, index) => (
                 <div 
                   key={index} 
-                  className="w-full flex-shrink-0 flex flex-col items-center"
+                  className="w-full shrink-0 flex flex-col items-center"
                 >
                   <a 
                     href={sponsor.url || "#"}
@@ -165,7 +165,7 @@ export default function Sponsor() {
           {/* Boutons de navigation */}
           <button 
             onClick={prevSlide} 
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:bg-white"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-sm hover:bg-white"
             aria-label="Sponsor précédent"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -175,7 +175,7 @@ export default function Sponsor() {
           
           <button 
             onClick={nextSlide} 
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:bg-white"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-sm hover:bg-white"
             aria-label="Sponsor suivant"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

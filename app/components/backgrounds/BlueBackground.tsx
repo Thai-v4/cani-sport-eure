@@ -43,9 +43,8 @@ const BlueBackground = ({ children, width, height, maxSize = false, scaleFactor 
         <Image 
           src="/fond.png" 
           alt="Fond_TL" 
-          layout="fill"
-          objectFit="cover"
-          style={{ opacity: 0.8 }} // Ajuster l'opacité si besoin
+          fill
+          style={{ objectFit: "cover", opacity: 0.8 }} // Ajuster l'opacité si besoin
         />
       </div>
 
@@ -62,9 +61,8 @@ const BlueBackground = ({ children, width, height, maxSize = false, scaleFactor 
         <Image 
           src="/fond.png" 
           alt="Fond_BD" 
-          layout="fill"
-          objectFit="cover"
-          style={{ opacity: 0.8, transform: "rotate(180deg)" }} // Rotation pour bien s'adapter
+          fill
+          style={{ objectFit: "cover", opacity: 0.8, transform: "rotate(180deg)" }} // Rotation pour bien s'adapter
         />
       </div>
 

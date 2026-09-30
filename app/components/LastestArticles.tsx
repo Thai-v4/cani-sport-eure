@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import DOMPurify from "dompurify";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -92,7 +91,7 @@ const LastestArticles = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
             Nos derniers articles
           </h2>
-          <div className="w-20 h-1 bg-blue-600 rounded mb-4"></div>
+          <div className="w-20 h-1 bg-blue-600 rounded-sm mb-4"></div>
           <p className="text-gray-600 max-w-2xl">
             Découvrez les actualités, conseils et événements de notre communauté canine
           </p>
@@ -104,10 +103,10 @@ const LastestArticles = () => {
               <div key={i} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
                 <div className="h-48 bg-gray-200"></div>
                 <div className="p-5">
-                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mt-4"></div>
+                  <div className="h-6 bg-gray-200 rounded-sm w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded-sm w-full mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded-sm w-5/6 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded-sm w-1/4 mt-4"></div>
                 </div>
               </div>
             ))}
@@ -138,7 +137,7 @@ const LastestArticles = () => {
             {articles.map((article) => (
               <motion.div
                 key={article.id}
-                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 h-full flex flex-col"
+                className="bg-white rounded-xl shadow-xs overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 h-full flex flex-col"
                 variants={itemVariants}
               >
                 <div className="relative aspect-video overflow-hidden">
@@ -151,12 +150,12 @@ const LastestArticles = () => {
                     priority={false}
                   />
                 </div>
-                <div className="p-5 flex-grow flex flex-col">
+                <div className="p-5 grow flex flex-col">
                   <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2 hover:text-blue-700 transition-colors cursor-pointer" onClick={() => handleReadMore(article.id)}>
                     {article.titre}
                   </h3>
-                  <p className="text-sm text-gray-600 line-clamp-3 mb-4 flex-grow">
-                     {DOMPurify.sanitize(article.contenu).slice(0, 150)}...
+                  <p className="text-sm text-gray-600 line-clamp-3 mb-4 grow">
+                     {article.contenu.slice(0, 150)}...
                   </p>
                   <div className="mt-auto">
                     <p className="text-xs text-gray-500 mb-3 flex items-center">
@@ -180,7 +179,7 @@ const LastestArticles = () => {
 
             {/* Carte bouton "Plus d'articles" */}
             <motion.div 
-              className="bg-gradient-to-br from-blue-800 to-blue-900 rounded-xl shadow-md overflow-hidden flex items-center justify-center h-full min-h-[320px]"
+              className="bg-linear-to-br from-blue-800 to-blue-900 rounded-xl shadow-md overflow-hidden flex items-center justify-center h-full min-h-[320px]"
               variants={itemVariants}
             >
               <div className="text-center p-8">

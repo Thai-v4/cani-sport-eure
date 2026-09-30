@@ -1,9 +1,10 @@
 "use client";
+import Link from "next/link";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useAuth } from "../../../components/Auth/AuthProvider";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
+import { useAuth } from "@/app/components/Auth/AuthProvider";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -27,7 +28,6 @@ ChartJS.register(...registerables);
 
 const ClientDashboardPage: React.FC = () => {
   const router = useRouter();
-  const supabase = createClientComponentClient();
   const { user, role, isLoading } = useAuth();
 
   // États
@@ -279,7 +279,7 @@ const ClientDashboardPage: React.FC = () => {
               Tableau de bord
             </h1>
             <p className="text-gray-600">
-              Bienvenue, {user?.user_metadata?.full_name || "Athlète"}. Voici
+              Bienvenue, {user?.user_metadata?.first_name || "Athlète"}. Voici
               vos statistiques personnelles.
             </p>
           </motion.div>
@@ -290,7 +290,7 @@ const ClientDashboardPage: React.FC = () => {
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
           >
             {/* Carte de résumé */}
-            <div className="col-span-1 md:col-span-3 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="col-span-1 md:col-span-3 bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
               <div className="p-6 flex flex-col md:flex-row items-start md:items-center gap-6">
                 <div className="flex-1">
                   <h2 className="text-lg font-semibold text-gray-900 mb-3">
@@ -298,7 +298,7 @@ const ClientDashboardPage: React.FC = () => {
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <div className="shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                         <FaRoute className="text-blue-600" />
                       </div>
                       <div>
@@ -310,7 +310,7 @@ const ClientDashboardPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                      <div className="shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
                         <FaTrophy className="text-amber-600" />
                       </div>
                       <div>
@@ -320,7 +320,7 @@ const ClientDashboardPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                      <div className="shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                         <FaStar className="text-green-600" />
                       </div>
                       <div>
@@ -339,7 +339,7 @@ const ClientDashboardPage: React.FC = () => {
 
                 {/* Info sur la dernière compétition */}
                 {lastResult && (
-                  <div className="flex-shrink-0 bg-blue-50 px-4 py-3 rounded-lg border-l-4 border-blue-500">
+                  <div className="shrink-0 bg-blue-50 px-4 py-3 rounded-lg border-l-4 border-blue-500">
                     <h3 className="text-sm font-medium text-blue-800 flex items-center gap-1">
                       <FaCalendarAlt /> Dernière compétition
                     </h3>
@@ -369,7 +369,7 @@ const ClientDashboardPage: React.FC = () => {
             {/* Colonne gauche - Tableau des résultats récents & infos chien */}
             <motion.div variants={fadeIn} className="lg:col-span-2 space-y-6">
               {/* Carte des chiens */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
                 <div className="p-6">
                   <h2 className="flex items-center justify-between gap-2 text-lg font-semibold text-gray-900 mb-5">
                     <div className="flex items-center gap-2">
@@ -423,7 +423,7 @@ const ClientDashboardPage: React.FC = () => {
                       {/* Affichage du chien sélectionné */}
                       <div className="flex flex-col sm:flex-row items-start gap-6">
                         {/* Photo du chien */}
-                        <div className="w-full sm:w-1/3 h-48 sm:h-48 lg:h-60 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg overflow-hidden relative">
+                        <div className="w-full sm:w-1/3 h-48 sm:h-48 lg:h-60 bg-linear-to-br from-blue-50 to-indigo-100 rounded-lg overflow-hidden relative">
                           {dogs[selectedDogIndex]?.photo_chien ? (
                             <div className="relative w-full h-full">
                               {!imageLoaded && (
@@ -572,7 +572,7 @@ const ClientDashboardPage: React.FC = () => {
                       <p className="text-gray-500 mb-4">
                         Vous n&apos;avez pas encore enregistré votre chien
                       </p>
-                      <a
+                      <Link
                         href="/creation-chien"
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm inline-flex items-center gap-2"
                       >
@@ -591,14 +591,14 @@ const ClientDashboardPage: React.FC = () => {
                           />
                         </svg>
                         Ajouter mon chien
-                      </a>
+                      </Link>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Tableau des résultats récents */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -851,7 +851,7 @@ const ClientDashboardPage: React.FC = () => {
             {/* Colonne droite - Graphiques et statistiques */}
             <motion.div variants={fadeIn} className="space-y-6">
               {/* Graphique des kilomètres par compétition */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
                 <div className="p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
                     Progression de l&apos;événement
@@ -866,7 +866,7 @@ const ClientDashboardPage: React.FC = () => {
                     </label>
                     <select
                       id="event-select"
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="w-full p-2 border border-gray-300 rounded-md shadow-xs focus:ring-blue-500 focus:border-blue-500 text-sm"
                       value={selectedEvent}
                       onChange={(e) => setSelectedEvent(e.target.value)}
                       disabled={eventNames.length === 0}
@@ -915,7 +915,7 @@ const ClientDashboardPage: React.FC = () => {
               </div>
 
               {/* Statistiques par activité */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
                 <div className="p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
                     Statistiques par activité
@@ -930,7 +930,7 @@ const ClientDashboardPage: React.FC = () => {
                     </label>
                     <select
                       id="activity-select"
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="w-full p-2 border border-gray-300 rounded-md shadow-xs focus:ring-blue-500 focus:border-blue-500 text-sm"
                       value={selectedActivity}
                       onChange={(e) => setSelectedActivity(e.target.value)}
                       disabled={activityNames.length === 0}

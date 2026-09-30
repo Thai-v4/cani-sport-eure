@@ -69,7 +69,7 @@ const ArticleCard: React.FC<{
             <X size={16} className="text-red-600" />
           </button>
         </div>
-        <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full h-16"></div>
+        <div className="absolute bottom-0 left-0 bg-linear-to-t from-black/70 to-transparent w-full h-16"></div>
       </div>
 
       <div className="p-4">
@@ -133,7 +133,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ setSearchQuery, placeholder = "Re
       <input
         type="text"
         placeholder={placeholder}
-        className="bg-white pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+        className="bg-white pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg w-full focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
         onChange={(e) => setSearchQuery(e.target.value)}
       />
     </div>
@@ -150,7 +150,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ setStartDate, setEndDate }) => 
         </label>
         <input
           type="date"
-          className="bg-white p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="bg-white p-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           onChange={(e) => setStartDate(e.target.value)}
         />
       </div>
@@ -160,7 +160,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ setStartDate, setEndDate }) => 
         </label>
         <input
           type="date"
-          className="bg-white p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="bg-white p-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
@@ -189,7 +189,7 @@ const Pagination: React.FC<PaginationProps> = ({
     }
 
     let startPage = Math.max(currentPage - 2, 1);
-    let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+    const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
     if (endPage - startPage < maxVisiblePages - 1) {
       startPage = Math.max(endPage - maxVisiblePages + 1, 1);
@@ -280,11 +280,11 @@ const ArticleSkeleton: React.FC = () => (
   <div className="bg-white shadow-md rounded-2xl overflow-hidden animate-pulse">
     <div className="bg-gray-300 h-48 w-full"></div>
     <div className="p-4">
-      <div className="h-4 bg-gray-300 rounded w-1/4 mb-3"></div>
-      <div className="h-6 bg-gray-300 rounded w-3/4 mb-3"></div>
-      <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+      <div className="h-4 bg-gray-300 rounded-sm w-1/4 mb-3"></div>
+      <div className="h-6 bg-gray-300 rounded-sm w-3/4 mb-3"></div>
+      <div className="h-4 bg-gray-300 rounded-sm w-full mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded-sm w-full mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded-sm w-2/3"></div>
     </div>
   </div>
 );
@@ -335,7 +335,7 @@ interface FilterBarProps {
 
 const FilterBar: React.FC<FilterBarProps> = ({ categories, activeCategory, setCategory, setSortBy }) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-3 rounded-lg shadow-sm mb-6">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-3 rounded-lg shadow-xs mb-6">
       <div className="flex flex-wrap gap-2 mb-3 md:mb-0">
         <button 
           onClick={() => setCategory("all")}
@@ -362,7 +362,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ categories, activeCategory, setCa
       
       <select
         onChange={(e) => setSortBy(e.target.value)}
-        className="bg-white border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="bg-white border border-gray-300 rounded-lg p-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500"
       >
         <option value="recent">Plus récents</option>
         <option value="oldest">Plus anciens</option>

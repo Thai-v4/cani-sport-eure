@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import Image from "next/image";
 
-const supabase = createClientComponentClient();
 const bucketName = "photo";
 
 export default function Gallery() {
@@ -13,7 +12,6 @@ export default function Gallery() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        console.log("📡 Début de fetchImages()");
 
         const { data, error } = await supabase.storage
           .from(bucketName)
@@ -29,7 +27,6 @@ export default function Gallery() {
           return;
         }
 
-        console.log("📝 Fichiers trouvés :", data.map((file) => file.name));
 
         // Filtrer les fichiers pour exclure celui qui a le lien spécifique
         const excludedUrl = "https://rgnnrsrdrrfzvjtfevim.supabase.co/storage/v1/object/public/photo/.emptyFolderPlaceholder";
@@ -41,7 +38,6 @@ export default function Gallery() {
 
         const imageUrls = filteredData.map((file) => {
           const generatedUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/${file.name}`;
-          console.log(`✅ URL générée : ${generatedUrl}`);
           return generatedUrl;
         });
 
@@ -66,9 +62,9 @@ export default function Gallery() {
               <Image
                 src={url}
                 alt={`Image ${index}`}
-                layout="fill"
-                objectFit="cover"
+                fill
                 className="rounded-lg shadow-md"
+              style={{ objectFit: "cover" }}
               />
             </div>
           ))}

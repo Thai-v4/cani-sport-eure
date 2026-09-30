@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import { useAuth } from "@/app/components/Auth/AuthProvider";
 import { motion } from "framer-motion";
-import SidebarAdmin from "../../../components/SidebarAdmin";
+import SidebarAdmin from "@/app/components/SidebarAdmin";
 import {
   ChevronDown,
   ChevronUp,
@@ -87,7 +87,6 @@ interface Evenement {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const supabase = createClientComponentClient();
   const { role, isLoading } = useAuth();
 
   // États pour les filtres et sélections
@@ -473,7 +472,7 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-auto pb-16">
         {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200 px-8 py-6">
+        <div className="bg-white shadow-xs border-b border-gray-200 px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
@@ -507,7 +506,7 @@ export default function DashboardPage() {
         {error && (
           <div className="mx-8 mt-6 p-4 bg-red-50 border-l-4 border-red-600 rounded-md flex items-start">
             <AlertTriangle
-              className="text-red-600 mr-3 flex-shrink-0"
+              className="text-red-600 mr-3 shrink-0"
               size={20}
             />
             <div>
@@ -530,7 +529,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -559,7 +558,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -581,7 +580,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -602,7 +601,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -637,7 +636,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.4 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <Activity className="mr-2 text-gray-700" size={20} />
@@ -723,7 +722,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
             >
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <Calendar className="mr-2 text-gray-700" size={20} />
@@ -798,7 +797,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.6 }}
-            className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mt-8"
+            className="bg-white rounded-xl shadow-xs p-6 border border-gray-100 mt-8"
           >
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
               <BarChart2 className="mr-2 text-gray-700" size={20} />
@@ -846,7 +845,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.7 }}
-            className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mt-8"
+            className="bg-white rounded-xl shadow-xs p-6 border border-gray-100 mt-8"
           >
             <div className="border-b border-gray-200 mb-4">
               <div className="flex items-center justify-between flex-wrap">
@@ -911,7 +910,7 @@ export default function DashboardPage() {
                       <select
                         value={dateRange}
                         onChange={(e) => setDateRange(e.target.value)}
-                        className="bg-transparent focus:outline-none"
+                        className="bg-transparent focus:outline-hidden"
                       >
                         <option value="all">Toute période</option>
                         <option value="month">Dernier mois</option>

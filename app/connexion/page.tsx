@@ -4,12 +4,12 @@ import { useState, useEffect } from "react"; // Hooks React
 import { useRouter } from "next/navigation"; // Navigation entre pages
 import Image from "next/image"; // Composant d'image optimisé
 import Link from "next/link"; // Navigation entre pages
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
+import { getRole } from "@/lib/roles";
 import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale
 import { useAuth } from "../components/Auth/AuthProvider"; // Contexte d'authentification
 
 export default function LoginPage() {
-  const supabase = createClientComponentClient(); // Initialisation du client Supabase
   const router = useRouter(); // Router pour la navigation
   const { role, isLoading } = useAuth(); // Récupération du rôle utilisateur
 
@@ -26,21 +26,14 @@ export default function LoginPage() {
   useEffect(() => {
     setIsClient(true); // Marque que le composant est chargé côté client
 
-    const savedEmail = localStorage.getItem("rememberedEmail");
-    const savedPassword = localStorage.getItem("rememberedPassword");
+    // Purge des mots de passe enregistrés par les anciennes versions du site
+    localStorage.removeItem("rememberedPassword");
 
-    // Restauration des identifiants si présents
+    // Seul l'email est mémorisé, jamais le mot de passe
+    const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
       setRememberMe(true);
-    }
-
-    if (savedPassword) {
-      try {
-        setPassword(atob(savedPassword)); // Déchiffrement du mot de passe
-      } catch (e) {
-        console.warn("Mot de passe corrompu dans le localStorage");
-      }
     }
   }, []);
 
@@ -99,36 +92,23 @@ export default function LoginPage() {
       return;
     }
 
-    // Sauvegarde des identifiants si l'option est cochée
+    // Mémorisation de l'email uniquement si l'option est cochée
     if (rememberMe) {
       localStorage.setItem("rememberedEmail", email);
-      localStorage.setItem("rememberedPassword", btoa(password)); // Encodage du mot de passe
     } else {
       localStorage.removeItem("rememberedEmail");
-      localStorage.removeItem("rememberedPassword");
     }
 
-    // Récupération des données utilisateur pour déterminer son rôle
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !userData?.user) {
-      setError("Erreur lors de la récupération du profil.");
-      setLoading(false);
-      return;
-    }
-
-    // Vérification du rôle dans les métadonnées
-    const metadata = userData.user.user_metadata;
-    const isAdmin = metadata?.administrateur === true;
-    const isAdherent = metadata?.statut_inscription === "inscrit";
-
-    // Redirection selon le rôle
-    if (isAdmin) {
+    // Redirection selon le rôle (lu dans app_metadata, non modifiable par l'utilisateur)
+    const role = getRole(data.session.user);
+    if (role === "admin") {
       router.push("/dashboard/admin");
-    } else if (isAdherent) {
+    } else if (role === "adherent") {
       router.push("/");
     } else {
-      setError("Votre compte n'est pas encore validé.");
+      // Compte en attente de validation : pas de session ouverte
+      await supabase.auth.signOut();
+      setError("Votre compte n'est pas encore validé par le bureau du club.");
     }
 
     setLoading(false);

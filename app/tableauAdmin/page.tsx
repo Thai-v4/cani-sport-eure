@@ -1,6 +1,6 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
-import supabase from "../../lib/supabaseClient"; // Client Supabase pour les requêtes de données
+import supabase from "@/lib/supabaseClient"; // Client Supabase pour les requêtes de données
 import { useEffect, useState } from "react";
 import ResultsTable from "../components/ResultsTable"; // Tableau des résultats de compétitions
 import PerformanceTable from "../components/PerformanceTable"; // Tableau des performances

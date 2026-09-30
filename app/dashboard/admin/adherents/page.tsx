@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react"; // Hooks React
 import { useAuth } from "@/app/components/Auth/AuthProvider"; // Contexte d'authentification
 import { useRouter } from "next/navigation"; // Navigation
-import SidebarAdmin from "../../../../components/SidebarAdmin"; // Barre latérale admin
+import SidebarAdmin from "@/app/components/SidebarAdmin"; // Barre latérale admin
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaSort, FaSortUp, FaSortDown, FaUserPlus, FaChevronDown, FaChevronRight } from "react-icons/fa"; // Icônes d'édition, suppression, recherche et filtres
 import ModalConfirm from "@/app/components/ModalConfirm"; // Modal de confirmation
 import { motion, AnimatePresence } from "framer-motion"; // Animations
@@ -147,10 +147,6 @@ export default function ListeAdherents() {
     if (!selectedUser) return;
 
     // Log pour déboguer
-    console.log("Envoi des données:", JSON.stringify({
-      ...selectedUser,
-      animateur: !!selectedUser.animateur // Force une conversion explicite en booléen
-    }));
 
     try {
       const res = await fetch("/api/users", {
@@ -250,9 +246,9 @@ export default function ListeAdherents() {
           </div>
           
           {/* Barre de recherche et filtres */}
-          <div className="mb-6 bg-white rounded-lg shadow p-4">
+          <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="relative flex-grow">
+              <div className="relative grow">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FaSearch className="text-gray-400" />
                 </div>
@@ -292,7 +288,7 @@ export default function ListeAdherents() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
                   <option value="tous">Tous les statuts</option>
                   <option value="inscrit">Inscrits</option>
@@ -303,7 +299,7 @@ export default function ListeAdherents() {
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
                   <option value="tous">Tous les rôles</option>
                   <option value="admin">Administrateurs</option>
@@ -331,7 +327,7 @@ export default function ListeAdherents() {
                       <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                        className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                       >
                         <option value="tous">Tous</option>
                         <option value="inscrit">Inscrits</option>
@@ -347,7 +343,7 @@ export default function ListeAdherents() {
                       <select
                         value={roleFilter}
                         onChange={(e) => setRoleFilter(e.target.value)}
-                        className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                        className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                       >
                         <option value="tous">Tous</option>
                         <option value="admin">Administrateurs</option>
@@ -362,30 +358,30 @@ export default function ListeAdherents() {
             
             {/* Statistiques rapides */}
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <div className="bg-blue-50 p-2 rounded text-center">
+              <div className="bg-blue-50 p-2 rounded-sm text-center">
                 <div className="text-sm text-gray-500">Total</div>
                 <div className="font-bold text-blue-700">{users.length}</div>
               </div>
-              <div className="bg-green-50 p-2 rounded text-center">
+              <div className="bg-green-50 p-2 rounded-sm text-center">
                 <div className="text-sm text-gray-500">Inscrits</div>
                 <div className="font-bold text-green-700">
                   {users.filter(u => u.statut_inscription === "inscrit").length}
                 </div>
               </div>
-              <div className="bg-yellow-50 p-2 rounded text-center">
+              <div className="bg-yellow-50 p-2 rounded-sm text-center">
                 <div className="text-sm text-gray-500">En attente</div>
                 <div className="font-bold text-yellow-700">
                   {users.filter(u => u.statut_inscription === "en attente").length}
                 </div>
               </div>
-              <div className="bg-red-50 p-2 rounded text-center">
+              <div className="bg-red-50 p-2 rounded-sm text-center">
                 <div className="text-sm text-gray-500">Refusés</div>
                 <div className="font-bold text-red-700">
                   {users.filter(u => u.statut_inscription === "refusé").length}
                 </div>
               </div>
               {/* Nouvelle statistique pour les animateurs */}
-              <div className="bg-blue-50 p-2 rounded text-center">
+              <div className="bg-blue-50 p-2 rounded-sm text-center">
                 <div className="text-sm text-gray-500">Animateurs</div>
                 <div className="font-bold text-blue-700">
                   {users.filter(u => u.animateur).length}
@@ -395,7 +391,7 @@ export default function ListeAdherents() {
           </div>
 
           {/* Affichage des résultats */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
+          <div className="bg-white shadow-sm rounded-lg overflow-hidden">
             {filteredAndSortedUsers.length === 0 ? (
               <div className="p-8 text-center">
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -479,14 +475,14 @@ export default function ListeAdherents() {
                               <button
                                 onClick={() => setSelectedUser({...defaultUserValues, ...user})}
                                 title="Modifier"
-                                className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+                                className="text-indigo-600 hover:text-indigo-900 p-1 rounded-sm hover:bg-indigo-50"
                               >
                                 <FaEdit />
                               </button>
                               <button
                                 onClick={() => openDeleteModal(user)}
                                 title="Supprimer"
-                                className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                className="text-red-600 hover:text-red-900 p-1 rounded-sm hover:bg-red-50"
                               >
                                 <FaTrash />
                               </button>
@@ -664,7 +660,7 @@ export default function ListeAdherents() {
                 <input
                   id="admin-checkbox"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm"
                   checked={selectedUser.administrateur}
                   onChange={(e) =>
                     setSelectedUser({
@@ -683,7 +679,7 @@ export default function ListeAdherents() {
                 <input
                   id="animateur-checkbox"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm"
                   checked={selectedUser.animateur}
                   onChange={(e) =>
                     setSelectedUser({

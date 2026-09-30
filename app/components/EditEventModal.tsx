@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 import "./AddEvent.css";
 
 interface ModalProps {
@@ -154,13 +154,13 @@ const fullColor = `#3b82f6::${visibility}::${content}`
         </div>
 
         {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="p-4 flex-grow flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="p-4 grow flex flex-col gap-4">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div className="flex-1">
               <label className="block text-gray-700 mb-1">Titre</label>
               <input
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-sm"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -170,7 +170,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
               <label className="block text-gray-700 mb-1">Date</label>
               <input
                 type="date"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-sm"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
@@ -183,7 +183,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
               <label className="block text-gray-700 mb-1">Heure de début</label>
               <input
                 type="time"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-sm"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
@@ -193,7 +193,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
               <label className="block text-gray-700 mb-1">Heure de fin</label>
               <input
                 type="time"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-sm"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
@@ -204,7 +204,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
           <div>
             <label className="block text-gray-700 mb-1">Contenu</label>
             <textarea
-              className="w-full p-2 border border-gray-300 rounded h-32"
+              className="w-full p-2 border border-gray-300 rounded-sm h-32"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -219,7 +219,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
                 onChange={() => setIsInternal(!isInternal)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-700 
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-700 
               peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px]
               after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
             </label>
@@ -244,7 +244,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
           <div className="flex justify-center mt-4">
             <button
               type="submit"
-              className="bg-blue-700 text-white py-2 px-6 rounded hover:bg-blue-800 transition w-full md:w-auto"
+              className="bg-blue-700 text-white py-2 px-6 rounded-sm hover:bg-blue-800 transition w-full md:w-auto"
               disabled={loading}
             >
               {loading ? "Enregistrement..." : "Enregistrer les modifications"}

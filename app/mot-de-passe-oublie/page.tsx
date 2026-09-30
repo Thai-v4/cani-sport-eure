@@ -1,11 +1,10 @@
 "use client"; // Directive pour exécution côté client
 
 import { useState } from "react"; // Hook d'état React
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import Link from "next/link"; // Navigation entre pages
 
 export default function ForgotPasswordPage() {
-  const supabase = createClientComponentClient(); // Initialisation du client Supabase
   const [email, setEmail] = useState(""); // État pour l'email saisi
   const [message, setMessage] = useState<string | null>(null); // Message de succès
   const [error, setError] = useState<string | null>(null); // Message d'erreur

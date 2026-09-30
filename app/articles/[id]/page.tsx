@@ -1,8 +1,9 @@
 "use client"; // Indique que ce composant s'exécute côté client
+import Link from "next/link";
 
 import { useEffect, useState } from "react"; // Hooks React pour l'état et les effets
 import { useParams, useRouter } from "next/navigation"; // Hook pour accéder aux paramètres d'URL
-import supabase from "../../../lib/supabaseClient"; // Client Supabase pour la base de données
+import supabase from "@/lib/supabaseClient"; // Client Supabase pour la base de données
 import { formatDistanceToNow } from "date-fns"; // Fonction pour calculer le temps relatif
 import { fr } from "date-fns/locale"; // Localisation française pour les dates
 import WhiteBackground from "@/app/components/backgrounds/WhiteBackground"; // Composant pour le fond blanc
@@ -58,7 +59,7 @@ const ArticleDetail = () => {
         // Récupérer l'auteur
         if (data.id_profil) {
           const { data: authorData } = await supabase
-            .from("profils")
+            .from("profils_publics")
             .select("nom, prenom, photo_profil")
             .eq("id", data.id_profil)
             .single();
@@ -232,12 +233,12 @@ const ArticleDetail = () => {
           <div className="min-h-screen pt-6 pb-12 px-4 sm:px-6 lg:px-8">
             {/* Barre de navigation */}
             <div className="max-w-6xl mx-auto mb-6">
-              <a href="/articles" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+              <Link href="/articles" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                 </svg>
                 Retour aux articles
-              </a>
+              </Link>
             </div>
             
             {/* Mise en page avec table des matières sur le côté (écrans larges) */}
@@ -256,7 +257,7 @@ const ArticleDetail = () => {
                         height={800}
                         priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute bottom-0 left-0 p-4 sm:p-6 text-white">
                         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">{article.titre}</h1>
                       </div>
@@ -344,7 +345,7 @@ const ArticleDetail = () => {
                     <a 
                       key={relArticle.id} 
                       href={`/articles/${relArticle.id}`} 
-                      className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                      className="group bg-white rounded-xl shadow-xs overflow-hidden hover:shadow-md transition-shadow"
                     >
                       <div className="h-48 relative">
                         <Image 

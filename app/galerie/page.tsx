@@ -108,7 +108,7 @@ const GalleryPage = () => {
             placeholder="Rechercher une photo"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="outline-none w-full font-calibri text-black"
+            className="outline-hidden w-full font-calibri text-black"
           />
           <span role="img" aria-label="search" className="ml-2 text-gray-500">
             🔍
@@ -129,7 +129,7 @@ const GalleryPage = () => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="outline-none"
+            className="outline-hidden"
           />
         </div>
 
@@ -147,7 +147,7 @@ const GalleryPage = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="outline-none"
+            className="outline-hidden"
           />
         </div>
       </div>

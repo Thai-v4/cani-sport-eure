@@ -1,7 +1,7 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
 import { useEffect, useState } from "react"; // Hooks React
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import { useRouter, useParams } from "next/navigation"; // Navigation et paramètres d'URL
 import { v4 as uuidv4 } from "uuid"; // Générateur d'identifiants uniques
 import Sidebar from "../../components/sidebars/Sidebar"; // Barre latérale de navigation
@@ -9,7 +9,6 @@ import Footer from "../../components/sidebars/Footer"; // Pied de page
 import WhiteBackground from "../../components/backgrounds/WhiteBackground"; // Fond blanc
 import Image from "next/image"; // Composant d'image optimisé
 
-const supabase = createClientComponentClient(); // Initialisation du client Supabase
 
 export default function PetProfileForm() {
   const router = useRouter(); // Router pour la navigation
@@ -227,7 +226,7 @@ export default function PetProfileForm() {
           Modifier le profil du chien
         </h1>
         <div className="px-4 sm:px-6 pt-12 pb-12 flex justify-center">
-          <div className="w-full max-w-screen-sm">
+          <div className="w-full max-w-(--breakpoint-sm)">
             {/* Formulaire de création/édition */}
             <form
               onSubmit={handleSubmit}

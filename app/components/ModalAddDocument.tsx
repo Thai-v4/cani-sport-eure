@@ -1,14 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import { FaTimes } from "react-icons/fa";
 
 // 📌 Connexion à Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 interface ModalAddDocumentProps {
   isOpen: boolean;
   onClose: () => void;
@@ -162,7 +158,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
         <select
           value={visibility}
           onChange={(e) => setVisibility(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full p-2 border border-gray-300 rounded-sm mb-4"
         >
           <option value="adherent">Adhérents</option>
           <option value="admin">Administrateurs</option>
@@ -182,7 +178,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
           <p className="font-bold mb-2">
             Fichiers sélectionnés ({selectedFiles.length}):
           </p>
-          <ul className="max-h-40 overflow-y-auto border rounded p-2">
+          <ul className="max-h-40 overflow-y-auto border rounded-sm p-2">
             {selectedFiles.map((file, index) => (
               <li key={index} className="flex justify-between items-center py-1 border-b">
                 <span className="truncate max-w-[300px]">{file.name}</span>

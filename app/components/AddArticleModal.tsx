@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, Upload, Image as ImageIcon, AlertCircle, CheckCircle, Loader } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -38,7 +38,6 @@ const AddArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) =
   const titleInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const supabase = createClientComponentClient();
   const router = useRouter();
 
   // Focus sur le titre à l'ouverture du modal
@@ -326,7 +325,7 @@ const AddArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) =
                     placeholder="Saisir un titre accrocheur..."
                     className={`w-full px-4 py-3 rounded-lg border ${
                       fieldErrors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
+                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
                     maxLength={100}
                   />
                   {fieldErrors.title && (
@@ -352,7 +351,7 @@ const AddArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) =
                     rows={6}
                     className={`w-full px-4 py-3 rounded-lg border ${
                       fieldErrors.content ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
+                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
                   />
                   {fieldErrors.content && (
                     <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -429,7 +428,7 @@ const AddArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) =
             <button
               type="button"
               onClick={handleCloseWithConfirmation}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-gray-500"
               disabled={isSubmitting}
             >
               Annuler

@@ -22,7 +22,7 @@ import {
 } from "react-icons/fa";
 import ModalAddDocument from "../components/ModalAddDocument";
 import SidebarAdmin from "../components/SidebarAdmin";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../components/Auth/AuthProvider";
@@ -30,8 +30,6 @@ import ModalConfirm from "../components/ModalConfirm";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-
-const supabase = createClientComponentClient();
 
 // Définition du type pour les fichiers et dossiers
 interface DocumentFile {
@@ -483,7 +481,7 @@ export default function DocumentManager() {
       {/* Contenu principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 shadow-sm">
+        <header className="bg-white border-b border-gray-200 shadow-xs">
           <div className="px-4 py-4 sm:px-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">
@@ -506,7 +504,7 @@ export default function DocumentManager() {
                     placeholder="Rechercher..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                   />
                   <FaSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
@@ -547,7 +545,7 @@ export default function DocumentManager() {
                       placeholder="Rechercher..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                     />
                     <FaSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   </div>
@@ -655,7 +653,7 @@ export default function DocumentManager() {
 
           {/* Vue Liste */}
           {viewMode === "list" && filteredAndSortedFiles().length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -729,7 +727,7 @@ export default function DocumentManager() {
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-9 w-9 flex items-center justify-center">
+                          <div className="shrink-0 h-9 w-9 flex items-center justify-center">
                             {file.is_folder ? (
                               <FaFolder className="text-yellow-400 text-lg" />
                             ) : (
@@ -806,7 +804,7 @@ export default function DocumentManager() {
               {filteredAndSortedFiles().map((file) => (
                 <div
                   key={file.id}
-                  className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-xs hover:shadow-md transition-shadow"
                 >
                   <div
                     className="p-4 cursor-pointer flex flex-col items-center"
@@ -844,7 +842,7 @@ export default function DocumentManager() {
                           showActionMenu === file.id ? null : file.id
                         )
                       }
-                      className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full focus:outline-none"
+                      className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full focus:outline-hidden"
                     >
                       <FaEllipsisV />
                     </button>
@@ -909,7 +907,7 @@ export default function DocumentManager() {
                   </h2>
                   <button
                     onClick={() => setIsFolderModalOpen(false)}
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    className="text-gray-400 hover:text-gray-500 focus:outline-hidden"
                   >
                     <FaTimes />
                   </button>
@@ -928,7 +926,7 @@ export default function DocumentManager() {
                       id="folder-name"
                       value={newFolderName}
                       onChange={(e) => setNewFolderName(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Mon dossier"
                       autoFocus
                     />
@@ -945,7 +943,7 @@ export default function DocumentManager() {
                       id="folder-access"
                       value={newFolderAccess}
                       onChange={(e) => setNewFolderAccess(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="adherent">Adhérents (connectés)</option>
                       <option value="admin">Admin (restreint)</option>
@@ -957,14 +955,14 @@ export default function DocumentManager() {
                   <button
                     type="button"
                     onClick={() => setIsFolderModalOpen(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                   >
                     Annuler
                   </button>
                   <button
                     type="button"
                     onClick={handleAddFolder}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     Créer
                   </button>
@@ -1004,7 +1002,7 @@ export default function DocumentManager() {
                 <div className="flex justify-center">
                   <button
                     onClick={() => setIsErrorModalOpen(false)}
-                    className="px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    className="px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                   >
                     Fermer
                   </button>

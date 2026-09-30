@@ -1,84 +1,56 @@
-# Site Web Cani-sport-Eure
+# Site Web Cani-Sports Eure
 
-## 🚀 Structure du projet
+Site officiel de l'association Cani-Sports Eure (CS27) : vitrine publique, espace adhérents et outils du bureau.
 
-Ce projet est basé sur **Next.js** et **Supabase**. Il suit une structure de fichiers organisée pour assurer évolutivité et maintenabilité.
+## 💻 Stack
 
-Dans le projet cani-sport-eure, vous retrouverez les dossiers et fichiers suivants :
-
-```bash
-/
-├── public/
-│   ├── assets/
-│   │   └── logo.svg
-│   │   └── logo.png
-│   └── favicon.ico
-│   └── robots.txt
-│   └── toggle-theme.js
-├── src/
-│   ├── assets/
-│   │   └── icons.ts
-│   ├── components/
-│   │   └── Header.tsx
-│   │   └── Footer.tsx
-│   ├── hooks/
-│   │   └── useAuth.ts
-│   ├── lib/
-│   │   └── supabaseClient.ts
-│   ├── pages/
-│   │   └── api/
-│   │       └── auth.ts
-│   │   └── index.tsx
-│   │   └── about.tsx
-│   ├── styles/
-│   │   └── globals.css
-│   │   └── theme.css
-│   └── utils/
-│       └── helpers.ts
-│   └── types/
-│       └── index.ts
-└── package.json
-```
-
-## 📁 Description des Dossiers
-
-- `public/`
-  Contient les fichiers statiques tels que les images, fichiers JavaScript ou autres ressources accessibles depuis la racine de l'application.
-
-- `src/`
-  Contient le code principal de l'application.
-  - `assets/` : Ressources partagées, comme des icônes ou fichiers statiques de configuration.
-  - `components/` : Composants réutilisables de l'interface utilisateur (ex. Header, Footer).
-  - `hooks/` : Hooks React personnalisés, notamment pour la gestion de l'authentification.
-  - `lib/` : Bibliothèques et clients, comme le client Supabase.
-  - `pages/` : Toutes les pages de l'application, suivant les conventions de routage de Next.js.
-  - `api/` : Fonctions serverless pour la logique backend.
-  - `styles/` : Fichiers CSS globaux ou spécifiques à un thème.
-  - `utils/` : Fonctions utilitaires utilisées dans l'ensemble de l'application.
-  - `types/` : Types et interfaces pour TypeScript.
-
-## 💻 Tech Stack
-
-**Framework** - [Next.js](https://nextjs.org/)
-**Stylisation** - [TailwindCSS](https://tailwindcss.com/)
-**Component library** - [DaisyUI](https://daisyui.com/)
-**UI/UX** - [Figma](https://figma.com)
-**Icons** - [Boxicons](https://boxicons.com/) | [Tablers](https://tabler-icons.io/)
-**Formatage du code** - [Prettier](https://prettier.io/)
-**Hébergement et déploiement** - [Vercel](https://vercel.com/)
+- **Framework** : [Next.js 16](https://nextjs.org/) (App Router, Turbopack) · React 19
+- **Données, authentification, fichiers** : [Supabase](https://supabase.com/)
+- **Agenda** : Google Agenda via un compte de service
+- **Styles** : [Tailwind CSS 4](https://tailwindcss.com/) + [daisyUI 5](https://daisyui.com/)
+- **Hébergement** : [Vercel](https://vercel.com/)
 
 ## 🧞 Commandes
 
-All commands are run from the root of the project, from a terminal:
+| Commande               | Action                                          |
+| :--------------------- | :---------------------------------------------- |
+| `npm install`          | Installe les dépendances                        |
+| `npm run dev`          | Serveur de développement sur `localhost:3000`   |
+| `npm run build`        | Build de production                             |
+| `npm run start`        | Sert le build de production                     |
+| `npm run lint`         | ESLint                                          |
+| `npm run typecheck`    | Vérification TypeScript                         |
+| `npm run format`       | Formate le code avec Prettier                   |
+| `npm run cz`           | Commit guidé (commitizen)                       |
 
-| Command                | Action                                                                                                                           |
-| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| `npm install`          | Installs dependencies                                                                                                            |
-| `npm run dev`          | Starts local dev server at `localhost:4321`                                                                                      |
-| `npm run build`        | Build your production site to `./dist/`                                                                                          |
-| `npm run preview`      | Preview your build locally, before deploying                                                                                     |
-| `npm run format:check` | Check code format with Prettier                                                                                                  |
-| `npm run format`       | Format codes with Prettier                                                                                                       |
-| `npm run sync`         | Generates TypeScript types for all Astro modules. [Learn more](https://docs.astro.build/en/reference/cli-reference/#astro-sync). |
-| `npm run cz`           | Commit code changes with commitizen                                                                                              |
-| `npm run lint`         | Lint with ESLint                                                                                                                 |
+Copier `.env.example` en `.env.local` et renseigner les valeurs avant `npm run dev`.
+
+## 📁 Organisation
+
+- `app/` : pages (App Router), composants (`app/components/`) et routes API (`app/api/`)
+- `lib/` : client Supabase navigateur, client serveur (`lib/supabase/server.ts`), rôles (`lib/roles.ts`)
+- `proxy.ts` : contrôle d'accès côté serveur aux pages adhérents et administrateur
+- `supabase/migrations/` : scripts SQL (rôles, règles RLS, stockage)
+- `public/` : images, logos, pictogrammes
+
+## 🔐 Sécurité
+
+- **Rôles** : `administrateur`, `animateur`, `comptable` et `statut_inscription` sont lus dans
+  `app_metadata` (modifiable uniquement avec la clé service), jamais dans `user_metadata`
+  que chaque utilisateur peut réécrire lui-même.
+- **Données** : la protection réelle repose sur les règles RLS Supabase
+  (`supabase/migrations/20260930120000_securite_roles_rls.sql`). Le proxy et les gardes
+  d'interface ne font qu'éviter d'afficher des écrans inaccessibles.
+- **Routes API** : `/api/users` et l'écriture dans `/api/calendar` exigent un administrateur ;
+  les événements privés ne sont servis qu'aux adhérents validés.
+- **Clé service** : uniquement dans les routes `app/api/`, jamais dans le code client.
+
+### Mise en production de la migration de sécurité
+
+1. Relire puis exécuter `supabase/migrations/20260930120000_securite_roles_rls.sql`
+   (éditeur SQL Supabase ou `supabase db push`).
+2. Déployer immédiatement le code correspondant.
+3. Supprimer l'ancienne fonction Edge devenue inutile : `supabase functions delete validate-signup`.
+4. Retirer les anciens rôles de `user_metadata` (requête fournie en commentaire dans la migration).
+5. Supprimer de Vercel les variables devenues inutiles : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
+   `GOOGLE_ACCESS_TOKEN`, `NEXTAUTH_*`.

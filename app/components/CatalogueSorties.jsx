@@ -17,7 +17,7 @@ import {
   FaCalendarAlt,
   FaClock,
 } from "react-icons/fa";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalConfirm from "./ModalConfirm";
@@ -26,7 +26,6 @@ import { fr } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
-  const supabase = createClientComponentClient();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -280,7 +279,7 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Rechercher..."
-              className="pl-9 pr-3 py-2 w-40 sm:w-60 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="pl-9 pr-3 py-2 w-40 sm:w-60 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-sm"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaSearch className="text-gray-400" />
@@ -313,7 +312,7 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
             <button
               type="button"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             >
               <FaFilter
                 className={`mr-2 ${filterType !== "all" ? "text-blue-600" : "text-gray-400"}`}
@@ -514,14 +513,14 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
                     <div className="flex items-center justify-center space-x-3">
                       <button
                         onClick={() => handleEditClick(sortie)}
-                        className="text-sky-600 hover:text-sky-900 transition-colors p-1 hover:bg-sky-50 rounded"
+                        className="text-sky-600 hover:text-sky-900 transition-colors p-1 hover:bg-sky-50 rounded-sm"
                         title="Modifier"
                       >
                         <FaEdit size={18} />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(sortie.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors p-1 hover:bg-red-50 rounded"
+                        className="text-red-500 hover:text-red-700 transition-colors p-1 hover:bg-red-50 rounded-sm"
                         title="Supprimer"
                       >
                         <FaTrash size={18} />

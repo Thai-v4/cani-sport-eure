@@ -1,13 +1,12 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
 import { useEffect, useState } from "react"; // Import des hooks React
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import { useRouter } from "next/navigation"; // Hook de navigation Next.js
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Icônes pour afficher/masquer le mot de passe
 
 export default function NouveauMotDePassePage() {
   // Initialisation du client Supabase et du router
-  const supabase = createClientComponentClient();
   const router = useRouter();
 
   // États pour les champs de formulaire
@@ -37,8 +36,6 @@ export default function NouveauMotDePassePage() {
       // Écoute des changements d'état d'authentification
       const { data: authListener } = supabase.auth.onAuthStateChange(
         (event, session) => {
-          console.log("Auth event:", event);
-          console.log("Session temporaire:", session);
         }
       );
 
@@ -154,7 +151,7 @@ export default function NouveauMotDePassePage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white flex-1 py-3 focus:outline-none"
+                className="bg-white flex-1 py-3 focus:outline-hidden"
                 required
               />
               <button
@@ -178,7 +175,7 @@ export default function NouveauMotDePassePage() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-white flex-1 py-3 focus:outline-none"
+                className="bg-white flex-1 py-3 focus:outline-hidden"
                 required
               />
               <button

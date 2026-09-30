@@ -40,7 +40,7 @@ const LatestEvents = () => {
       const eventsWithProfiles = await Promise.all(
         data.map(async (event) => {
           const { data: profileData } = await supabase
-            .from("profils")
+            .from("profils_publics")
             .select("nom, photo_profil")
             .eq("id", event.id_profil)
             .single();

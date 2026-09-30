@@ -6,7 +6,7 @@ import { SearchBar, DateFilter } from "../components/ArticlesComponents"; // Com
 import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale
 import Footer from "../components/sidebars/Footer"; // Pied de page
 import Image from "next/image"; // Composant d'image optimisé
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import WhiteBackground from "../components/backgrounds/WhiteBackground"; // Fond blanc pour le contenu
 
 // Définition du type d'article
@@ -20,7 +20,6 @@ interface Article {
 }
 
 const ArticlesPage = () => {
-  const supabase = createClientComponentClient(); // Initialisation du client Supabase
   const [articles, setArticles] = useState<Article[]>([]); // État pour stocker les articles
   const [searchQuery, setSearchQuery] = useState<string>(""); // Terme de recherche
   const [startDate, setStartDate] = useState<string>(""); // Date de début pour filtrage

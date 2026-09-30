@@ -66,16 +66,6 @@ const GalleryPage = () => {
     const imageDate = image.createdAt ? new Date(image.createdAt) : null;
 
     // Logs pour débogage
-    console.log("🟡 Filtrage de l'image :", image.name);
-    console.log("➡ Image Date :", imageDate);
-    console.log(
-      "➡ Start Date :",
-      startDate ? new Date(startDate) : "Pas de start date"
-    );
-    console.log(
-      "➡ End Date :",
-      endDate ? new Date(endDate + "T23:59:59") : "Pas de end date"
-    );
 
     // Application des filtres
     const matchesSearch =
@@ -190,7 +180,7 @@ const GalleryPage = () => {
                 alt="Aperçu de l'image"
                 width={800}
                 height={800}
-                className="max-w-screen-lg max-h-screen-lg rounded-lg"
+                className="max-w-(--breakpoint-lg) max-h-screen-lg rounded-lg"
               />
             </div>
           </div>

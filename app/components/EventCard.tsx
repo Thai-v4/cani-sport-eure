@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import EditEventModal from "./EditEventModal";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 import ModalConfirm from "./ModalConfirm";
 
 interface Auteur {
@@ -30,7 +30,7 @@ interface EventCardProps {
 // Fonction pour calculer le temps écoulé depuis la publication
 const timeSince = (date: string) => {
 
-  //console.log("date", date);
+  //
   const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
   if (seconds < 60) return `Il y a ${seconds} secondes`;
   const minutes = Math.floor(seconds / 60);
@@ -138,9 +138,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, isEditable = false }) => {
             <Image
               src={event.image_url}
               alt={event.titre}
-              layout="fill"
-              objectFit="cover"
+              fill
               className="rounded-lg"
+            style={{ objectFit: "cover" }}
             />
           </div>
           {/* Trait sous l'image */}

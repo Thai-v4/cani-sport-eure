@@ -31,7 +31,7 @@ const SportFilters = ({ selectedSport, onSportChange }) => {
         <div
           key={sport}
           onClick={() => onSportChange(sport === selectedSport ? null : sport)}
-          className="relative min-w-[80px] min-h-[80px] sm:w-[100px] sm:h-[100px] rounded-full overflow-hidden cursor-pointer transition-transform duration-300 flex-shrink-0"
+          className="relative min-w-[80px] min-h-[80px] sm:w-[100px] sm:h-[100px] rounded-full overflow-hidden cursor-pointer transition-transform duration-300 shrink-0"
           style={{
             border: selectedSport === sport ? "2px solid yellow" : "none",
           }}
