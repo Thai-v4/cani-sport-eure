@@ -1,35 +1,45 @@
-// Import des outils d'analyse, métadonnées et styles
-import { Analytics } from "@vercel/analytics/next"; // Analyse d'utilisation Vercel
-import type { Metadata } from "next"; // Type pour les métadonnées
-import "./globals.css"; // Styles globaux de l'application
-import { Inter } from "next/font/google"; // Police Inter de Google Fonts
-import { SpeedInsights } from "@vercel/speed-insights/next"; // Mesure des performances
-import { AuthProvider } from "./components/Auth/AuthProvider"; // Contexte d'authentification
+import type { Metadata, Viewport } from "next";
+import { Mona_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import "./globals.css";
+import { AuthProvider } from "./components/Auth/AuthProvider";
+import SiteChrome from "./components/site/SiteChrome";
 
-// Configuration de la police Inter
-const inter = Inter({ subsets: ["latin"] });
+// Mona Sans : une seule famille, largeur variable (titres serrés, texte courant normal)
+const mona = Mona_Sans({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  variable: "--font-mona",
+  display: "swap",
+});
 
-// Métadonnées de l'application (titre, description)
 export const metadata: Metadata = {
-  title: "Cani-Sports Eure",
-  description: "Site officiel de Cani-Sports Eure",
+  title: {
+    default: "Cani-Sports Eure — courir avec son chien dans l'Eure",
+    template: "%s · Cani-Sports Eure",
+  },
+  description:
+    "Club de canisport de l'Eure : cani-cross, cani-trail, cani-marche, cani-VTT et cani-trottinette. Sorties, agenda, résultats, débutants bienvenus.",
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Cani-Sports Eure",
+  },
 };
 
-// Layout racine qui englobe toute l'application
-export default function RootLayout({
-  children, // Contenu des pages enfants
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
+    <html lang="fr" className={mona.variable}>
+      <body>
         <AuthProvider>
-          {" "}
-          {/* Fournit le contexte d'authentification à toute l'application */}
-          {children} {/* Affiche le contenu de chaque page */}
-          <SpeedInsights /> {/* Mesure les performances */}
-          <Analytics /> {/* Collecte les données analytiques */}
+          <SiteChrome>{children}</SiteChrome>
+          <SpeedInsights />
+          <Analytics />
         </AuthProvider>
       </body>
     </html>

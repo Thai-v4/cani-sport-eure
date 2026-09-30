@@ -13,7 +13,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://${supabaseHost} https://tile.openstreetmap.org`,
   "font-src 'self' data:",
-  `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://nominatim.openstreetmap.org https://vitals.vercel-insights.com`,
+  `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://nominatim.openstreetmap.org https://geo.api.gouv.fr https://vitals.vercel-insights.com`,
   "frame-src 'none'",
   "frame-ancestors 'none'",
   "object-src 'none'",

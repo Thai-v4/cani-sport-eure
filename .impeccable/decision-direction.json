@@ -1,0 +1,152 @@
+{
+  "title": "Choisir l'univers visuel de Cani-Sports Eure",
+  "question": "Le tirage a désigné « Sangle et ligne de trait ». La garder, prendre une alternative, ou relancer.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Sangle et ligne de trait",
+      "kicker": "LE TIRAGE",
+      "lineage": "Le matériel de canicross : ceinture, harnais, ligne élastique",
+      "thesis": "Le site est tissé comme l'équipement du duo : sangle noire, et une ligne de trait orange qui relie chaque page à la prochaine sortie.",
+      "palette": ["#151515", "#FF5B1F", "#C3C9CE", "#F4F5F2"],
+      "materials": ["sangle nylon tissée", "ruban réfléchissant", "coutures bartack en zigzag", "mousquetons"],
+      "viewport": "Bandeau-sangle noir avec le logo cousu ; titre condensé géant « Courir avec son chien dans l'Eure » ; la ligne orange part du bouton « Venir à la prochaine sortie », se tend jusqu'à la date suivante, et l'agenda de la saison est accroché dessous comme des mousquetons.",
+      "risk": "Si la ligne décore tout, elle ne veut plus rien dire : elle ne relie que les actions (sortie, agenda, inscription).",
+      "raised": [
+        { "from": "civic-bureau-prospectus-late-modern", "raise": "Toute la couleur saturée est dépensée sur la ligne et l'action principale ; le reste est noir sangle, gris réfléchissant et blanc." },
+        { "from": "pop-culture-shelf-insert-card-numbered-series", "raise": "Chaque sortie a un recto simple (date, lieu, discipline) et un verso dense (distance, dénivelé, niveau, consignes pour le chien)." },
+        { "from": "textiles-weave-drape-fashion-drawcord-transforming-cape", "raise": "La ligne est aussi une commande : la tirer amène à la prochaine sortie." },
+        { "from": "signals-instruments-drum-machine-step-row", "raise": "L'agenda est une rangée continue de la saison qui ne passe jamais à la ligne ; un repère « aujourd'hui » dit toujours où on en est." },
+        { "from": "galaxies-nebulae-deep-time-accretion-disk-threshold", "raise": "Les libellés courent le long de la ligne, comme le lettrage tissé d'une sangle." },
+        { "from": "medium-native-ebru-floated-pigment", "raise": "Seule la ligne bouge, avec une physique d'élastique ; aucune animation décorative ailleurs." }
+      ],
+      "wireframe": { "cols": 12, "rows": 10, "regions": [
+        { "label": "bandeau-sangle + logo", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "titre condensé géant", "x": 0, "y": 1, "w": 8, "h": 3 },
+        { "label": "Venir à la prochaine sortie", "x": 0, "y": 4, "w": 4, "h": 1, "accent": true },
+        { "label": "ligne de trait tendue", "x": 4, "y": 4, "w": 3, "h": 1, "accent": true },
+        { "label": "prochaine sortie (recto)", "x": 7, "y": 3, "w": 5, "h": 3 },
+        { "label": "saison : sorties accrochées à la ligne", "x": 0, "y": 7, "w": 12, "h": 2 }
+      ] }
+    },
+    {
+      "id": "model-pick",
+      "label": "Sentier balisé",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Balisage GR/PR et poteaux directionnels",
+      "thesis": "Le site se lit comme un sentier balisé : marques peintes jaune et rouge, poteaux qui indiquent chaque rubrique et sa distance.",
+      "palette": ["#2F4A34", "#F2C200", "#D7261E", "#FFFFFF"],
+      "materials": ["peinture sur écorce", "lames de poteaux gravées", "photo de sous-bois"],
+      "viewport": "Un poteau directionnel plein écran sur sous-bois : « Prochaine sortie », « Agenda », « Le club », chaque lame pointe vers sa rubrique.",
+      "risk": "La direction la plus attendue pour un club de plein air : très lisible, mais déjà vue sur les sites de randonnée.",
+      "wireframe": { "cols": 12, "rows": 10, "regions": [
+        { "label": "photo sous-bois", "x": 0, "y": 0, "w": 12, "h": 7 },
+        { "label": "lame : prochaine sortie", "x": 2, "y": 2, "w": 6, "h": 1, "accent": true },
+        { "label": "lame : agenda", "x": 4, "y": 3, "w": 6, "h": 1 },
+        { "label": "lame : le club", "x": 2, "y": 4, "w": 6, "h": 1 },
+        { "label": "sections balisées", "x": 0, "y": 7, "w": 12, "h": 3 }
+      ] }
+    },
+    {
+      "id": "civic-bureau-prospectus-late-modern",
+      "label": "Prospectus institutionnel",
+      "verdict": "declined",
+      "lineage": "Plaquettes de collectivités, style corporate tardif",
+      "thesis": "Un ruban de lumière sur fond blanc os, une seule couleur d'action.",
+      "palette": ["#F7F7FA", "#1B1547", "#6B5CE7", "#7FD8D0"],
+      "materials": ["ruban 3D", "filets gris"],
+      "viewport": "Titre à gauche, ruban lumineux à droite, logos partenaires sous la ligne de flottaison.",
+      "case": "Fusion mauvaise : c'est exactement le ton « trop institutionnel » que vous voulez éviter.",
+      "kept": "La discipline d'une seule couleur saturée, réservée à l'élément qui compte.",
+      "risk": "Site de mairie.",
+      "hero": "https://impeccable.style/worlds/cards/civic-bureau-prospectus-late-modern-hero.webp"
+    },
+    {
+      "id": "pop-culture-shelf-insert-card-numbered-series",
+      "label": "Cartes à collectionner",
+      "verdict": "declined",
+      "lineage": "Séries de cartes numérotées",
+      "thesis": "Chaque duo et chaque sortie en carte numérotée, recto illustré, verso dense.",
+      "palette": ["#F1E7D2", "#C8352B", "#1D3E6E", "#1A1A1A"],
+      "materials": ["carton lithographié", "verso typographié"],
+      "viewport": "Un album de cartes avec emplacements vides pour les sorties à venir.",
+      "case": "Fusion partielle : amusant pour les adhérents, mais n'aide pas un curieux à venir courir.",
+      "kept": "Le recto simple et le verso dense de chaque sortie.",
+      "risk": "Gadget si la collection ne sert à rien.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-insert-card-numbered-series-hero.webp"
+    },
+    {
+      "id": "textiles-weave-drape-fashion-drawcord-transforming-cape",
+      "label": "Cape à cordon",
+      "verdict": "declined",
+      "lineage": "Mode textile à cordons de serrage",
+      "thesis": "Un cordon doré qu'on tire transforme la surface.",
+      "palette": ["#0E0E0E", "#C9A227", "#4A4F57"],
+      "materials": ["soie noire", "cordon doré"],
+      "viewport": "Un demi-cercle noir qui se plisse quand on tire le cordon.",
+      "case": "Fusion proche de la direction tirée mais luxueuse, loin de la boue des sentiers.",
+      "kept": "Le cordon est à la fois accent et commande.",
+      "risk": "Hors sujet pour un club sportif.",
+      "hero": "https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-drawcord-transforming-cape-hero.webp"
+    },
+    {
+      "id": "signals-instruments-drum-machine-step-row",
+      "label": "Boîte à rythmes",
+      "verdict": "declined",
+      "lineage": "Séquenceurs 16 pas des années 80",
+      "thesis": "La saison comme une rangée de 16 pas, la lumière qui avance indique aujourd'hui.",
+      "palette": ["#2A2A2C", "#E4402F", "#F28C28", "#F2D13A"],
+      "materials": ["touches plastique", "LED", "sérigraphie blanche"],
+      "viewport": "Une rangée de pas allumés pour chaque sortie de la saison.",
+      "case": "Fusion claire pour l'agenda mais sans lien avec le monde des adhérents.",
+      "kept": "Une rangée de saison qui ne passe jamais à la ligne, avec un repère « maintenant ».",
+      "risk": "Rétro gratuit.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-drum-machine-step-row-hero.webp"
+    },
+    {
+      "id": "galaxies-nebulae-deep-time-accretion-disk-threshold",
+      "label": "Disque d'accrétion",
+      "verdict": "declined",
+      "lineage": "Imagerie astrophysique",
+      "thesis": "Des anneaux lumineux et des libellés qui orbitent.",
+      "palette": ["#000000", "#E8F0FF", "#D9481C", "#E8B84A"],
+      "materials": ["lumière", "vide"],
+      "viewport": "Un disque lumineux avec des libellés en orbite.",
+      "case": "Fusion impossible : aucun lien avec les chiens, les sentiers ou l'Eure.",
+      "kept": "Des libellés qui suivent un tracé au lieu de rester horizontaux.",
+      "risk": "Incompréhensible pour le public.",
+      "hero": "https://impeccable.style/worlds/cards/galaxies-nebulae-deep-time-accretion-disk-threshold-hero.webp"
+    },
+    {
+      "id": "medium-native-ebru-floated-pigment",
+      "label": "Marbrure ebru",
+      "verdict": "declined",
+      "lineage": "Papier marbré sur bain",
+      "thesis": "Des pigments flottants peignés en figures.",
+      "palette": ["#1F3A5F", "#C44536", "#E9D8A6", "#0A9396"],
+      "materials": ["pigment flottant", "papier encollé"],
+      "viewport": "Un bain de couleurs qu'on déforme au doigt.",
+      "case": "Fusion faible : artistique, sans rapport avec la pratique.",
+      "kept": "Le mouvement naît d'un seul matériau, jamais d'effets ajoutés.",
+      "risk": "Décoratif.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-ebru-floated-pigment-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": false },
+  "canon": true,
+  "canonCard": {
+    "label": "Le standard des clubs sportifs",
+    "thesis": "Grande photo coureur et chien, deux boutons, puis actualités et agenda en cartes : ce que font tous les clubs, très bien fait.",
+    "palette": ["#FFFFFF", "#111827", "#1E3A8A"],
+    "materials": ["photo plein cadre", "grille de cartes"],
+    "viewport": "Photo plein écran avec titre et deux boutons, puis cartes d'actualités et d'agenda.",
+    "risk": "Interchangeable avec n'importe quel club, et proche du site actuel.",
+    "wireframe": { "cols": 12, "rows": 10, "regions": [
+      { "label": "photo plein écran + titre", "x": 0, "y": 0, "w": 12, "h": 6 },
+      { "label": "boutons", "x": 1, "y": 4, "w": 4, "h": 1, "accent": true },
+      { "label": "cartes actualités", "x": 0, "y": 7, "w": 12, "h": 3 }
+    ] }
+  },
+  "steer": true
+}

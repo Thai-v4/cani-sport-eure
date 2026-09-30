@@ -1,92 +1,611 @@
 @import 'tailwindcss';
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Cani-Sports Eure — système visuel
+   Blanc, encre, filets fins, et une seule couleur : le bleu de la ligne de trait.
+   ────────────────────────────────────────────────────────────────────────── */
+
 @plugin "daisyui" {
-  themes: light --default;
+  themes: cse --default;
 }
 
+/* Thème daisyUI aligné sur les tokens : les composants hérités (modales, tables,
+   boutons) prennent l'apparence du système sans réécriture. */
 @plugin "daisyui/theme" {
-  name: "light";
+  name: "cse";
   default: true;
-  --color-primary: #1e3a8a;
+  color-scheme: light;
+  --color-base-100: #ffffff;
+  --color-base-200: #f5f6f7;
+  --color-base-300: #e3e4e6;
+  --color-base-content: #0b0b0c;
+  --color-primary: #1238d6;
   --color-primary-content: #ffffff;
-  --color-secondary: #031f73;
+  --color-secondary: #0b0b0c;
   --color-secondary-content: #ffffff;
+  --color-accent: #1238d6;
+  --color-accent-content: #ffffff;
+  --color-neutral: #0b0b0c;
+  --color-neutral-content: #ffffff;
+  --color-info: #1238d6;
+  --color-info-content: #ffffff;
+  --color-success: #067647;
+  --color-success-content: #ffffff;
+  --color-warning: #b54708;
+  --color-warning-content: #ffffff;
+  --color-error: #b42318;
+  --color-error-content: #ffffff;
+  --radius-selector: 2px;
+  --radius-field: 2px;
+  --radius-box: 2px;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
 }
 
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-blue_primary: #1e3a8a;
-  --color-blue_primary_hover: #3355cc;
-  --color-dark_blue_primary: #1d285a;
-  --color-yellow_primary: #fed100;
-  --color-black_stroke: #050403;
+  /* Tokens du système */
+  --color-paper: #ffffff;
+  --color-wash: #f5f6f7;
+  --color-ink: #0b0b0c;
+  --color-ink-2: #4a4d52;
+  --color-ink-3: #6b6f76;
+  --color-rule: #e3e4e6;
+  --color-rule-strong: #c9cbcf;
+  --color-line: #1238d6;
+  --color-line-deep: #0b2491;
+  --color-line-wash: #eef1fd;
+  --color-danger: #b42318;
+  --color-danger-wash: #fef3f2;
+  --color-success: #067647;
+  --color-success-wash: #ecfdf3;
+  --color-warning: #b54708;
+  --color-warning-wash: #fffaeb;
 
-  --font-opendyslexic: OpenDyslexic, sans-serif;
-  --font-calibri: Calibri, sans-serif;
+  --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
+  --font-opendyslexic: var(--font-sans);
+  --font-calibri: var(--font-sans);
 
-  --border-width-2: 2px;
+  /* Anciennes couleurs nommées, ramenées au système */
+  --color-blue_primary: #1238d6;
+  --color-blue_primary_hover: #0b2491;
+  --color-dark_blue_primary: #0b0b0c;
+  --color-yellow_primary: #1238d6;
+  --color-black_stroke: #0b0b0c;
+
+  /* Palette Tailwind ramenée au système : les bleus deviennent le bleu de ligne,
+     les gris deviennent les neutres. Les couleurs d'état (rouge, vert, ambre)
+     restent disponibles pour les statuts. */
+  --color-blue-50: #eef1fd;
+  --color-blue-100: #dde3fb;
+  --color-blue-200: #bcc8f6;
+  --color-blue-300: #8fa2ef;
+  --color-blue-400: #5b76e6;
+  --color-blue-500: #2f4fdd;
+  --color-blue-600: #1238d6;
+  --color-blue-700: #0f2fb4;
+  --color-blue-800: #0b2491;
+  --color-blue-900: #0a1f73;
+  --color-blue-950: #061247;
+  --color-indigo-50: var(--color-blue-50);
+  --color-indigo-100: var(--color-blue-100);
+  --color-indigo-200: var(--color-blue-200);
+  --color-indigo-300: var(--color-blue-300);
+  --color-indigo-400: var(--color-blue-400);
+  --color-indigo-500: var(--color-blue-500);
+  --color-indigo-600: var(--color-blue-600);
+  --color-indigo-700: var(--color-blue-700);
+  --color-indigo-800: var(--color-blue-800);
+  --color-indigo-900: var(--color-blue-900);
+  --color-sky-50: var(--color-blue-50);
+  --color-sky-100: var(--color-blue-100);
+  --color-sky-500: var(--color-blue-500);
+  --color-sky-600: var(--color-blue-600);
+  --color-sky-700: var(--color-blue-700);
+  --color-purple-50: var(--color-blue-50);
+  --color-purple-100: var(--color-blue-100);
+  --color-purple-500: var(--color-blue-500);
+  --color-purple-600: var(--color-blue-600);
+  --color-purple-700: var(--color-blue-700);
+  --color-purple-800: var(--color-blue-800);
+
+  --color-gray-50: #f5f6f7;
+  --color-gray-100: #eef0f1;
+  --color-gray-200: #e3e4e6;
+  --color-gray-300: #c9cbcf;
+  --color-gray-400: #9a9ea4;
+  --color-gray-500: #6b6f76;
+  --color-gray-600: #4a4d52;
+  --color-gray-700: #36383c;
+  --color-gray-800: #222326;
+  --color-gray-900: #151618;
+  --color-gray-950: #0b0b0c;
+  --color-slate-50: var(--color-gray-50);
+  --color-slate-100: var(--color-gray-100);
+  --color-slate-200: var(--color-gray-200);
+  --color-slate-300: var(--color-gray-300);
+  --color-slate-400: var(--color-gray-400);
+  --color-slate-500: var(--color-gray-500);
+  --color-slate-600: var(--color-gray-600);
+  --color-slate-700: var(--color-gray-700);
+  --color-slate-800: var(--color-gray-800);
+  --color-slate-900: var(--color-gray-900);
+
+  /* États : erreur, succès, alerte, ramenés à une seule gamme chacun */
+  --color-red-50: #fef3f2;
+  --color-red-100: #fee4e2;
+  --color-red-200: #fecdca;
+  --color-red-300: #fda29b;
+  --color-red-400: #f04438;
+  --color-red-500: #d92d20;
+  --color-red-600: #b42318;
+  --color-red-700: #912018;
+  --color-red-800: #7a271a;
+  --color-red-900: #55160c;
+  --color-green-50: #ecfdf3;
+  --color-green-100: #dcfae6;
+  --color-green-200: #abefc6;
+  --color-green-300: #75e0a7;
+  --color-green-400: #17b26a;
+  --color-green-500: #079455;
+  --color-green-600: #067647;
+  --color-green-700: #085d3a;
+  --color-green-800: #074d31;
+  --color-green-900: #053321;
+  --color-amber-50: #fffaeb;
+  --color-amber-100: #fef0c7;
+  --color-amber-200: #fedf89;
+  --color-amber-300: #fec84b;
+  --color-amber-400: #fdb022;
+  --color-amber-500: #dc6803;
+  --color-amber-600: #b54708;
+  --color-amber-700: #93370d;
+  --color-amber-800: #7a2e0e;
+  --color-amber-900: #4e1d09;
+  --color-emerald-50: var(--color-green-50);
+  --color-emerald-100: var(--color-green-100);
+  --color-emerald-200: var(--color-green-200);
+  --color-emerald-300: var(--color-green-300);
+  --color-emerald-400: var(--color-green-400);
+  --color-emerald-500: var(--color-green-500);
+  --color-emerald-600: var(--color-green-600);
+  --color-emerald-700: var(--color-green-700);
+  --color-emerald-800: var(--color-green-800);
+  --color-emerald-900: var(--color-green-900);
+  --color-yellow-50: var(--color-amber-50);
+  --color-yellow-100: var(--color-amber-100);
+  --color-yellow-200: var(--color-amber-200);
+  --color-yellow-300: var(--color-amber-300);
+  --color-yellow-400: var(--color-amber-400);
+  --color-yellow-500: var(--color-amber-500);
+  --color-yellow-600: var(--color-amber-600);
+  --color-yellow-700: var(--color-amber-700);
+  --color-yellow-800: var(--color-amber-800);
+  --color-yellow-900: var(--color-amber-900);
+  --color-orange-50: var(--color-amber-50);
+  --color-orange-100: var(--color-amber-100);
+  --color-orange-200: var(--color-amber-200);
+  --color-orange-300: var(--color-amber-300);
+  --color-orange-400: var(--color-amber-400);
+  --color-orange-500: var(--color-amber-500);
+  --color-orange-600: var(--color-amber-600);
+  --color-orange-700: var(--color-amber-700);
+  --color-orange-800: var(--color-amber-800);
+  --color-orange-900: var(--color-amber-900);
+  --color-rose-50: var(--color-red-50);
+  --color-rose-100: var(--color-red-100);
+  --color-rose-200: var(--color-red-200);
+  --color-rose-300: var(--color-red-300);
+  --color-rose-400: var(--color-red-400);
+  --color-rose-500: var(--color-red-500);
+  --color-rose-600: var(--color-red-600);
+  --color-rose-700: var(--color-red-700);
+  --color-rose-800: var(--color-red-800);
+  --color-rose-900: var(--color-red-900);
+  --color-pink-50: var(--color-red-50);
+  --color-pink-100: var(--color-red-100);
+  --color-pink-200: var(--color-red-200);
+  --color-pink-300: var(--color-red-300);
+  --color-pink-400: var(--color-red-400);
+  --color-pink-500: var(--color-red-500);
+  --color-pink-600: var(--color-red-600);
+  --color-pink-700: var(--color-red-700);
+  --color-pink-800: var(--color-red-800);
+  --color-pink-900: var(--color-red-900);
+
+  /* Aucune ombre décorative : seule la surcouche (modale, menu) porte une profondeur */
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+  --shadow-overlay: 0 12px 32px -8px rgb(11 11 12 / 0.22), 0 2px 6px rgb(11 11 12 / 0.08);
+  --drop-shadow-xs: 0 0 #0000;
+  --drop-shadow-sm: 0 0 #0000;
+  --drop-shadow-md: 0 0 #0000;
+  --drop-shadow-lg: 0 0 #0000;
+  --drop-shadow-xl: 0 0 #0000;
+  --drop-shadow-2xl: 0 0 #0000;
+
+  /* Angles quasi droits */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 3px;
+  --radius-2xl: 3px;
+  --radius-3xl: 3px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
+  html {
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scrollbar-color: var(--color-rule-strong) transparent;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-variation-settings: "wdth" 100;
+    line-height: 1.55;
+    background: var(--color-paper);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-variation-settings: "wdth" 84;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  ::selection {
+    background: var(--color-line);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-line);
+    outline-offset: 2px;
+  }
+
+  input,
+  textarea,
+  select {
+    caret-color: var(--color-line);
+  }
+
+  ::placeholder {
+    color: var(--color-ink-3);
+    opacity: 1;
+  }
+
+  td,
+  th,
+  time,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Défaut des bordures de Tailwind 4 (currentColor) ramené au filet du système */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--color-rule, currentcolor);
+  }
+
+  [hidden] {
+    display: none !important;
   }
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Conteneur de page */
+  .site-container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 80rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .site-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Bande qui démarre à l'aplomb du conteneur et déborde jusqu'au bord droit */
+  .bleed-right {
+    padding-left: 1rem;
+  }
+  @media (min-width: 768px) {
+    .bleed-right {
+      padding-left: max(2rem, calc((100vw - 80rem) / 2 + 2rem));
+    }
+  }
+
+  /* Titres d'affichage : Mona Sans serrée et lourde */
+  .display {
+    font-variation-settings: "wdth" 78;
+    font-weight: 780;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+  }
+
+  /* Boutons */
+  .btn-line,
+  .btn-quiet,
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 2px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color 160ms var(--ease-out-expo),
+      color 160ms var(--ease-out-expo),
+      border-color 160ms var(--ease-out-expo);
+  }
+  .btn-line {
+    background: var(--color-line);
+    color: #ffffff;
+  }
+  .btn-line:hover {
+    background: var(--color-line-deep);
+  }
+  .btn-quiet {
+    border: 1px solid var(--color-ink);
+    color: var(--color-ink);
+    background: transparent;
+  }
+  .btn-quiet:hover {
+    background: var(--color-ink);
+    color: #ffffff;
+  }
+  .btn-danger {
+    background: var(--color-danger);
+    color: #ffffff;
+  }
+  .btn-danger:hover {
+    background: #912018;
+  }
+  .btn-line:disabled,
+  .btn-quiet:disabled,
+  .btn-danger:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* Lien d'action discret, souligné au survol */
+  .link-line {
+    color: var(--color-line);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 160ms var(--ease-out-expo);
+  }
+  .link-line:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* Champs de formulaire */
+  .field {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-rule-strong);
+    border-radius: 2px;
+    background: #ffffff;
+    color: var(--color-ink);
+    font-size: 1rem;
+    transition: border-color 160ms var(--ease-out-expo), box-shadow 160ms var(--ease-out-expo);
+  }
+  .field:hover {
+    border-color: var(--color-ink-3);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-line);
+    box-shadow: 0 0 0 3px var(--color-line-wash);
+  }
+  .field[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+  .field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .field-hint {
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+  .field-error {
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--color-danger);
+  }
+
+  /* Anciennes classes utilitaires du site, réalignées sur le système */
+  .primary_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 2px;
+    background: var(--color-line);
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .primary_button:hover {
+    background: var(--color-line-deep);
+  }
+  .primary_bg {
+    background: var(--color-paper);
+  }
+  .primary_title,
+  .primary_title_black,
+  .primary_title_blue {
+    color: var(--color-ink);
+    font-weight: 750;
+  }
+  .primary_text,
+  .primary_text_black,
+  .primary_text_blue {
+    color: var(--color-ink-2);
+  }
+  .add_border {
+    border: 1px solid var(--color-rule);
+  }
 }
 
-/* styles/globals.css ou app/globals.css */
-.primary_button {
-  @apply bg-blue_primary text-white border-2 border-black_stroke rounded-full px-8 py-3 text-lg font-semibold transition-all duration-300 shadow-lg hover:bg-blue_primary_hover;
+/* Mouvement réduit : la ligne ne s'anime plus, rien d'autre ne bouge */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    scroll-behavior: auto !important;
+  }
+  /* Indicateurs de chargement hérités : immobiles, le libellé « Chargement… » reste */
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+  }
 }
 
-.primary_bg {
-  @apply bg-blue_primary;
+/* Cartes : fond de carte en niveaux de gris, seule la trace est en couleur */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--color-wash);
+}
+.leaflet-tile-pane {
+  filter: grayscale(1) contrast(1.05) brightness(1.03);
+}
+.leaflet-bar {
+  border: 1px solid var(--color-rule-strong) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+.leaflet-bar a {
+  color: var(--color-ink) !important;
+  border-radius: 0 !important;
+}
+.leaflet-control-attribution {
+  font-size: 0.6875rem;
 }
 
-.primary_title {
-  @apply text-white font-bold font-opendyslexic drop-shadow-lg;
+/* Calendrier (react-big-calendar) aligné sur le système */
+.cse-calendar .rbc-calendar {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
 }
-
-.primary_text {
-  @apply text-white text-sm sm:text-lg font-calibri drop-shadow-md;
+.cse-calendar .rbc-toolbar {
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
-
-.add_border {
-  @apply border-2 border-black_stroke;
+.cse-calendar .rbc-toolbar-label {
+  font-variation-settings: "wdth" 84;
+  font-weight: 750;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
 }
-
-.primary_title_black {
-  @apply text-black font-bold font-opendyslexic drop-shadow-lg;
+.cse-calendar .rbc-toolbar button {
+  border: 1px solid var(--color-rule-strong);
+  border-radius: 0;
+  color: var(--color-ink);
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
 }
-
-.primary_text_black {
-  @apply text-black text-sm sm:text-lg font-calibri drop-shadow-md;
+.cse-calendar .rbc-toolbar button:hover,
+.cse-calendar .rbc-toolbar button:focus {
+  background: var(--color-wash);
+  border-color: var(--color-ink-3);
 }
-
-.primary_title_blue {
-  @apply text-dark_blue_primary font-bold font-opendyslexic drop-shadow-lg;
+.cse-calendar .rbc-toolbar button.rbc-active,
+.cse-calendar .rbc-toolbar button.rbc-active:hover {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #fff;
+  box-shadow: none;
 }
-
-.primary_text_blue {
-  @apply text-dark_blue_primary text-sm sm:text-lg font-calibri drop-shadow-md;
+.cse-calendar .rbc-month-view,
+.cse-calendar .rbc-time-view,
+.cse-calendar .rbc-agenda-view table.rbc-agenda-table {
+  border-color: var(--color-rule);
+  border-radius: 0;
 }
-
-.primary_sidebar {
-  @apply text-white font-opendyslexic drop-shadow-lg;
+.cse-calendar .rbc-header {
+  border-color: var(--color-rule);
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink-3);
+  text-transform: capitalize;
+}
+.cse-calendar .rbc-day-bg + .rbc-day-bg,
+.cse-calendar .rbc-month-row + .rbc-month-row,
+.cse-calendar .rbc-time-content > * + * > * {
+  border-color: var(--color-rule);
+}
+.cse-calendar .rbc-off-range-bg {
+  background: var(--color-wash);
+}
+.cse-calendar .rbc-today {
+  background: var(--color-line-wash);
+}
+.cse-calendar .rbc-date-cell {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+.cse-calendar .rbc-now .rbc-button-link {
+  color: var(--color-line);
+  font-weight: 700;
+}
+.cse-calendar .rbc-event,
+.cse-calendar .rbc-day-slot .rbc-background-event {
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-size: 0.8125rem;
+}
+.cse-calendar .rbc-show-more {
+  color: var(--color-line);
+  font-weight: 600;
 }

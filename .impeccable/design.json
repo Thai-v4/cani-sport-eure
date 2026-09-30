@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-01T00:00:00Z",
+  "title": "Design System: Cani-Sports Eure",
+  "extensions": {
+    "colorMeta": {
+      "line": { "role": "primary", "displayName": "Bleu de ligne", "canonical": "#1238d6", "tonalRamp": ["#061247", "#0a1f73", "#0b2491", "#1238d6", "#5b76e6", "#8fa2ef", "#bcc8f6", "#eef1fd"] },
+      "line-deep": { "role": "primary", "displayName": "Bleu de ligne profond", "canonical": "#0b2491", "tonalRamp": ["#061247", "#0a1f73", "#0b2491", "#1238d6", "#5b76e6", "#8fa2ef", "#bcc8f6", "#eef1fd"] },
+      "line-wash": { "role": "primary", "displayName": "Voile de ligne", "canonical": "#eef1fd", "tonalRamp": ["#061247", "#0a1f73", "#0b2491", "#1238d6", "#5b76e6", "#8fa2ef", "#bcc8f6", "#eef1fd"] },
+      "paper": { "role": "neutral", "displayName": "Papier", "canonical": "#ffffff", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "wash": { "role": "neutral", "displayName": "Voile", "canonical": "#f5f6f7", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "ink": { "role": "neutral", "displayName": "Encre", "canonical": "#0b0b0c", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "ink-2": { "role": "neutral", "displayName": "Encre 2", "canonical": "#4a4d52", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "ink-3": { "role": "neutral", "displayName": "Encre 3", "canonical": "#6b6f76", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "rule": { "role": "neutral", "displayName": "Filet", "canonical": "#e3e4e6", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "rule-strong": { "role": "neutral", "displayName": "Filet appuyé", "canonical": "#c9cbcf", "tonalRamp": ["#0b0b0c", "#222326", "#36383c", "#4a4d52", "#6b6f76", "#9a9ea4", "#c9cbcf", "#f5f6f7"] },
+      "danger": { "role": "status", "displayName": "Erreur", "canonical": "#b42318", "tonalRamp": ["#55160c", "#7a271a", "#912018", "#b42318", "#f04438", "#fda29b", "#fecdca", "#fef3f2"] },
+      "danger-wash": { "role": "status", "displayName": "Voile d'erreur", "canonical": "#fef3f2", "tonalRamp": ["#55160c", "#7a271a", "#912018", "#b42318", "#f04438", "#fda29b", "#fecdca", "#fef3f2"] },
+      "success": { "role": "status", "displayName": "Succès", "canonical": "#067647", "tonalRamp": ["#053321", "#074d31", "#085d3a", "#067647", "#17b26a", "#75e0a7", "#abefc6", "#ecfdf3"] },
+      "success-wash": { "role": "status", "displayName": "Voile de succès", "canonical": "#ecfdf3", "tonalRamp": ["#053321", "#074d31", "#085d3a", "#067647", "#17b26a", "#75e0a7", "#abefc6", "#ecfdf3"] },
+      "warning": { "role": "status", "displayName": "Alerte", "canonical": "#b54708", "tonalRamp": ["#4e1d09", "#7a2e0e", "#93370d", "#b54708", "#fdb022", "#fec84b", "#fedf89", "#fffaeb"] },
+      "warning-wash": { "role": "status", "displayName": "Voile d'alerte", "canonical": "#fffaeb", "tonalRamp": ["#4e1d09", "#7a2e0e", "#93370d", "#b54708", "#fdb022", "#fec84b", "#fedf89", "#fffaeb"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Affichage", "purpose": "Titre du premier écran ; même traitement serré pour les titres de page et les grands chiffres." },
+      "headline": { "displayName": "Titre de section", "purpose": "Titres de section, en affichage serré." },
+      "title": { "displayName": "Titre de rangée", "purpose": "Nom d'une sortie, étape, titre de modale ; largeur 84." },
+      "body": { "displayName": "Texte", "purpose": "Texte courant en largeur normale, colonnes de 36 à 40rem." },
+      "label": { "displayName": "Intitulé", "purpose": "Intitulés de champ, titres de colonne, statuts." }
+    },
+    "shadows": [
+      { "name": "overlay", "value": "0 12px 32px -8px rgb(11 11 12 / 0.22), 0 2px 6px rgb(11 11 12 / 0.08)", "purpose": "Seule ombre du système : menu du compte, modale de confirmation, tiroir d'administration. Toutes les autres ombres Tailwind sont neutralisées." },
+      { "name": "field-focus", "value": "0 0 0 3px #eef1fd", "purpose": "Halo de focus des champs de formulaire (voile de ligne)." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Courbe unique : changements de couleur des boutons, liens et champs (160ms), dessin de la ligne de trait (900ms)." },
+      { "name": "state-color", "value": "160ms", "purpose": "Durée des changements d'état par couleur ; aucun déplacement." },
+      { "name": "trait-draw", "value": "stroke-dashoffset 900ms", "purpose": "La ligne de trait se dessine une fois ; mousqueton en fondu 300ms après 700ms." },
+      { "name": "trait-spring", "value": "ressort amorti, raideur 0.14, amortissement 0.72, flèche au repos 9px", "purpose": "Tension de la ligne au survol ou au focus de l'action reliée ; désactivé sous prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton principal (ligne)",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Action principale, un par écran ou par rangée ; c'est lui que la ligne de trait relie.",
+      "html": "<button class=\"ds-btn-line\">Venir à une sortie</button>",
+      "css": ".ds-btn-line { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 1.25rem; border: 0; border-radius: 2px; background: #1238d6; color: #fff; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; line-height: 1; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-line:hover { background: #0b2491; } .ds-btn-line:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; }"
+    },
+    {
+      "name": "Bouton discret",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Action secondaire : contour d'encre qui s'inverse au survol.",
+      "html": "<button class=\"ds-btn-quiet\">Créer un compte adhérent</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 1.25rem; border: 1px solid #0b0b0c; border-radius: 2px; background: transparent; color: #0b0b0c; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; line-height: 1; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-quiet:hover { background: #0b0b0c; color: #fff; } .ds-btn-quiet:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; }"
+    },
+    {
+      "name": "Bouton destructif",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Suppression confirmée, uniquement dans une modale de confirmation.",
+      "html": "<button class=\"ds-btn-danger\">Supprimer</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 1.25rem; border: 0; border-radius: 2px; background: #b42318; color: #fff; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; line-height: 1; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-danger:hover { background: #912018; } .ds-btn-danger:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; }"
+    },
+    {
+      "name": "Champ de formulaire",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Intitulé au-dessus, contour filet appuyé, focus bleu avec halo voilé.",
+      "html": "<label class=\"ds-field-wrap\"><span class=\"ds-field-label\">Adresse e-mail</span><input class=\"ds-field\" type=\"email\" placeholder=\"prenom@exemple.fr\"></label>",
+      "css": ".ds-field-wrap { display: block; max-width: 24rem; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; } .ds-field-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; font-weight: 600; color: #0b0b0c; } .ds-field { display: block; width: 100%; min-height: 2.75rem; padding: 0.5rem 0.75rem; border: 1px solid #c9cbcf; border-radius: 2px; background: #fff; color: #0b0b0c; font: inherit; font-size: 1rem; caret-color: #1238d6; transition: border-color 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-field::placeholder { color: #6b6f76; } .ds-field:hover { border-color: #6b6f76; } .ds-field:focus { outline: none; border-color: #1238d6; box-shadow: 0 0 0 3px #eef1fd; }"
+    },
+    {
+      "name": "En-tête et navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "En-tête blanc à filet ; la page active est soulignée par un segment de ligne bleue.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-brand\">Cani-Sports Eure</span><nav><a class=\"ds-nav-link\" href=\"#\">Le club</a><a class=\"ds-nav-link\" aria-current=\"page\" href=\"#\">Sorties</a><a class=\"ds-nav-link\" href=\"#\">Agenda</a><a class=\"ds-nav-link\" href=\"#\">Articles</a></nav><a class=\"ds-nav-login\" href=\"#\">Se connecter</a></header>",
+      "css": ".ds-header { display: flex; align-items: center; gap: 2rem; height: 4rem; padding: 0 2rem; border-bottom: 1px solid #e3e4e6; background: #fff; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; } .ds-brand { font-weight: 700; font-size: 1.0625rem; font-variation-settings: 'wdth' 84; letter-spacing: -0.02em; color: #0b0b0c; } .ds-header nav { display: flex; gap: 1.75rem; } .ds-nav-link { position: relative; display: block; padding: 1.25rem 0; font-size: 0.9375rem; font-weight: 500; color: #4a4d52; text-decoration: none; transition: color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-nav-link:hover, .ds-nav-link[aria-current=page] { color: #0b0b0c; } .ds-nav-link[aria-current=page]::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: #1238d6; } .ds-nav-link:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; } .ds-nav-login { margin-left: auto; font-size: 0.9375rem; font-weight: 500; color: #0b0b0c; text-decoration: none; }"
+    },
+    {
+      "name": "Lien de ligne",
+      "kind": "custom",
+      "refersTo": "link-line",
+      "description": "Lien bleu, graisse 600, soulignement qui apparaît au survol.",
+      "html": "<a class=\"ds-link-line\" href=\"#\">cani.sports.eure@gmail.com</a>",
+      "css": ".ds-link-line { font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; color: #1238d6; font-weight: 600; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: text-decoration-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-link-line:hover { text-decoration-color: currentColor; } .ds-link-line:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ligne de trait",
+      "kind": "custom",
+      "refersTo": "trait-line",
+      "description": "Signature : trait bleu de 2px, détendu au repos, terminé par un mousqueton ; se tend au survol de l'action reliée (ici approximé en CSS).",
+      "html": "<div class=\"ds-trait\"><button class=\"ds-trait-btn\">Venir à une sortie</button><svg class=\"ds-trait-svg\" viewBox=\"0 0 200 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path class=\"ds-trait-path\" d=\"M 0 12 Q 100 21 195 12\" fill=\"none\" stroke=\"#1238d6\" stroke-width=\"2\" stroke-linecap=\"round\" vector-effect=\"non-scaling-stroke\"/><circle cx=\"197\" cy=\"12\" r=\"3.5\" fill=\"#fff\" stroke=\"#1238d6\" stroke-width=\"2\" vector-effect=\"non-scaling-stroke\"/></svg><div class=\"ds-trait-next\"><span class=\"ds-trait-date\">Samedi 18 octobre</span><span class=\"ds-trait-meta\">Prochaine sortie, 9 h 30</span></div></div>",
+      "css": ".ds-trait { display: flex; align-items: flex-start; gap: 0; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; } .ds-trait-btn { min-height: 3.25rem; padding: 0 1.75rem; border: 0; border-radius: 2px; background: #1238d6; color: #fff; font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-trait-btn:hover { background: #0b2491; } .ds-trait-svg { flex: 1; min-width: 4rem; height: 24px; margin-top: 14px; overflow: visible; } .ds-trait-path { transition: d 500ms cubic-bezier(0.34, 1.56, 0.64, 1); } .ds-trait:has(.ds-trait-btn:hover) .ds-trait-path { d: path('M 0 12 Q 100 12 195 12'); } .ds-trait-next { width: 14rem; margin-top: 25px; padding-top: 1rem; border-top: 2px solid #0b0b0c; } .ds-trait-date { display: block; font-size: 1.75rem; font-weight: 780; font-variation-settings: 'wdth' 78; letter-spacing: -0.035em; line-height: 0.94; color: #0b0b0c; } .ds-trait-meta { display: block; margin-top: 0.5rem; color: #4a4d52; } @media (prefers-reduced-motion: reduce) { .ds-trait-path { transition: none; } }"
+    },
+    {
+      "name": "Rangée à filet",
+      "kind": "card",
+      "refersTo": "rule-row",
+      "description": "Remplace la carte : bloc ouvert par un filet d'encre, rangées séparées par des filets de 1px.",
+      "html": "<dl class=\"ds-rows\"><div class=\"ds-row\"><dt>Débutants bienvenus</dt><dd>La cani-marche est accessible à tous.</dd></div><div class=\"ds-row\"><dt>Le chien d'abord</dt><dd>Son bien-être passe avant la performance.</dd></div></dl>",
+      "css": ".ds-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 2.5rem; margin: 0; font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; line-height: 1.55; } .ds-row { border-top: 1px solid #0b0b0c; padding-top: 1rem; } .ds-row dt { font-weight: 600; color: #0b0b0c; } .ds-row dd { margin: 0.375rem 0 0; color: #4a4d52; }"
+    },
+    {
+      "name": "Modale de confirmation",
+      "kind": "custom",
+      "refersTo": "modal-confirm",
+      "description": "Seule surface qui flotte : filet, ombre de surcouche, voile d'encre derrière.",
+      "html": "<div class=\"ds-modal-scrim\"><div class=\"ds-modal\" role=\"alertdialog\"><h2>Supprimer l'article ?</h2><p>L'article sera retiré du site. Cette action est définitive.</p><div class=\"ds-modal-actions\"><button class=\"ds-m-quiet\">Annuler</button><button class=\"ds-m-danger\">Supprimer</button></div></div></div>",
+      "css": ".ds-modal-scrim { display: flex; align-items: center; justify-content: center; padding: 2rem; background: rgb(11 11 12 / 0.5); font-family: 'Mona Sans', ui-sans-serif, system-ui, sans-serif; } .ds-modal { width: 100%; max-width: 28rem; padding: 1.5rem; border: 1px solid #e3e4e6; background: #fff; box-shadow: 0 12px 32px -8px rgb(11 11 12 / 0.22), 0 2px 6px rgb(11 11 12 / 0.08); } .ds-modal h2 { margin: 0; font-size: 1.25rem; font-weight: 700; font-variation-settings: 'wdth' 84; letter-spacing: -0.02em; color: #0b0b0c; } .ds-modal p { margin: 0.75rem 0 0; color: #4a4d52; } .ds-modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem; } .ds-m-quiet, .ds-m-danger { min-height: 2.75rem; padding: 0 1.25rem; border-radius: 2px; font: inherit; font-weight: 600; font-size: 0.9375rem; cursor: pointer; } .ds-m-quiet { border: 1px solid #0b0b0c; background: transparent; color: #0b0b0c; } .ds-m-quiet:hover { background: #0b0b0c; color: #fff; } .ds-m-danger { border: 0; background: #b42318; color: #fff; } .ds-m-danger:hover { background: #912018; } .ds-m-quiet:focus-visible, .ds-m-danger:focus-visible { outline: 2px solid #1238d6; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La ligne de trait",
+    "overview": "Le site est une page blanche tenue par une seule ligne bleue : la ligne élastique qui relie le coureur à son chien, et qui relie ici le visiteur à la prochaine sortie. Tout le reste est encre, gris et filets d'un pixel. La couleur n'est jamais décorative : là où il y a du bleu, il y a une ligne, un lien ou l'action principale.\n\nLa densité est éditoriale, pas institutionnelle. Les titres sont très grands, serrés et lourds (Mona Sans en largeur réduite), le texte courant reste calme et lisible. Le contenu se range en rangées séparées par des filets plutôt qu'en grilles de cartes ; les photos sont posées à fond perdu, sans cadre ni ombre. La profondeur n'existe que pour ce qui flotte réellement au-dessus de la page (menu, modale, tiroir).\n\nLe mouvement est réservé à la ligne : elle se dessine une fois, se tend au survol de l'action qu'elle relie et revient avec un léger ressort. Le reste de l'interface ne se déplace pas ; les changements d'état se font par couleur, en 160 ms.",
+    "keyCharacteristics": [
+      "Blanc, encre et filets 1px ; une seule couleur vive, le bleu de ligne.",
+      "Une seule famille, Mona Sans, dont l'axe de largeur porte toute la hiérarchie.",
+      "Angles quasi droits (2px), aucune ombre décorative.",
+      "Rangées et filets plutôt que cartes empilées.",
+      "La ligne de trait est le seul élément animé."
+    ],
+    "rules": [
+      { "name": "The One Colour Rule", "body": "Une seule couleur vive sur tout le site : le bleu de ligne, réservé à la ligne, aux liens et à l'action principale. Si un élément bleu n'est ni l'un ni l'autre, il n'a pas à être bleu.", "section": "colors" },
+      { "name": "The Remapped Palette Rule", "body": "La palette Tailwind est ramenée au système dans globals.css : blue, indigo, sky et purple pointent vers la gamme du bleu de ligne (blue-600 = bleu de ligne, blue-800 = bleu profond, blue-50 = voile de ligne) ; gray et slate pointent vers les neutres (gray-50 = voile, gray-200 = filet, gray-300 = filet appuyé, gray-500 = encre 3, gray-600 = encre 2, gray-950 = encre) ; red/rose/pink vers l'erreur, green/emerald vers le succès, amber/yellow/orange vers l'alerte (-600 = teinte d'état, -50 = voile). Les anciennes couleurs nommées (blue_primary, yellow_primary, dark_blue_primary…) et le thème daisyUI « cse » suivent la même table. Le code nouveau emploie les noms du système (line, ink, rule…), pas les noms de palette ; le remappage existe pour que l'héritage ne sorte pas du monde.", "section": "colors" },
+      { "name": "The Width Axis Rule", "body": "La hiérarchie se construit avec l'axe de largeur et la graisse, pas avec une seconde famille : 78 pour l'affichage, 84 pour les titres, 100 pour le texte.", "section": "typography" },
+      { "name": "The Tabular Figures Rule", "body": "Dates, heures, tableaux et mesures sont en chiffres tabulaires, partout.", "section": "typography" },
+      { "name": "The No Kicker Rule", "body": "Aucun sur-titre au-dessus d'un titre. Un titre se présente seul ; l'information de contexte va dessous ou dans la rangée. Seules exceptions en capitales : le nom du mois posé sur la ligne de l'agenda (0.75rem, 600, interlettrage 0.08em, encre 3) et l'abréviation du mois à côté du jour, qui sont des données, pas des sur-titres.", "section": "typography" },
+      { "name": "The Only Overlays Float Rule", "body": "Seul ce qui se superpose réellement à la page porte une ombre, et c'est toujours shadow-overlay. Une carte, un bouton, une photo au repos n'en ont jamais.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do réserver le bleu de ligne (#1238d6) à la ligne de trait, aux liens et à l'action principale.",
+      "Do écrire le code nouveau avec les noms du système (line, ink, ink-2, rule, wash) plutôt qu'avec les noms de palette Tailwind remappés.",
+      "Do séparer les contenus par des filets de 1px (rule) et ouvrir un bloc par un filet d'encre, plutôt que par un fond ou une ombre.",
+      "Do composer les titres en Mona Sans serrée (largeur 78, graisse 780) et le texte en largeur normale ; chiffres tabulaires pour les dates et mesures.",
+      "Do poser les photos à fond perdu, sans cadre ni rayon.",
+      "Do garder shadow-overlay pour les seules surcouches (menu, modale, tiroir).",
+      "Do respecter prefers-reduced-motion : la ligne arrive déjà dessinée."
+    ],
+    "donts": [
+      "Don't introduire une seconde couleur vive, un dégradé ou une couleur d'état à usage décoratif.",
+      "Don't mettre de sur-titre (kicker) au-dessus d'un titre.",
+      "Don't empiler des cartes ombrées ni ajouter une ombre à une carte, un bouton ou une photo.",
+      "Don't arrondir au-delà de 3px ; le cercle est réservé aux pastilles de la ligne.",
+      "Don't animer autre chose que la ligne de trait : pas de déplacement au survol, pas d'apparition au défilement ; les états se font par couleur.",
+      "Don't ajouter une seconde famille de caractères ni une police système en affichage."
+    ]
+  }
+}
