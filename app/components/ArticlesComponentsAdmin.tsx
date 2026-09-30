@@ -43,7 +43,7 @@ const ArticleCardAdmin: React.FC<{
   onEdit: (id: string) => void;
 }> = ({ article, onDelete, onEdit }) => {
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-4 relative">
+    <div className="bg-white rounded-2xl p-4 relative border border-rule">
       {/* Section utilisateur */}
       <div className="flex items-center space-x-3 mb-3">
         <Image

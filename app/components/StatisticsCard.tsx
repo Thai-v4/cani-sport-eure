@@ -6,7 +6,7 @@ interface StatisticsCardProps {
 
 export default function StatisticsCard({ title, value, className = "" }: StatisticsCardProps) {
   return (
-    <div className={`shadow-lg rounded-xl bg-white p-4 ${className}`}>
+    <div className={`rounded-xl bg-white p-4 ${className} border border-rule`}>
       <h3 className="text-lg font-semibold">{title}</h3>
       <p className="text-2xl font-bold">{value}</p>
     </div>

@@ -143,8 +143,8 @@ const fullColor = `#3b82f6::${visibility}::${content}`
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-[780px] h-auto max-h-[90vh] overflow-auto flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-[780px] h-auto max-h-[90vh] overflow-auto flex flex-col border border-rule">
         {/* En-tête */}
         <div className="flex justify-between items-center border-b border-gray-300 p-4">
           <h2 className="text-xl font-semibold">Modifier un événement</h2>
@@ -219,9 +219,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
                 onChange={() => setIsInternal(!isInternal)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-700 
-              peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-              after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
             </label>
             <span className="text-gray-600">{isInternal ? "Interne" : "Externe"}</span>
           </div>
@@ -234,7 +232,7 @@ const fullColor = `#3b82f6::${visibility}::${content}`
               onChange={handleImageChange}
               accept="image/*"
             />
-            <label htmlFor="imageEditUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-blue-900 inline-block">
+            <label htmlFor="imageEditUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-sm text-lg font-semibold hover:bg-blue-900 inline-block">
               {image ? "Modifier l'image" : "Changer l'image"}
             </label>
             {image && <p className="ml-2 text-sm">{image.name}</p>}

@@ -34,6 +34,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [tone, setTone] = useState<"info" | "error" | "success">("error");
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -106,7 +107,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
       !id_categorie ||
       !id_type
     ) {
-      setMessage("❌ Veuillez remplir tous les champs obligatoires.");
+      setTone("error"); setMessage("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
@@ -137,7 +138,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
 
     if (insertResponse.error) {
       console.error("❌ Erreur d'insertion :", insertResponse.error);
-      setMessage("❌ Une erreur est survenue.");
+      setTone("error"); setMessage("Une erreur est survenue.");
       setLoading(false);
       return;
     }
@@ -158,10 +159,10 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
 
     if (refetchError) {
       console.error("❌ Erreur de récupération :", refetchError);
-      setMessage("❌ Résultat créé, mais erreur lors du rechargement.");
+      setTone("error"); setMessage("Résultat créé, mais erreur lors du rechargement.");
     } else {
       onAdd(fullData);
-      setMessage("✅ Résultat ajouté !");
+      setTone("success"); setMessage("Résultat ajouté !");
       resetForm();
       timeoutRef.current = setTimeout(() => onClose(), 2000);
     }
@@ -192,14 +193,10 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
-        isOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-      }`}
+      className={`fixed inset-0 flex items-center justify-center bg-ink/50 z-50 transition-opacity duration-300 ${ isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none" }`}
     >
       <div className="p-4 sm:p-8 w-full h-full flex items-center justify-center">
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-full overflow-y-auto relative">
+        <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-2xl max-h-full overflow-y-auto relative border border-rule">
           <button
             onClick={onClose}
             className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
@@ -354,14 +351,14 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
             <button
               onClick={handleAddResult}
               disabled={loading}
-              className="bg-blue-700 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-900"
+              className="bg-blue-700 text-white py-3 px-8 rounded-sm text-lg font-semibold hover:bg-blue-900"
             >
               {loading ? "Ajout en cours..." : "Ajouter le résultat"}
             </button>
           </div>
 
           {message && (
-            <p className="text-center text-sm mt-4 text-red-500">{message}</p>
+            <p role="status" className={`text-center text-sm mt-4 ${tone === "success" ? "text-success" : tone === "info" ? "text-ink-2" : "text-danger"}`}>{message}</p>
           )}
         </div>
       </div>

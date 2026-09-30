@@ -13,7 +13,7 @@ interface PerformanceTableProps {
 
 export default function PerformanceTable({ data, className = "" }: PerformanceTableProps) {
   return (
-    <div className={`shadow-lg rounded-xl bg-white p-4 ${className}`}>
+    <div className={`rounded-xl bg-white p-4 ${className} border border-rule`}>
       <h3 className="text-lg font-semibold mb-2">Performance par adhérent</h3>
       <table className="w-full border-collapse">
         <thead>

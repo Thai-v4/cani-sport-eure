@@ -470,11 +470,11 @@ export default function AlbumManager() {
       {/* Contenu principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* En-tête */}
-        <header className="bg-white border-b border-gray-200 shadow-xs">
+        <header className="bg-white border-b border-gray-200">
           <div className="px-4 py-4 sm:px-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h1 className="text-2xl font-semibold text-gray-800">
-                Gestionnaire d&apos;albums photos
+              <h1 className="display text-3xl md:text-4xl">
+                Albums photo
               </h1>
 
               <div className="flex items-center gap-2">
@@ -522,8 +522,8 @@ export default function AlbumManager() {
           <div className="p-4 md:p-6">
             {/* Indication de drag & drop */}
             {isDragOver && (
-              <div className="fixed inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center z-20 border-2 border-dashed border-blue-500 pointer-events-none">
-                <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+              <div className="fixed inset-0 bg-blue-500/10 flex items-center justify-center z-20 border-2 border-dashed border-blue-500 pointer-events-none">
+                <div className="bg-white p-6 rounded-lg text-center border border-rule">
                   <FaUpload className="text-4xl text-blue-500 mx-auto mb-2" />
                   <p className="text-lg font-medium text-gray-800">
                     Déposez vos images ici
@@ -535,7 +535,7 @@ export default function AlbumManager() {
             {/* Navigation & Actions */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
               {/* Fil d'Ariane */}
-              <div className="flex items-center flex-wrap gap-1.5 bg-white px-3 py-2 rounded-lg shadow-xs">
+              <div className="flex items-center flex-wrap gap-1.5 bg-white px-3 py-2 rounded-lg border border-rule">
                 <button
                   onClick={() =>
                     setAlbumPath([{ id: null, name: "Albums Photos" }])
@@ -562,13 +562,13 @@ export default function AlbumManager() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsAlbumModalOpen(true)}
-                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-xs hover:bg-gray-50 text-gray-700 flex items-center"
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 flex items-center"
                 >
                   <FaFolder className="mr-1.5 text-yellow-500" /> Nouvel album
                 </button>
 
                 {albumPath.length > 1 && (
-                  <label className="px-3 py-2 bg-blue-600 text-white rounded-lg shadow-xs hover:bg-blue-700 cursor-pointer flex items-center">
+                  <label className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer flex items-center">
                     <FaUpload className="mr-1.5" /> Importer des photos
                     <input
                       type="file"
@@ -593,7 +593,7 @@ export default function AlbumManager() {
                 </div>
               </div>
             ) : errorMessage ? (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+              <div className="border border-red-500 bg-red-50 p-4">
                 <div className="flex">
                   <FaInfoCircle className="text-red-500 mt-0.5 mr-3" />
                   <div>
@@ -611,7 +611,7 @@ export default function AlbumManager() {
               <>
                 {/* Message quand dossier vide */}
                 {filteredAlbums.length === 0 && filteredPhotos.length === 0 && (
-                  <div className="bg-white rounded-lg shadow-xs p-8 text-center my-4">
+                  <div className="bg-white rounded-lg p-8 text-center my-4 border border-rule">
                     {searchQuery ? (
                       <>
                         <FaSearch className="text-gray-400 text-4xl mx-auto mb-3" />
@@ -687,7 +687,7 @@ export default function AlbumManager() {
                 {/* Vue en liste */}
                 {viewMode === "list" &&
                   (filteredAlbums.length > 0 || filteredPhotos.length > 0) && (
-                    <div className="bg-white rounded-lg shadow-xs overflow-hidden">
+                    <div className="bg-white rounded-lg overflow-hidden border border-rule">
                       <table className="w-full">
                         <thead>
                           <tr className="bg-gray-50 text-left">
@@ -826,7 +826,7 @@ export default function AlbumManager() {
                     {filteredAlbums.map((album) => (
                       <motion.div
                         key={album.id}
-                        className="bg-white rounded-lg shadow-xs overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        className="bg-white rounded-lg overflow-hidden transition-shadow cursor-pointer border border-rule"
                         whileHover={{ y: -3 }}
                         onClick={() => handleAlbumClick(album.id, album.name)}
                       >
@@ -858,7 +858,7 @@ export default function AlbumManager() {
                     {filteredPhotos.map((photo, index) => (
                       <motion.div
                         key={photo.id}
-                        className="bg-white rounded-lg shadow-xs overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
+                        className="bg-white rounded-lg overflow-hidden transition-shadow cursor-pointer relative group border border-rule"
                         whileHover={{ y: -3 }}
                         onClick={() => {
                           setPreviewImage(photo.url);
@@ -909,8 +909,8 @@ export default function AlbumManager() {
 
                         {/* Overlay au survol - Version corrigée */}
                         <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-all duration-200 flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-200 pointer-events-none">
-                            <FaEye className="text-white text-2xl drop-shadow-md" />
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                            <FaEye className="text-white text-2xl" />
                           </div>
                         </div>
                       </motion.div>
@@ -929,7 +929,7 @@ export default function AlbumManager() {
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 50, opacity: 0 }}
-              className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg flex items-center gap-3"
+              className="fixed bottom-4 right-4 bg-white p-4 rounded-lg flex items-center gap-3 border border-rule"
             >
               <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
               <span>Upload en cours...</span>
@@ -944,11 +944,7 @@ export default function AlbumManager() {
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 50, opacity: 0 }}
-              className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-5 py-3 rounded-lg shadow-lg z-50 flex items-center ${
-                notification.type === "success"
-                  ? "bg-green-600 text-white"
-                  : "bg-red-600 text-white"
-              }`}
+              className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-5 py-3 rounded-lg z-50 flex items-center ${ notification.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white" }`}
             >
               {notification.type === "success" ? (
                 <svg
@@ -1002,7 +998,7 @@ export default function AlbumManager() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+              className="fixed inset-0 bg-ink/90 flex items-center justify-center z-50"
               onClick={() => setPreviewImage(null)}
             >
               <motion.div
@@ -1121,13 +1117,13 @@ export default function AlbumManager() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 overflow-y-auto bg-ink/50 flex items-center justify-center p-4"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-lg shadow-xl max-w-md w-full"
+                className="bg-white rounded-lg max-w-md w-full border border-rule"
               >
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-4">
@@ -1154,7 +1150,7 @@ export default function AlbumManager() {
                       type="text"
                       value={newAlbumName}
                       onChange={(e) => setNewAlbumName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Mon nouvel album"
                       autoFocus
                     />
@@ -1172,11 +1168,7 @@ export default function AlbumManager() {
                       type="button"
                       onClick={handleAddAlbum}
                       disabled={!newAlbumName.trim() || uploading}
-                      className={`px-4 py-2 text-sm font-medium text-white rounded-md ${
-                        !newAlbumName.trim() || uploading
-                          ? "bg-blue-400 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium text-white rounded-md ${ !newAlbumName.trim() || uploading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700" }`}
                     >
                       {uploading ? "Création..." : "Créer l'album"}
                     </button>

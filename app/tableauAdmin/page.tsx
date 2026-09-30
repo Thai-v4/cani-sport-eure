@@ -1,6 +1,7 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
 import supabase from "@/lib/supabaseClient"; // Client Supabase pour les requêtes de données
+import SidebarAdmin from "../components/SidebarAdmin";
 import { useEffect, useState } from "react";
 import ResultsTable from "../components/ResultsTable"; // Tableau des résultats de compétitions
 import PerformanceTable from "../components/PerformanceTable"; // Tableau des performances
@@ -103,45 +104,51 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100 min-h-screen">
+    <div className="flex min-h-screen bg-wash">
+      <SidebarAdmin />
+      <div className="flex-1 p-6 md:p-10">
+      <h1 className="display mb-8 text-3xl md:text-4xl">Statistiques</h1>
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* Tableau des résultats de compétition */}
       <ResultsTable
         data={results}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
 
       {/* Tableau des performances */}
       <PerformanceTable
         data={performance}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
 
       {/* Cartes de statistiques */}
       <StatisticsCard
         title="Nombre de participants par événement"
         value={stats.participants}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
       <StatisticsCard
         title="Nombre de kilomètres parcourus"
         value={stats.km}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
       <StatisticsCard
         title="Nombre d'événements"
         value={stats.events}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
       <StatisticsCard
         title="Événements internes"
         value={`${stats.internalPercentage} %`}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
       <StatisticsCard
         title="Événements externes"
         value={`${stats.externalPercentage} %`}
-        className="shadow-lg rounded-2xl bg-white p-4"
+        className="bg-white p-4 border border-rule"
       />
+    </div>
+      </div>
     </div>
   );
 }

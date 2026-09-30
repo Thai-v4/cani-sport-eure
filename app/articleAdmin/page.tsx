@@ -227,13 +227,13 @@ const ArticlesPage: React.FC = () => {
             <div className="max-w-7xl mx-auto">
               {/* En-tête avec titre et bouton d'ajout */}
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+                <h1 className="display text-3xl md:text-4xl">
                   Articles
                 </h1>
 
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-xs transition-colors self-end md:self-auto"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors self-end md:self-auto"
                 >
                   <FaPlus className="mr-2" />
                   <span>Nouvel article</span>
@@ -241,7 +241,7 @@ const ArticlesPage: React.FC = () => {
               </div>
 
               {/* Barre de recherche et filtres */}
-              <div className="bg-white p-4 rounded-xl shadow-xs mb-6">
+              <div className="bg-white p-4 rounded-xl mb-6 border border-rule">
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   {/* Recherche */}
                   <div className="relative grow">
@@ -259,11 +259,7 @@ const ArticlesPage: React.FC = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                      className={`p-2 border ${
-                        isFiltersOpen
-                          ? "border-blue-500 bg-blue-50 text-blue-600"
-                          : "border-gray-300 text-gray-700"
-                      } rounded-lg hover:bg-gray-50 flex items-center`}
+                      className={`p-2 border ${ isFiltersOpen ? "border-blue-500 bg-blue-50 text-blue-600" : "border-gray-300 text-gray-700" } rounded-lg hover:bg-gray-50 flex items-center`}
                       aria-expanded={isFiltersOpen}
                     >
                       <FaFilter className="mr-1" />
@@ -350,11 +346,11 @@ const ArticlesPage: React.FC = () => {
 
                 {/* Statistiques rapides */}
                 <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
-                  <span className="py-1 px-2 bg-blue-50 rounded-full">
+                  <span className="py-1 px-2 bg-blue-50 rounded-sm">
                     Total: {articles.length}
                   </span>
                   {searchQuery && (
-                    <span className="py-1 px-2 bg-blue-50 rounded-full">
+                    <span className="py-1 px-2 bg-blue-50 rounded-sm">
                       Résultats: {filteredArticles.length}
                     </span>
                   )}
@@ -371,7 +367,7 @@ const ArticlesPage: React.FC = () => {
                     </p>
                   </div>
                 ) : filteredArticles.length === 0 ? (
-                  <div className="bg-white rounded-xl shadow-xs p-8 text-center">
+                  <div className="bg-white rounded-xl p-8 text-center border border-rule">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FaSearch className="text-gray-400 text-xl" />
                     </div>
@@ -423,7 +419,7 @@ const ArticlesPage: React.FC = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+            className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg z-50"
           >
             {notificationMessage}
           </motion.div>

@@ -432,14 +432,14 @@ export default function AgendaPage() {
       {/* Overlay pour le menu mobile */}
       {isMobileMenuOpen && isMobileView && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-ink/50 z-40"
           onClick={() => setIsMobileMenuOpen(false)}
         ></div>
       )}
 
       <main className={`flex-1 flex flex-col ${isFullscreen ? "px-0" : ""}`}>
         {/* En-tête adaptative */}
-        <header className="bg-white shadow-xs z-10">
+        <header className="bg-white z-10 border border-rule">
           <div className="px-3 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
             <div className="flex items-center">
               {isMobileView && (
@@ -451,8 +451,8 @@ export default function AgendaPage() {
                   <Menu className="h-5 w-5 text-gray-600" />
                 </button>
               )}
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-800 truncate max-w-[150px] sm:max-w-none">
-                {isMobileView ? "Agenda" : "Agenda administrateur"}
+              <h1 className="display truncate text-2xl md:text-3xl">
+                Agenda
               </h1>
             </div>
 
@@ -532,31 +532,19 @@ export default function AgendaPage() {
                 <div className="flex items-center space-x-2 w-full bg-gray-100 rounded-md p-1">
                   <button
                     onClick={() => setCurrentView("month")}
-                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
-                      currentView === "month"
-                        ? "bg-white shadow-xs text-gray-800"
-                        : "text-gray-600"
-                    }`}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${ currentView === "month" ? "bg-white text-gray-800" : "text-gray-600" } border border-rule`}
                   >
                     Mois
                   </button>
                   <button
                     onClick={() => setCurrentView("week")}
-                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
-                      currentView === "week"
-                        ? "bg-white shadow-xs text-gray-800"
-                        : "text-gray-600"
-                    }`}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${ currentView === "week" ? "bg-white text-gray-800" : "text-gray-600" } border border-rule`}
                   >
                     Semaine
                   </button>
                   <button
                     onClick={() => setCurrentView("day")}
-                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
-                      currentView === "day"
-                        ? "bg-white shadow-xs text-gray-800"
-                        : "text-gray-600"
-                    }`}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${ currentView === "day" ? "bg-white text-gray-800" : "text-gray-600" } border border-rule`}
                   >
                     Jour
                   </button>
@@ -623,7 +611,7 @@ export default function AgendaPage() {
 
         {/* Zone de calendrier - ajout de classes responsive */}
         <div className="flex-1 overflow-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6">
-          <div className="bg-white rounded-xl shadow-xs border border-gray-200 h-full overflow-auto">
+          <div className="bg-white rounded-xl border border-gray-200 h-full overflow-auto">
             {isEventsLoading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
@@ -719,7 +707,7 @@ export default function AgendaPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black bg-opacity-50"
+                  className="fixed inset-0 bg-ink/50"
                   onClick={() => setIsAddEventModalOpen(false)}
                 ></motion.div>
 
@@ -731,11 +719,7 @@ export default function AgendaPage() {
                   exit={
                     isMobileView ? { y: "100%" } : { opacity: 0, scale: 0.95 }
                   }
-                  className={`bg-white shadow-xl z-10 w-full ${
-                    isMobileView
-                      ? "fixed bottom-0 left-0 right-0 rounded-t-xl max-h-[90vh] overflow-y-auto"
-                      : "rounded-lg max-w-lg"
-                  }`}
+                  className={`bg-white z-10 w-full ${ isMobileView ? "fixed bottom-0 left-0 right-0 rounded-t-xl max-h-[90vh] overflow-y-auto" : "rounded-lg max-w-lg" } border border-rule`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* En-tête du modal - adapté pour mobile */}
@@ -769,11 +753,7 @@ export default function AgendaPage() {
                   <div className="p-3 sm:p-4">
                     {notification && (
                       <div
-                        className={`mb-4 p-2.5 sm:p-3 rounded-md ${
-                          notification.type === "success"
-                            ? "bg-green-50 text-green-700 border border-green-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }`}
+                        className={`mb-4 p-2.5 sm:p-3 rounded-md ${ notification.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200" }`}
                       >
                         <p className="flex items-center">
                           {notification.type === "success" ? (
@@ -837,7 +817,7 @@ export default function AgendaPage() {
                                 title: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
+                            className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
                             placeholder="Ex: Sortie Cani-Cross à Evreux"
                             required
                           />
@@ -850,11 +830,7 @@ export default function AgendaPage() {
                           </label>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                newEventData.type === "club"
-                                  ? "border-blue-500 bg-blue-50"
-                                  : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ newEventData.type === "club" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -879,11 +855,7 @@ export default function AgendaPage() {
                             </label>
 
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                newEventData.type === "competition"
-                                  ? "border-green-500 bg-green-50"
-                                  : "border-gray-200 hover:border-green-300 hover:bg-green-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ newEventData.type === "competition" ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300 hover:bg-green-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -908,11 +880,7 @@ export default function AgendaPage() {
                             </label>
 
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                newEventData.type === "entrainement"
-                                  ? "border-amber-500 bg-amber-50"
-                                  : "border-gray-200 hover:border-amber-300 hover:bg-amber-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ newEventData.type === "entrainement" ? "border-amber-500 bg-amber-50" : "border-gray-200 hover:border-amber-300 hover:bg-amber-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -1015,7 +983,7 @@ export default function AgendaPage() {
                                     start: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                 required
                               />
                             </div>
@@ -1043,7 +1011,7 @@ export default function AgendaPage() {
                                     end: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                               />
                               <p className="mt-1 text-xs text-gray-500">
                                 {newEventData.allDay
@@ -1077,7 +1045,7 @@ export default function AgendaPage() {
                                 description: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
+                            className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
                             placeholder="Décrivez votre événement (lieu de rendez-vous, informations pratiques...)"
                             maxLength={500}
                           />
@@ -1102,7 +1070,7 @@ export default function AgendaPage() {
                               </svg>
                               Options avancées
                             </summary>
-                            <div className="mt-3 space-y-4 pl-3 border-l-2 border-blue-100">
+                            <div className="mt-3 space-y-4 pl-3 border-l border-rule">
                               {/* Lieu de l'événement */}
                               <div>
                                 <label
@@ -1143,7 +1111,7 @@ export default function AgendaPage() {
                                         location: e.target.value,
                                       })
                                     }
-                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                    className="block w-full pl-10 rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                     placeholder="Adresse ou point de rendez-vous"
                                   />
                                 </div>
@@ -1348,7 +1316,7 @@ export default function AgendaPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black bg-opacity-50"
+                  className="fixed inset-0 bg-ink/50"
                   onClick={() => setIsEditEventModalOpen(false)}
                 ></motion.div>
 
@@ -1360,11 +1328,7 @@ export default function AgendaPage() {
                   exit={
                     isMobileView ? { y: "100%" } : { opacity: 0, scale: 0.95 }
                   }
-                  className={`bg-white shadow-xl z-10 w-full ${
-                    isMobileView
-                      ? "fixed bottom-0 left-0 right-0 rounded-t-xl max-h-[90vh] overflow-y-auto"
-                      : "rounded-lg max-w-lg"
-                  }`}
+                  className={`bg-white z-10 w-full ${ isMobileView ? "fixed bottom-0 left-0 right-0 rounded-t-xl max-h-[90vh] overflow-y-auto" : "rounded-lg max-w-lg" } border border-rule`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* En-tête du modal - adapté pour mobile */}
@@ -1398,11 +1362,7 @@ export default function AgendaPage() {
                   <div className="p-3 sm:p-4">
                     {notification && (
                       <div
-                        className={`mb-4 p-2.5 sm:p-3 rounded-md ${
-                          notification.type === "success"
-                            ? "bg-green-50 text-green-700 border border-green-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
-                        }`}
+                        className={`mb-4 p-2.5 sm:p-3 rounded-md ${ notification.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200" }`}
                       >
                         <p className="flex items-center">
                           {notification.type === "success" ? (
@@ -1463,7 +1423,7 @@ export default function AgendaPage() {
                                 title: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
+                            className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
                             placeholder="Ex: Sortie Cani-Cross à Evreux"
                             required
                           />
@@ -1476,11 +1436,7 @@ export default function AgendaPage() {
                           </label>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                editEventData.type === "club"
-                                  ? "border-blue-500 bg-blue-50"
-                                  : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ editEventData.type === "club" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -1505,11 +1461,7 @@ export default function AgendaPage() {
                             </label>
 
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                editEventData.type === "competition"
-                                  ? "border-green-500 bg-green-50"
-                                  : "border-gray-200 hover:border-green-300 hover:bg-green-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ editEventData.type === "competition" ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300 hover:bg-green-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -1534,11 +1486,7 @@ export default function AgendaPage() {
                             </label>
 
                             <label
-                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                editEventData.type === "entrainement"
-                                  ? "border-amber-500 bg-amber-50"
-                                  : "border-gray-200 hover:border-amber-300 hover:bg-amber-50/30"
-                              }`}
+                              className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${ editEventData.type === "entrainement" ? "border-amber-500 bg-amber-50" : "border-gray-200 hover:border-amber-300 hover:bg-amber-50/30" }`}
                             >
                               <input
                                 type="radio"
@@ -1641,7 +1589,7 @@ export default function AgendaPage() {
                                     start: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                 required
                               />
                             </div>
@@ -1669,7 +1617,7 @@ export default function AgendaPage() {
                                     end: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                               />
                             </div>
                           </div>
@@ -1699,7 +1647,7 @@ export default function AgendaPage() {
                                 description: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
+                            className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
                             placeholder="Décrivez votre événement (lieu de rendez-vous, informations pratiques...)"
                             maxLength={500}
                           />
@@ -1724,7 +1672,7 @@ export default function AgendaPage() {
                               </svg>
                               Options avancées
                             </summary>
-                            <div className="mt-3 space-y-4 pl-3 border-l-2 border-blue-100">
+                            <div className="mt-3 space-y-4 pl-3 border-l border-rule">
                               {/* Lieu de l'événement */}
                               <div>
                                 <label
@@ -1765,7 +1713,7 @@ export default function AgendaPage() {
                                         location: e.target.value,
                                       })
                                     }
-                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                    className="block w-full pl-10 rounded-md border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                     placeholder="Adresse ou point de rendez-vous"
                                   />
                                 </div>

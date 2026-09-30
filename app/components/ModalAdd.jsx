@@ -17,6 +17,7 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [tone, setTone] = useState("error");
   const [sport, setSport] = useState("Cross");
   const [uploadDate, setUploadDate] = useState("");
   const [uploadTime, setUploadTime] = useState("");
@@ -40,12 +41,12 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
 
   const handleUpload = async () => {
     if (!title || !sport || !uploadDate || !uploadTime) {
-      setMessage("❌ Veuillez remplir tous les champs requis.");
+      setTone("error"); setMessage("Veuillez remplir tous les champs requis.");
       return;
     }
 
     setUploading(true);
-    setMessage("📡 Ajout en cours...");
+    setTone("info"); setMessage("Ajout en cours...");
 
     const localDateTime = `${uploadDate}T${uploadTime}`;
     const isoDateTime = toISOStringLocal(localDateTime);
@@ -71,7 +72,7 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
       });
 
       if (coordinates.length === 0) {
-        setMessage("❌ Impossible d'extraire les coordonnées GPS du fichier.");
+        setTone("error"); setMessage("Impossible d'extraire les coordonnées GPS du fichier.");
         setUploading(false);
         return;
       }
@@ -84,7 +85,7 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
 
       if (uploadError) {
         console.error("❌ Erreur d'upload :", uploadError);
-        setMessage("❌ Erreur lors de l'upload.");
+        setTone("error"); setMessage("Erreur lors de l'upload.");
         setUploading(false);
         return;
       }
@@ -112,9 +113,9 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
 
     if (dbError) {
       console.error("❌ Erreur d'insertion en base :", dbError);
-      setMessage("❌ Erreur d'insertion en base.");
+      setTone("error"); setMessage("Erreur d'insertion en base.");
     } else {
-      setMessage("✅ Sortie ajoutée avec succès !");
+      setTone("success"); setMessage("Sortie ajoutée avec succès !");
       onAddSuccess?.(insertedData);
       onClose();
     }
@@ -125,8 +126,8 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative border border-rule">
         <button onClick={onClose} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900">
           <FaTimes />
         </button>
@@ -169,19 +170,19 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
 
         <div className="mb-4 text-left">
           <input type="file" accept=".gpx" onChange={(e) => setFile(e.target.files[0])} className="hidden" id="fileUpload" />
-          <label htmlFor="fileUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-blue-900 inline-block">
+          <label htmlFor="fileUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-sm text-lg font-semibold hover:bg-blue-900 inline-block">
             Ajouter un fichier GPX
           </label>
           {file && <p className="mt-2 text-sm">{file.name}</p>}
         </div>
 
         <div className="text-center mt-6">
-          <button onClick={handleUpload} disabled={uploading} className="bg-blue-700 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-900">
+          <button onClick={handleUpload} disabled={uploading} className="bg-blue-700 text-white py-3 px-8 rounded-sm text-lg font-semibold hover:bg-blue-900">
             {uploading ? "Ajout en cours..." : "Ajouter une sortie"}
           </button>
         </div>
 
-        {message && <p className="text-center text-sm mt-2 text-red-500">{message}</p>}
+        {message && <p role="status" className={`text-center text-sm mt-2 ${tone === "success" ? "text-success" : tone === "info" ? "text-ink-2" : "text-danger"}`}>{message}</p>}
       </div>
     </div>
   );

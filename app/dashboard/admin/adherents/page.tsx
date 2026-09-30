@@ -223,7 +223,7 @@ export default function ListeAdherents() {
     };
     
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status]}`}>
+      <span className={`px-2 py-1 rounded-sm text-xs font-medium ${styles[status]}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -242,11 +242,11 @@ export default function ListeAdherents() {
         <div className="p-4 sm:p-6 md:px-8 md:py-16 max-w-7xl mx-auto">
           {/* En-tête et actions */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h1 className="text-2xl font-bold text-gray-900">Liste des adhérents</h1>
+            <h1 className="display text-3xl md:text-4xl">Adhérents</h1>
           </div>
           
           {/* Barre de recherche et filtres */}
-          <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
+          <div className="mb-6 bg-white rounded-lg p-4 border border-rule">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="relative grow">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -391,7 +391,7 @@ export default function ListeAdherents() {
           </div>
 
           {/* Affichage des résultats */}
-          <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden border border-rule">
             {filteredAndSortedUsers.length === 0 ? (
               <div className="p-8 text-center">
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -456,11 +456,11 @@ export default function ListeAdherents() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {user.administrateur ? (
-                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-sm bg-purple-100 text-purple-800">
                                 Admin
                               </span>
                             ) : user.animateur ? (
-                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-sm bg-blue-100 text-blue-800">
                                 Animateur
                               </span>
                             ) : (
@@ -564,7 +564,7 @@ export default function ListeAdherents() {
       {selectedUser && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black opacity-30" aria-hidden="true"></div>
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full z-10">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full z-10 border border-rule">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               {selectedUser.id ? "Modifier l'adhérent" : "Ajouter un adhérent"}
             </h2>

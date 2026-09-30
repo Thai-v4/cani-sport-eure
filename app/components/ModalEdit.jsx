@@ -33,6 +33,7 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [tone, setTone] = useState("error");
 
   useEffect(() => {
     setTitle(sortie.titre);
@@ -56,12 +57,12 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
 
   const handleUpdate = async () => {
     if (!title || !sport || !uploadDate || !uploadTime) {
-      setMessage("❌ Veuillez remplir tous les champs requis.");
+      setTone("error"); setMessage("Veuillez remplir tous les champs requis.");
       return;
     }
 
     setUploading(true);
-    setMessage("📡 Mise à jour en cours...");
+    setTone("info"); setMessage("Mise à jour en cours...");
 
     const isoDateTime = toISOStringLocal(`${uploadDate}T${uploadTime}`);
     let publicUrl = sortie.file_url;
@@ -85,7 +86,7 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
       });
 
       if (coordinates.length === 0) {
-        setMessage("❌ Impossible d'extraire les coordonnées GPS du fichier.");
+        setTone("error"); setMessage("Impossible d'extraire les coordonnées GPS du fichier.");
         setUploading(false);
         return;
       }
@@ -98,7 +99,7 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
 
       if (uploadError) {
         console.error("❌ Erreur d'upload :", uploadError);
-        setMessage("❌ Erreur lors de l'upload.");
+        setTone("error"); setMessage("Erreur lors de l'upload.");
         setUploading(false);
         return;
       }
@@ -122,9 +123,9 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
 
     if (error) {
       console.error("❌ Erreur de mise à jour :", error);
-      setMessage("❌ Erreur de mise à jour.");
+      setTone("error"); setMessage("Erreur de mise à jour.");
     } else {
-      setMessage("✅ Sortie modifiée !");
+      setTone("success"); setMessage("Sortie modifiée !");
       setTimeout(() => {
         onClose();
         window.location.reload();
@@ -135,8 +136,8 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative border border-rule">
         <button onClick={onClose} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900">
           <FaTimes />
         </button>
@@ -179,19 +180,19 @@ const ModalEditContent = ({ isOpen, onClose, sortie }) => {
 
         <div className="mb-4 text-left">
           <input type="file" accept=".gpx" onChange={(e) => setFile(e.target.files[0])} className="hidden" id="fileEditUpload" />
-          <label htmlFor="fileEditUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-blue-900 inline-block">
+          <label htmlFor="fileEditUpload" className="cursor-pointer bg-blue-700 text-white py-2 px-6 rounded-sm text-lg font-semibold hover:bg-blue-900 inline-block">
             Modifier le fichier GPX
           </label>
           {file && <p className="mt-2 text-sm">{file.name}</p>}
         </div>
 
         <div className="text-center mt-6">
-          <button onClick={handleUpdate} disabled={uploading} className="bg-blue-700 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-900">
+          <button onClick={handleUpdate} disabled={uploading} className="bg-blue-700 text-white py-3 px-8 rounded-sm text-lg font-semibold hover:bg-blue-900">
             {uploading ? "Mise à jour..." : "Mettre à jour la sortie"}
           </button>
         </div>
 
-        {message && <p className="text-center text-sm mt-2 text-red-500">{message}</p>}
+        {message && <p role="status" className={`text-center text-sm mt-2 ${tone === "success" ? "text-success" : tone === "info" ? "text-ink-2" : "text-danger"}`}>{message}</p>}
       </div>
     </div>
   );
