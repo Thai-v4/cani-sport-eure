@@ -9,7 +9,7 @@ import supabase from "@/lib/supabaseClient";
 import ModalConfirm from "./ModalConfirm";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, MapPin, X } from "lucide-react";
 
 moment.locale("fr");
 const localizer = momentLocalizer(moment);
@@ -23,6 +23,7 @@ interface EventData {
   allDay?: boolean;
   location: string;
   description?: string;
+  visibility?: string;
 }
 
 interface CalendarProps {
@@ -147,11 +148,12 @@ export default function MyCalendar({
               const { color, description, visibility } = parseColorVisibility(event.description || "");
               const start = new Date(event.start.dateTime || event.start.date);
               const end = new Date(event.end.dateTime || event.end.date);
-              const icon = visibility === "private" ? "🔒" : "🌍";
+              // Anciens titres préfixés d'un emoji : on les nettoie
               const cleanTitle = event.summary.replace(/^🔒 |^🌍 /, "");
               return {
                 id: event.id,
-                title: `${icon} ${cleanTitle}`,
+                title: cleanTitle,
+                visibility,
                 start,
                 end,
                 color,
@@ -424,24 +426,29 @@ export default function MyCalendar({
 
   // 3. Conditionnellement rendre le calendrier pour éviter les erreurs pendant le chargement
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg mx-auto">
-      <h2 className="text-xl font-bold mb-4">📅 Agenda</h2>
+    <div className="cse-calendar relative">
 
       {/* Barre de recherche */}
       <div className="mb-4 relative">
+        <label htmlFor="recherche-calendrier" className="sr-only">
+          Rechercher un événement
+        </label>
         <input
-          type="text"
-          placeholder="Rechercher un événement..."
-          className="w-full p-2 border rounded-md"
+          id="recherche-calendrier"
+          type="search"
+          placeholder="Rechercher un événement…"
+          className="field"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         {searchTerm && (
           <button
-            className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
+            type="button"
+            aria-label="Effacer la recherche"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-ink-3 hover:text-ink"
             onClick={() => setSearchTerm("")}
           >
-            ×
+            <X aria-hidden className="size-4" />
           </button>
         )}
       </div>
@@ -452,47 +459,53 @@ export default function MyCalendar({
           <div className="mobile-calendar">
             <div className="flex justify-between items-center mb-4">
               <button
+                type="button"
+                aria-label="Mois précédent"
                 onClick={() => handleNavigate("PREV")}
-                className="p-3 bg-blue-100 rounded-full text-blue-600"
+                className="grid size-11 place-items-center border border-rule"
               >
-                ◀
+                <ChevronLeft aria-hidden className="size-5" />
               </button>
-              <h3 className="text-lg font-bold">
+              <h3 className="text-lg font-bold capitalize">
                 {format(currentDate, "MMMM yyyy", { locale: fr })}
               </h3>
               <button
+                type="button"
+                aria-label="Mois suivant"
                 onClick={() => handleNavigate("NEXT")}
-                className="p-3 bg-blue-100 rounded-full text-blue-600"
+                className="grid size-11 place-items-center border border-rule"
               >
-                ▶
+                <ChevronRight aria-hidden className="size-5" />
               </button>
             </div>
 
             {/* Liste d'événements chronologiques au lieu d'une grille */}
-            <div className="event-list space-y-3">
+            <ul className="event-list divide-y divide-rule border-t border-ink">
               {eventsForMonth
                 .slice(0, 15) // Limiter le nombre d'événements affichés
                 .map((event) => (
-                  <div
-                    key={event.id}
-                    className="p-3 rounded-lg shadow-xs border-l-4 bg-white"
-                    style={{ borderLeftColor: event.color || "#3b82f6" }}
-                    onClick={() => handleSelectEvent(event)}
-                  >
-                    <div className="font-medium">
-                      {event.title.replace(/^🔒 |^🌍 /, "")}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {formatEventTime(event.start, event.end)}
-                    </div>
-                    {event.location && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        📍 {event.location}
-                      </div>
-                    )}
-                  </div>
+                  <li key={event.id}>
+                    <button
+                      type="button"
+                      className="flex w-full items-start gap-3 py-3 text-left"
+                      onClick={() => handleSelectEvent(event)}
+                    >
+                      <span aria-hidden className="mt-2 size-2 shrink-0 rounded-full" style={{ backgroundColor: event.color || "#1238d6" }} />
+                      <span>
+                        <span className="block font-medium">{event.title}</span>
+                        <span className="block text-sm text-ink-2">{formatEventTime(event.start, event.end)}</span>
+                        {event.location && (
+                          <span className="mt-1 flex items-center gap-1 text-xs text-ink-3">
+                            <MapPin aria-hidden className="size-3" />
+                            {event.location}
+                          </span>
+                        )}
+                        {event.visibility === "private" && <span className="mt-1 block text-xs font-semibold text-ink-2">Adhérents</span>}
+                      </span>
+                    </button>
+                  </li>
                 ))}
-            </div>
+            </ul>
           </div>
         ) : (
           <Calendar
@@ -560,8 +573,8 @@ export default function MyCalendar({
 
       {/* MODALE ACTIONS */}
       {showActionModal && eventToEdit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg text-center">
+        <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md text-center border border-rule">
             <h3 className="text-lg font-bold mb-4">
               Détail de l&apos;événement
             </h3>
@@ -569,11 +582,11 @@ export default function MyCalendar({
             <p className="mb-2">
               {formatEventTime(eventToEdit.start, eventToEdit.end)}
             </p>
-            <p className="mb-2">
-              📍 {eventToEdit.location || "Lieu non renseigné"}
+            <p className="mb-2 text-ink-2">
+              {eventToEdit.location || "Lieu non renseigné"}
             </p>
-            <p className="mb-4">
-              📝 {eventToEdit.description || "Pas de description."}
+            <p className="mb-4 text-ink-2">
+              {eventToEdit.description || "Pas de description."}
             </p>
             <div className="flex justify-center gap-4 flex-wrap">
               {isAdherent && (
@@ -603,7 +616,7 @@ export default function MyCalendar({
                       setLocation(eventToEdit.location || "");
                       setDetails(eventToEdit.description || "");
                       setVisibility(
-                        eventToEdit.title.startsWith("🔒")
+                        eventToEdit.visibility === "private"
                           ? "private"
                           : "public"
                       );
@@ -660,9 +673,9 @@ export default function MyCalendar({
       {/* FORM MODAL */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 ${showModal ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`fixed inset-0 bg-ink/50 flex items-center justify-center z-50 transition-opacity duration-300 ${showModal ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg transform transition-transform duration-300 scale-100">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md transform transition-transform duration-300 scale-100 border border-rule">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
               <h3 className="text-lg font-bold">
                 {modeForm === "edit"
@@ -694,7 +707,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                   />
@@ -706,7 +719,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
@@ -718,7 +731,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                   />
@@ -730,7 +743,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
@@ -742,7 +755,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                   />
@@ -754,7 +767,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -765,7 +778,7 @@ export default function MyCalendar({
                     Description
                   </label>
                   <textarea
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     rows={3}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
@@ -778,7 +791,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="color"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={newColor}
                     onChange={(e) => setNewColor(e.target.value)}
                   />
@@ -789,12 +802,12 @@ export default function MyCalendar({
                     Visibilité
                   </label>
                   <select
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value)}
                   >
-                    <option value="public">🌍 Public</option>
-                    <option value="private">🔒 Privé</option>
+                    <option value="public">Public</option>
+                    <option value="private">Adhérents uniquement</option>
                   </select>
                 </div>
               </div>
@@ -825,7 +838,7 @@ export default function MyCalendar({
       {/* Toast Notification */}
       {toast.show && (
         <div
-          className={`fixed bottom-4 right-4 px-6 py-3 rounded-sm shadow-lg ${toast.type === "success" ? "bg-green-600" : "bg-red-600"} text-white`}
+          className={`fixed bottom-4 right-4 px-6 py-3 rounded-sm ${toast.type === "success" ? "bg-green-600" : "bg-red-600"} text-white`}
         >
           {toast.message}
           <button
@@ -862,8 +875,8 @@ export default function MyCalendar({
 
       {/* Modal d'édition d'événement */}
       {isEditEventModalOpen && eventToEdit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+        <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md border border-rule">
             {/* En-tête du modal */}
             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
               {isMobileView ? (
@@ -911,7 +924,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                   />
@@ -923,7 +936,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
@@ -935,7 +948,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                   />
@@ -947,7 +960,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
@@ -959,7 +972,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                   />
@@ -971,7 +984,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -982,7 +995,7 @@ export default function MyCalendar({
                     Description
                   </label>
                   <textarea
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     rows={3}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
@@ -995,7 +1008,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="color"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={newColor}
                     onChange={(e) => setNewColor(e.target.value)}
                   />
@@ -1006,12 +1019,12 @@ export default function MyCalendar({
                     Visibilité
                   </label>
                   <select
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value)}
                   >
-                    <option value="public">🌍 Public</option>
-                    <option value="private">🔒 Privé</option>
+                    <option value="public">Public</option>
+                    <option value="private">Adhérents uniquement</option>
                   </select>
                 </div>
               </div>

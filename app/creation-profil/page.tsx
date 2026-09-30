@@ -1,353 +1,306 @@
-"use client"; // Indique que ce composant s'exécute côté client
+"use client";
 
-import React, { useState, useEffect, useCallback } from "react"; // Imports React et hooks
-import supabase from "@/lib/supabaseClient"; // Client Supabase
-import { v4 as uuidv4 } from "uuid"; // Générateur d'identifiants uniques
-import { useRouter } from "next/navigation"; // Navigation entre pages
-import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale
-import Footer from "../components/sidebars/Footer"; // Pied de page
-import { useAuth } from "@/app/components/Auth/AuthProvider"; // Contexte d'authentification
-import WhiteBackground from "../components/backgrounds/WhiteBackground"; // Fond blanc
-import Image from "next/image"; // Composant d'image optimisé Next.js
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { Camera, Plus } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import supabase from "@/lib/supabaseClient";
+import { useAuth } from "@/app/components/Auth/AuthProvider";
+import PageHeader from "../components/site/PageHeader";
+import { FormAlert } from "../components/account/AuthFrame";
 
-export default function UserProfileForm() {
-  const router = useRouter(); // Hook de navigation
-  const { role, isLoading } = useAuth(); // Récupération du rôle utilisateur
+type Profile = {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  adresse: string;
+  code_postal: string;
+  ville: string;
+  photo_profil: string;
+  date_de_naissance: string;
+  licence: string;
+};
 
-  // État du formulaire avec valeurs par défaut
-  const [form, setForm] = useState({
-    id: "",
-    nom: "",
-    prenom: "",
-    email: "",
-    telephone: "",
-    adresse: "",
-    code_postal: "",
-    ville: "",
-    photo_profil: "",
-    date_de_naissance: "",
-    licence: "",
-  });
+const EMPTY: Profile = {
+  id: "",
+  nom: "",
+  prenom: "",
+  email: "",
+  telephone: "",
+  adresse: "",
+  code_postal: "",
+  ville: "",
+  photo_profil: "",
+  date_de_naissance: "",
+  licence: "",
+};
 
-  // États pour la gestion de l'image de profil
-  const [image, setImage] = useState<File | null>(null); // Fichier image sélectionné
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null); // URL de prévisualisation
-  const [loading, setLoading] = useState(false); // État de chargement
-  const [isMounted, setIsMounted] = useState(false); // Vérification du montage du composant
-  const [chiens, setChiens] = useState<{ id: string; prenom: string }[]>([]); // Liste des chiens de l'utilisateur
+const MAX_PHOTO = 5 * 1024 * 1024;
 
-  // Protection de la route - redirection si non authentifié
+function ageFrom(date: string) {
+  if (!date) return null;
+  const birth = new Date(date);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+export default function ProfilePage() {
+  const { user } = useAuth();
+  const [form, setForm] = useState<Profile>(EMPTY);
+  const [dogs, setDogs] = useState<{ id: string; prenom: string }[]>([]);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [communes, setCommunes] = useState<string[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    if (!isLoading && role !== "admin" && role !== "adherent") {
-      router.push("/connexion");
-    }
-  }, [role, isLoading, router]);
-
-  // Marquage du composant comme monté
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Récupération des données du profil et des chiens
-  useEffect(() => {
-    if (!isMounted) return;
-
-    const fetchUserProfile = async () => {
-      // Récupération de la session utilisateur
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-      if (error) return console.error("Erreur session:", error.message);
-
-      if (session) {
-        const profileId = session.user.id;
-
-        // Récupération des données du profil
-        const { data: profileData, error: profileError } = await supabase
-          .from("profils")
-          .select("*")
-          .eq("id", profileId)
-          .single();
-
-        if (profileError) {
-          console.error("Erreur profil:", profileError.message);
-        } else {
-          // Mise à jour du formulaire avec les données du profil
-          setForm((prev) => ({ ...prev, ...profileData }));
-          if (profileData.photo_profil)
-            setPhotoPreview(profileData.photo_profil);
-
-          // Récupération des chiens liés à l'utilisateur
-          const { data: chiensData, error: chiensError } = await supabase
-            .from("chiens")
-            .select("id, prenom")
-            .eq("id_profil", profileId);
-
-          if (chiensError) {
-            console.error("Erreur chiens:", chiensError.message);
-          } else {
-            setChiens(chiensData ?? []);
-          }
-        }
-      }
-    };
-
-    fetchUserProfile();
-  }, [isMounted]);
-
-  // Gestion du changement de fichier image
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files?.length) return;
-      const file = e.target.files[0];
-      if (!file.type.startsWith("image/")) {
-        alert("Veuillez sélectionner un fichier image.");
+    if (!user) return;
+    const load = async () => {
+      const [{ data: profile, error }, { data: dogsData }] = await Promise.all([
+        supabase.from("profils").select("*").eq("id", user.id).maybeSingle(),
+        supabase.from("chiens").select("id, prenom").eq("id_profil", user.id),
+      ]);
+      if (error) {
+        setStatus("error");
         return;
       }
+      // Profil absent : on part des informations du compte
+      const base = { ...EMPTY, id: user.id, email: user.email ?? "" };
+      const merged = { ...base, ...Object.fromEntries(Object.entries(profile ?? {}).filter(([, v]) => v !== null)) } as Profile;
+      setForm(merged);
+      setPreview(merged.photo_profil || null);
+      setDogs(dogsData ?? []);
+      setStatus("ready");
+    };
+    load();
+  }, [user]);
 
-      setImage(file);
-      setPhotoPreview(URL.createObjectURL(file)); // Création d'URL pour prévisualisation
-    },
-    []
-  );
+  const update = (name: keyof Profile, value: string) => setForm((prev) => ({ ...prev, [name]: value }));
 
-  // Gestion des changements dans les champs du formulaire
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Gestion spécifique pour le code postal avec auto-complétion de la ville
-  const handleChangeCodePostal = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { value } = e.target;
-    setForm((prev) => ({ ...prev, code_postal: value }));
-
-    // Auto-complétion de la ville si le code postal est complet
-    if (value.length === 5) {
-      try {
-        const res = await fetch(`https://api.zippopotam.us/fr/${value}`);
-        if (!res.ok) throw new Error("Code postal non trouvé");
-        const data = await res.json();
-        const city = data.places?.[0]?.["place name"];
-        if (city) setForm((prev) => ({ ...prev, ville: city }));
-      } catch (err) {
-        console.error("Erreur ville:", err);
-      }
+  // Ville proposée à partir du code postal (API officielle geo.api.gouv.fr)
+  const handlePostalCode = async (value: string) => {
+    update("code_postal", value);
+    setCommunes([]);
+    if (!/^\d{5}$/.test(value)) return;
+    try {
+      const res = await fetch(`https://geo.api.gouv.fr/communes?codePostal=${value}&fields=nom&format=json`);
+      const data: { nom: string }[] = await res.json();
+      const names = data.map((c) => c.nom);
+      setCommunes(names);
+      if (names.length === 1) update("ville", names[0]);
+    } catch {
+      // Saisie manuelle de la ville si l'API ne répond pas
     }
   };
 
-  // Soumission du formulaire
+  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setMessage({ tone: "error", text: "Choisissez une image (JPEG, PNG ou WebP)." });
+      return;
+    }
+    if (file.size > MAX_PHOTO) {
+      setMessage({ tone: "error", text: "La photo dépasse 5 Mo. Choisissez une image plus légère." });
+      return;
+    }
+    setMessage(null);
+    setPhoto(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!user) return;
+    setSaving(true);
+    setMessage(null);
 
-    let imageUrl = form.photo_profil;
-
-    // Upload de l'image si une nouvelle a été sélectionnée
-    if (image) {
-      const sanitized = image.name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9.\-_]/g, "_");
-      const fileName = `${uuidv4()}-${sanitized}`; // Nom unique pour éviter les conflits
-
-      const { data, error } = await supabase.storage
-        .from("images")
-        .upload(`profils/${fileName}`, image);
+    let photoUrl = form.photo_profil;
+    if (photo) {
+      const safeName = photo.name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9.\-_]/g, "_");
+      const { data, error } = await supabase.storage.from("images").upload(`profils/${uuidv4()}-${safeName}`, photo);
       if (error) {
-        alert("Erreur image.");
-        setLoading(false);
+        setMessage({ tone: "error", text: "La photo n'a pas pu être envoyée. Réessayez ou choisissez une autre image." });
+        setSaving(false);
         return;
       }
-
-      imageUrl = supabase.storage.from("images").getPublicUrl(data.path)
-        .data.publicUrl;
+      photoUrl = supabase.storage.from("images").getPublicUrl(data.path).data.publicUrl;
     }
 
-    // Mise à jour du profil dans la base de données
-    const { error } = await supabase
-      .from("profils")
-      .upsert([{ ...form, photo_profil: imageUrl, id: form.id }]);
+    const { error } = await supabase.from("profils").upsert([{ ...form, id: user.id, photo_profil: photoUrl }]);
+    setSaving(false);
     if (error) {
-      alert("Erreur enregistrement.");
+      setMessage({ tone: "error", text: "L'enregistrement a échoué. Vérifiez les champs et réessayez." });
     } else {
-      alert("Profil enregistré !");
+      setPhoto(null);
+      update("photo_profil", photoUrl);
+      setMessage({ tone: "success", text: "Profil enregistré." });
     }
-
-    setLoading(false);
   };
 
-  // Calcul de l'âge à partir de la date de naissance
-  const getAge = (dateString: string): number => {
-    if (!dateString) return 0;
-    const today = new Date();
-    const birthDate = new Date(dateString);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-    return age;
-  };
-
-  const age = getAge(form.date_de_naissance); // Calcul de l'âge pour adapter les options de licence
-
-  // Ne rien rendre avant que le composant soit monté
-  if (!isMounted) return null;
+  const age = ageFrom(form.date_de_naissance);
+  const text = (name: keyof Profile, label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
+    <div>
+      <label htmlFor={`profil-${name}`} className="field-label">
+        {label}
+      </label>
+      <input
+        id={`profil-${name}`}
+        value={form[name]}
+        onChange={(e) => update(name, e.target.value)}
+        className="field"
+        {...props}
+      />
+    </div>
+  );
 
   return (
-    <div>
-      <Sidebar /> {/* Barre latérale de navigation */}
-      <WhiteBackground>
-        {" "}
-        {/* Fond blanc pour le contenu */}
-        {/* Titre fixe en haut à gauche */}
-        <div className="relative">
-          <h1 className="absolute top-6 left-6 text-3xl sm:text-4xl primary_title text-black!">
-            Profil utilisateur
-          </h1>
-        </div>
-        {/* Contenu central du formulaire */}
-        <div className="flex justify-center px-4 sm:px-6 pt-28 pb-12">
-          <form
-            onSubmit={handleSubmit}
-            className="w-full max-w-(--breakpoint-sm) bg-[#475C99] p-6 sm:p-8 rounded-xl shadow-lg border-4 border-black space-y-4 text-black"
-          >
-            {/* Sélection/prévisualisation de l'image de profil */}
-            <div className="flex flex-col items-center">
-              <label htmlFor="photo-upload" className="cursor-pointer mb-2">
-                {photoPreview ? (
-                  <Image
-                    width={128}
-                    height={128}
-                    src={photoPreview}
-                    alt="Photo de profil"
-                    className="w-32 h-32 object-cover rounded-full shadow-md"
-                  />
-                ) : (
-                  <div className="w-32 h-32 flex items-center justify-center bg-gray-300 rounded-full text-black text-center text-sm font-medium">
-                    Ajouter une photo
-                  </div>
-                )}
-              </label>
-              <input
-                id="photo-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </div>
+    <>
+      <PageHeader title="Mon profil" description="Vos coordonnées et votre licence, visibles uniquement par vous et le bureau du club." />
 
-            {/* Champs du formulaire générés dynamiquement */}
-            {[
-              { name: "nom", label: "Nom" },
-              { name: "prenom", label: "Prénom" },
-              { name: "telephone", label: "Téléphone" },
-              { name: "adresse", label: "Adresse" },
-              {
-                name: "code_postal",
-                label: "Code postal",
-                handler: handleChangeCodePostal,
-              },
-              { name: "ville", label: "Ville" },
-              {
-                name: "date_de_naissance",
-                label: "Date de naissance",
-                type: "date",
-              },
-            ].map(({ name, label, type = "text", handler }) => (
-              <div key={name} className="flex flex-col">
-                <label className="text-white text-sm mb-1">{label}</label>
-                <input
-                  type={type}
-                  name={name}
-                  value={form[name as keyof typeof form]}
-                  onChange={handler ?? handleChange}
-                  className="p-2 rounded-md text-black"
-                />
+      <div className="site-container pb-24">
+        {status === "loading" && <p className="text-ink-2">Chargement du profil…</p>}
+        {status === "error" && <FormAlert>Le profil ne se charge pas pour le moment. Réessayez un peu plus tard.</FormAlert>}
+
+        {status === "ready" && (
+          <form onSubmit={handleSubmit} className="grid gap-12 border-t border-ink pt-10 lg:grid-cols-12">
+            <div className="lg:col-span-3">
+              <div className="relative aspect-square w-40 overflow-hidden bg-wash lg:w-full">
+                {preview ? (
+                  <Image src={preview} alt="Votre photo de profil" fill sizes="16rem" className="object-cover" unoptimized={preview.startsWith("blob:")} />
+                ) : (
+                  <span className="absolute inset-0 grid place-items-center text-sm text-ink-3">Pas de photo</span>
+                )}
               </div>
-            ))}
-
-            {/* Sélection de licence (adaptée à l'âge) */}
-            <div className="flex flex-col">
-              <label className="text-white text-sm mb-1">Licence</label>
-              <select
-                name="licence"
-                value={form.licence}
-                onChange={handleChange}
-                className="p-2 rounded-md text-black"
-              >
-                <option value="">-- Sélectionner une licence --</option>
-                {age >= 17 ? (
-                  <>
-                    <option value="loisir_adulte">Licence loisir adulte</option>
-                    <option value="loisir_adulte_handisport">
-                      Licence loisir adulte handisport
-                    </option>
-                    <option value="competition_adulte">
-                      Licence compétition adulte
-                    </option>
-                    <option value="competition_adulte_handisport">
-                      Licence compétition adulte handisport
-                    </option>
-                  </>
-                ) : (
-                  <option value="Licence enfant">Licence enfant</option>
-                )}
-              </select>
+              <input ref={fileInput} id="photo" type="file" accept="image/*" onChange={handlePhoto} className="sr-only" />
+              <button type="button" onClick={() => fileInput.current?.click()} className="btn-quiet mt-4">
+                <Camera aria-hidden className="size-4" />
+                {preview ? "Changer la photo" : "Ajouter une photo"}
+              </button>
             </div>
 
-            {/* Email (en lecture seule) */}
-            <div className="flex flex-col">
-              <label className="text-white text-sm mb-1">Email</label>
-              <input
-                value={form.email}
-                disabled
-                className="p-2 bg-gray-300 text-gray-500 rounded-md"
-              />
-            </div>
+            <div className="lg:col-span-9">
+              {message && <FormAlert tone={message.tone}>{message.text}</FormAlert>}
 
-            {/* Liste des chiens avec bouton pour en ajouter */}
-            <div className="pt-4 flex flex-wrap gap-2">
-              {chiens.map((chien) => (
-                <button
-                  key={chien.id}
-                  onClick={() => router.push(`/creation-chien/${chien.id}`)}
-                  type="button"
-                  className="bg-white px-3 py-1 rounded-full text-black shadow-md hover:bg-gray-300"
-                >
-                  {chien.prenom}
+              <fieldset className="grid gap-5 sm:grid-cols-2">
+                <legend className="mb-5 text-sm font-semibold">Identité</legend>
+                {text("prenom", "Prénom", { autoComplete: "given-name", required: true })}
+                {text("nom", "Nom", { autoComplete: "family-name", required: true })}
+                {text("date_de_naissance", "Date de naissance", { type: "date", autoComplete: "bday" })}
+                {text("telephone", "Téléphone", { type: "tel", autoComplete: "tel" })}
+              </fieldset>
+
+              <fieldset className="mt-10 grid gap-5 sm:grid-cols-2">
+                <legend className="mb-5 text-sm font-semibold">Adresse</legend>
+                <div className="sm:col-span-2">{text("adresse", "Adresse", { autoComplete: "street-address" })}</div>
+                <div>
+                  <label htmlFor="profil-code_postal" className="field-label">
+                    Code postal
+                  </label>
+                  <input
+                    id="profil-code_postal"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    maxLength={5}
+                    value={form.code_postal}
+                    onChange={(e) => handlePostalCode(e.target.value)}
+                    className="field"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="profil-ville" className="field-label">
+                    Ville
+                  </label>
+                  <input
+                    id="profil-ville"
+                    list="communes"
+                    autoComplete="address-level2"
+                    value={form.ville}
+                    onChange={(e) => update("ville", e.target.value)}
+                    className="field"
+                  />
+                  <datalist id="communes">
+                    {communes.map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                  </datalist>
+                </div>
+              </fieldset>
+
+              <fieldset className="mt-10 grid gap-5 sm:grid-cols-2">
+                <legend className="mb-5 text-sm font-semibold">Licence et compte</legend>
+                <div>
+                  <label htmlFor="profil-licence" className="field-label">
+                    Licence
+                  </label>
+                  <select id="profil-licence" value={form.licence} onChange={(e) => update("licence", e.target.value)} className="field">
+                    <option value="">Choisir une licence</option>
+                    {age === null || age >= 17 ? (
+                      <>
+                        <option value="loisir_adulte">Loisir adulte</option>
+                        <option value="loisir_adulte_handisport">Loisir adulte handisport</option>
+                        <option value="competition_adulte">Compétition adulte</option>
+                        <option value="competition_adulte_handisport">Compétition adulte handisport</option>
+                      </>
+                    ) : (
+                      <option value="Licence enfant">Licence enfant</option>
+                    )}
+                  </select>
+                  <p className="field-hint">Les licences proposées dépendent de votre âge.</p>
+                </div>
+                <div>
+                  <label htmlFor="profil-email" className="field-label">
+                    Email
+                  </label>
+                  <input id="profil-email" value={form.email} readOnly className="field bg-wash text-ink-2" />
+                  <p className="field-hint">Pour changer d&apos;email, écrivez au bureau.</p>
+                </div>
+              </fieldset>
+
+              <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-rule pt-6">
+                <button type="submit" disabled={saving} className="btn-line">
+                  {saving ? "Enregistrement…" : "Enregistrer le profil"}
                 </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => router.push("/creation-chien")}
-                className="bg-white px-3 py-1 rounded-full text-black shadow-md"
-              >
-                +
-              </button>
-            </div>
+              </div>
 
-            {/* Bouton d'enregistrement */}
-            <div className="flex justify-center pt-6">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-white text-black px-6 py-2 rounded-full font-semibold shadow-md hover:bg-gray-200"
-              >
-                {loading
-                  ? "Enregistrement..."
-                  : "Enregistrer les modifications"}
-              </button>
+              <section aria-labelledby="titre-chiens" className="mt-16">
+                <div className="flex items-end justify-between gap-4">
+                  <h2 id="titre-chiens" className="display text-3xl">
+                    Mes chiens
+                  </h2>
+                  <Link href="/creation-chien" className="btn-quiet">
+                    <Plus aria-hidden className="size-4" />
+                    Ajouter un chien
+                  </Link>
+                </div>
+                {dogs.length === 0 ? (
+                  <p className="mt-4 border-t border-ink pt-5 text-ink-2">Aucun chien enregistré pour l&apos;instant.</p>
+                ) : (
+                  <ul className="mt-4 divide-y divide-rule border-t border-ink">
+                    {dogs.map((dog) => (
+                      <li key={dog.id}>
+                        <Link href={`/creation-chien/${dog.id}`} className="flex items-center justify-between py-4 font-semibold hover:text-line">
+                          {dog.prenom}
+                          <span className="text-sm font-normal text-ink-3">Modifier</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
             </div>
           </form>
-        </div>
-      </WhiteBackground>
-      <Footer /> {/* Pied de page */}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
