@@ -503,8 +503,7 @@
   }
   /* Indicateurs de chargement hérités : immobiles, le libellé « Chargement… » reste */
   .animate-spin,
-  .animate-pulse,
-  .animate-bounce {
+  .animate-pulse {
     animation: none !important;
   }
 }
