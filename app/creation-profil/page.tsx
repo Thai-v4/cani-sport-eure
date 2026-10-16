@@ -1,7 +1,7 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
 import React, { useState, useEffect, useCallback } from "react"; // Imports React et hooks
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import { v4 as uuidv4 } from "uuid"; // Générateur d'identifiants uniques
 import { useRouter } from "next/navigation"; // Navigation entre pages
 import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale
@@ -9,8 +9,6 @@ import Footer from "../components/sidebars/Footer"; // Pied de page
 import { useAuth } from "@/app/components/Auth/AuthProvider"; // Contexte d'authentification
 import WhiteBackground from "../components/backgrounds/WhiteBackground"; // Fond blanc
 import Image from "next/image"; // Composant d'image optimisé Next.js
-
-const supabase = createClientComponentClient(); // Initialisation du client Supabase
 
 export default function UserProfileForm() {
   const router = useRouter(); // Hook de navigation
@@ -208,7 +206,7 @@ export default function UserProfileForm() {
         {/* Fond blanc pour le contenu */}
         {/* Titre fixe en haut à gauche */}
         <div className="relative">
-          <h1 className="absolute top-6 left-6 text-3xl sm:text-4xl primary_title !text-black">
+          <h1 className="absolute top-6 left-6 text-3xl sm:text-4xl primary_title text-black!">
             Profil utilisateur
           </h1>
         </div>
@@ -216,7 +214,7 @@ export default function UserProfileForm() {
         <div className="flex justify-center px-4 sm:px-6 pt-28 pb-12">
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-screen-sm bg-[#475C99] p-6 sm:p-8 rounded-xl shadow-lg border-4 border-black space-y-4 text-black"
+            className="w-full max-w-(--breakpoint-sm) bg-[#475C99] p-6 sm:p-8 rounded-xl shadow-lg border-4 border-black space-y-4 text-black"
           >
             {/* Sélection/prévisualisation de l'image de profil */}
             <div className="flex flex-col items-center">

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import * as turf from "@turf/turf";
+import distance from "@turf/distance";
+import { point } from "@turf/helpers";
 import Image from "next/image";
 
 const MapWithStats = ({ trackData }) => {
@@ -114,9 +115,9 @@ const MapWithStats = ({ trackData }) => {
 
   let totalDistance = 0;
   for (let i = 0; i < coordinates.length - 1; i++) {
-    const point1 = turf.point([coordinates[i][1], coordinates[i][0]]);
-    const point2 = turf.point([coordinates[i + 1][1], coordinates[i + 1][0]]);
-    totalDistance += turf.distance(point1, point2, { units: "meters" });
+    const point1 = point([coordinates[i][1], coordinates[i][0]]);
+    const point2 = point([coordinates[i + 1][1], coordinates[i + 1][0]]);
+    totalDistance += distance(point1, point2, { units: "meters" });
   }
 
   let totalElevationGain = 0;
@@ -142,7 +143,10 @@ const MapWithStats = ({ trackData }) => {
     >
       <div style={{ position: "relative" }}>
         <MapContainer center={coordinates[0]} zoom={12} style={{ height: "200px", width: "100%" }}>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <TileLayer
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          />
           <Polyline positions={coordinates.map(([lat, lon]) => [lat, lon])} color="blue" />
         </MapContainer>
 

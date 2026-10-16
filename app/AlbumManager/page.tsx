@@ -17,7 +17,7 @@ import {
   FaThLarge,
   FaList,
 } from "react-icons/fa";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import SidebarAdmin from "../components/SidebarAdmin";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,10 +26,6 @@ import ModalConfirm from "../components/ModalConfirm";
 import { AnimatePresence, motion } from "framer-motion";
 
 // Connexion à Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // Définition des types
 interface Album {
@@ -474,7 +470,7 @@ export default function AlbumManager() {
       {/* Contenu principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* En-tête */}
-        <header className="bg-white border-b border-gray-200 shadow-sm">
+        <header className="bg-white border-b border-gray-200 shadow-xs">
           <div className="px-4 py-4 sm:px-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">
@@ -489,7 +485,7 @@ export default function AlbumManager() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher..."
-                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                   />
                   <FaSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
@@ -539,7 +535,7 @@ export default function AlbumManager() {
             {/* Navigation & Actions */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
               {/* Fil d'Ariane */}
-              <div className="flex items-center flex-wrap gap-1.5 bg-white px-3 py-2 rounded-lg shadow-sm">
+              <div className="flex items-center flex-wrap gap-1.5 bg-white px-3 py-2 rounded-lg shadow-xs">
                 <button
                   onClick={() =>
                     setAlbumPath([{ id: null, name: "Albums Photos" }])
@@ -554,7 +550,7 @@ export default function AlbumManager() {
                     <FaChevronRight className="mx-1 text-gray-400 text-xs" />
                     <button
                       onClick={() => handleBreadcrumbClick(index + 1)}
-                      className="px-2 py-1 rounded hover:bg-gray-100"
+                      className="px-2 py-1 rounded-sm hover:bg-gray-100"
                     >
                       {album.name}
                     </button>
@@ -566,13 +562,13 @@ export default function AlbumManager() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsAlbumModalOpen(true)}
-                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 text-gray-700 flex items-center"
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-xs hover:bg-gray-50 text-gray-700 flex items-center"
                 >
                   <FaFolder className="mr-1.5 text-yellow-500" /> Nouvel album
                 </button>
 
                 {albumPath.length > 1 && (
-                  <label className="px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 cursor-pointer flex items-center">
+                  <label className="px-3 py-2 bg-blue-600 text-white rounded-lg shadow-xs hover:bg-blue-700 cursor-pointer flex items-center">
                     <FaUpload className="mr-1.5" /> Importer des photos
                     <input
                       type="file"
@@ -615,7 +611,7 @@ export default function AlbumManager() {
               <>
                 {/* Message quand dossier vide */}
                 {filteredAlbums.length === 0 && filteredPhotos.length === 0 && (
-                  <div className="bg-white rounded-lg shadow-sm p-8 text-center my-4">
+                  <div className="bg-white rounded-lg shadow-xs p-8 text-center my-4">
                     {searchQuery ? (
                       <>
                         <FaSearch className="text-gray-400 text-4xl mx-auto mb-3" />
@@ -691,7 +687,7 @@ export default function AlbumManager() {
                 {/* Vue en liste */}
                 {viewMode === "list" &&
                   (filteredAlbums.length > 0 || filteredPhotos.length > 0) && (
-                    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-lg shadow-xs overflow-hidden">
                       <table className="w-full">
                         <thead>
                           <tr className="bg-gray-50 text-left">
@@ -775,7 +771,7 @@ export default function AlbumManager() {
                                     alt={photo.name}
                                     width={40}
                                     height={40}
-                                    className="h-10 w-10 object-cover rounded mr-3 shrink-0"
+                                    className="h-10 w-10 object-cover rounded-sm mr-3 shrink-0"
                                   />
                                   <span className="text-gray-800 line-clamp-1">
                                     {photo.name}
@@ -830,7 +826,7 @@ export default function AlbumManager() {
                     {filteredAlbums.map((album) => (
                       <motion.div
                         key={album.id}
-                        className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        className="bg-white rounded-lg shadow-xs overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                         whileHover={{ y: -3 }}
                         onClick={() => handleAlbumClick(album.id, album.name)}
                       >
@@ -862,7 +858,7 @@ export default function AlbumManager() {
                     {filteredPhotos.map((photo, index) => (
                       <motion.div
                         key={photo.id}
-                        className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
+                        className="bg-white rounded-lg shadow-xs overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
                         whileHover={{ y: -3 }}
                         onClick={() => {
                           setPreviewImage(photo.url);
@@ -1158,7 +1154,7 @@ export default function AlbumManager() {
                       type="text"
                       value={newAlbumName}
                       onChange={(e) => setNewAlbumName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Mon nouvel album"
                       autoFocus
                     />

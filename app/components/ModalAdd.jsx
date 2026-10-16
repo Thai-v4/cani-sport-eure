@@ -1,15 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { DOMParser } from "@xmldom/xmldom";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import { FaTimes, FaCalendarAlt, FaClock } from "react-icons/fa";
 
 // 📌 Connexion à Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 // 🔧 Conversion heure locale → ISO sans décalage
 const toISOStringLocal = (dateStr) => {
@@ -141,12 +136,12 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
 
         <div className="mb-4">
           <label className="block text-sm font-semibold">Titre</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-3 border border-gray-300 rounded" />
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-3 border border-gray-300 rounded-sm" />
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-semibold">Catégories</label>
-          <select value={sport} onChange={(e) => setSport(e.target.value)} className="w-full p-3 border border-gray-300 rounded">
+          <select value={sport} onChange={(e) => setSport(e.target.value)} className="w-full p-3 border border-gray-300 rounded-sm">
             <option value="Cross">Cross</option>
             <option value="Marche">Marche</option>
             <option value="Trail">Trail</option>
@@ -159,14 +154,14 @@ const ModalAdd = ({ isOpen, onClose, onAddSuccess }) => {
           <div className="w-1/2 relative">
             <label className="block text-sm font-semibold">Date</label>
             <div className="relative">
-              <input type="date" value={uploadDate} onChange={(e) => setUploadDate(e.target.value)} className="w-full p-3 border border-gray-300 rounded pl-10" />
+              <input type="date" value={uploadDate} onChange={(e) => setUploadDate(e.target.value)} className="w-full p-3 border border-gray-300 rounded-sm pl-10" />
               <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             </div>
           </div>
           <div className="w-1/2 relative">
             <label className="block text-sm font-semibold">Heure</label>
             <div className="relative">
-              <input type="time" value={uploadTime} onChange={(e) => setUploadTime(e.target.value)} className="w-full p-3 border border-gray-300 rounded pl-10" />
+              <input type="time" value={uploadTime} onChange={(e) => setUploadTime(e.target.value)} className="w-full p-3 border border-gray-300 rounded-sm pl-10" />
               <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             </div>
           </div>

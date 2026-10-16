@@ -1,14 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import { FaTimes, FaMapMarkerAlt, FaRunning, FaTrophy, FaClock, FaRuler, FaTachometerAlt, FaFlag } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -160,7 +156,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
+            <div className="bg-linear-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
@@ -361,7 +357,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                 disabled={isSubmitting}
               >
                 Annuler
@@ -369,7 +365,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center gap-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

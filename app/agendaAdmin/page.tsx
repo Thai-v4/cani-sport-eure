@@ -94,7 +94,6 @@ export default function AgendaPage() {
   // Fonction pour changer la date (à implémenter avec votre composant Calendar)
   const handleDateChange = (direction: "prev" | "next") => {
     // Logique à implémenter pour changer la date
-    console.log(`Change date: ${direction}`);
     // Exemple: CalendarRef.current.navigateToDate(newDate);
   };
 
@@ -127,7 +126,6 @@ export default function AgendaPage() {
         throw new Error("Erreur lors de la récupération des événements");
 
       const data = await response.json();
-      console.log("Événements récupérés:", data);
       setEvents(data);
 
       // Mettre à jour l'heure de synchronisation
@@ -164,7 +162,6 @@ export default function AgendaPage() {
         visibility: newEventData.visibility, // Ajout de la visibilité
       };
 
-      console.log("Envoi des données d'événement:", eventData);
 
       // Appel à l'API
       const response = await fetch("/api/calendar", {
@@ -183,7 +180,6 @@ export default function AgendaPage() {
       }
 
       const result = await response.json();
-      console.log("Événement créé:", result);
 
       setNotification({
         type: "success",
@@ -277,7 +273,6 @@ export default function AgendaPage() {
         visibility: editEventData.visibility,
       };
 
-      console.log("Envoi des données de mise à jour:", eventData);
 
       // Appel à l'API
       const response = await fetch("/api/calendar", {
@@ -444,7 +439,7 @@ export default function AgendaPage() {
 
       <main className={`flex-1 flex flex-col ${isFullscreen ? "px-0" : ""}`}>
         {/* En-tête adaptative */}
-        <header className="bg-white shadow-sm z-10">
+        <header className="bg-white shadow-xs z-10">
           <div className="px-3 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
             <div className="flex items-center">
               {isMobileView && (
@@ -539,7 +534,7 @@ export default function AgendaPage() {
                     onClick={() => setCurrentView("month")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
                       currentView === "month"
-                        ? "bg-white shadow-sm text-gray-800"
+                        ? "bg-white shadow-xs text-gray-800"
                         : "text-gray-600"
                     }`}
                   >
@@ -549,7 +544,7 @@ export default function AgendaPage() {
                     onClick={() => setCurrentView("week")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
                       currentView === "week"
-                        ? "bg-white shadow-sm text-gray-800"
+                        ? "bg-white shadow-xs text-gray-800"
                         : "text-gray-600"
                     }`}
                   >
@@ -559,7 +554,7 @@ export default function AgendaPage() {
                     onClick={() => setCurrentView("day")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition text-center ${
                       currentView === "day"
-                        ? "bg-white shadow-sm text-gray-800"
+                        ? "bg-white shadow-xs text-gray-800"
                         : "text-gray-600"
                     }`}
                   >
@@ -597,7 +592,7 @@ export default function AgendaPage() {
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        className="rounded text-blue-600 mr-2"
+                        className="rounded-sm text-blue-600 mr-2"
                       />
                       <span className="text-sm">
                         Afficher les événements passés
@@ -606,14 +601,14 @@ export default function AgendaPage() {
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        className="rounded text-blue-600 mr-2"
+                        className="rounded-sm text-blue-600 mr-2"
                       />
                       <span className="text-sm">Afficher les weekends</span>
                     </label>
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        className="rounded text-blue-600 mr-2"
+                        className="rounded-sm text-blue-600 mr-2"
                       />
                       <span className="text-sm">
                         Afficher les détails des événements
@@ -628,7 +623,7 @@ export default function AgendaPage() {
 
         {/* Zone de calendrier - ajout de classes responsive */}
         <div className="flex-1 overflow-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full overflow-auto">
+          <div className="bg-white rounded-xl shadow-xs border border-gray-200 h-full overflow-auto">
             {isEventsLoading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
@@ -842,7 +837,7 @@ export default function AgendaPage() {
                                 title: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
+                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
                             placeholder="Ex: Sortie Cani-Cross à Evreux"
                             required
                           />
@@ -953,7 +948,7 @@ export default function AgendaPage() {
                                 checked={newEventData.allDay}
                                 onChange={(e) => {
                                   const isAllDay = e.target.checked;
-                                  let updatedData = {
+                                  const updatedData = {
                                     ...newEventData,
                                     allDay: isAllDay,
                                   };
@@ -987,7 +982,7 @@ export default function AgendaPage() {
                                 }}
                                 className="sr-only peer"
                               />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                               <span className="ml-3 text-sm font-medium">
                                 Journée entière
                               </span>
@@ -1020,7 +1015,7 @@ export default function AgendaPage() {
                                     start: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                 required
                               />
                             </div>
@@ -1048,7 +1043,7 @@ export default function AgendaPage() {
                                     end: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                               />
                               <p className="mt-1 text-xs text-gray-500">
                                 {newEventData.allDay
@@ -1082,7 +1077,7 @@ export default function AgendaPage() {
                                 description: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base"
+                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
                             placeholder="Décrivez votre événement (lieu de rendez-vous, informations pratiques...)"
                             maxLength={500}
                           />
@@ -1148,7 +1143,7 @@ export default function AgendaPage() {
                                         location: e.target.value,
                                       })
                                     }
-                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                     placeholder="Adresse ou point de rendez-vous"
                                   />
                                 </div>
@@ -1282,7 +1277,7 @@ export default function AgendaPage() {
                       <button
                         type="button"
                         onClick={() => setIsAddEventModalOpen(false)}
-                        className="px-4 py-2.5 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        className="px-4 py-2.5 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                         disabled={isSubmitting}
                       >
                         Annuler
@@ -1291,7 +1286,7 @@ export default function AgendaPage() {
                     <button
                       type="button"
                       onClick={handleCreateEvent}
-                      className={`${isMobileView ? "w-full" : ""} px-4 py-2.5 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center transition-colors ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
+                      className={`${isMobileView ? "w-full" : ""} px-4 py-2.5 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center transition-colors ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -1468,7 +1463,7 @@ export default function AgendaPage() {
                                 title: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
+                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5 transition-all duration-200 ease-in-out"
                             placeholder="Ex: Sortie Cani-Cross à Evreux"
                             required
                           />
@@ -1579,7 +1574,7 @@ export default function AgendaPage() {
                                 checked={editEventData.allDay}
                                 onChange={(e) => {
                                   const isAllDay = e.target.checked;
-                                  let updatedData = {
+                                  const updatedData = {
                                     ...editEventData,
                                     allDay: isAllDay,
                                   };
@@ -1613,7 +1608,7 @@ export default function AgendaPage() {
                                 }}
                                 className="sr-only peer"
                               />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                               <span className="ml-3 text-sm font-medium">
                                 Journée entière
                               </span>
@@ -1646,7 +1641,7 @@ export default function AgendaPage() {
                                     start: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                 required
                               />
                             </div>
@@ -1674,7 +1669,7 @@ export default function AgendaPage() {
                                     end: e.target.value,
                                   })
                                 }
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                               />
                             </div>
                           </div>
@@ -1704,7 +1699,7 @@ export default function AgendaPage() {
                                 description: e.target.value,
                               })
                             }
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base"
+                            className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base"
                             placeholder="Décrivez votre événement (lieu de rendez-vous, informations pratiques...)"
                             maxLength={500}
                           />
@@ -1770,7 +1765,7 @@ export default function AgendaPage() {
                                         location: e.target.value,
                                       })
                                     }
-                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
+                                    className="block w-full pl-10 rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-3 focus:ring-blue-200 focus:ring-opacity-50 text-base py-2.5"
                                     placeholder="Adresse ou point de rendez-vous"
                                   />
                                 </div>
@@ -1904,7 +1899,7 @@ export default function AgendaPage() {
                       <button
                         type="button"
                         onClick={handleDeleteEvent}
-                        className="w-full px-4 py-2.5 border border-red-300 bg-white text-red-600 font-medium rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors flex items-center justify-center"
+                        className="w-full px-4 py-2.5 border border-red-300 bg-white text-red-600 font-medium rounded-md hover:bg-red-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors flex items-center justify-center"
                         disabled={isSubmitting}
                       >
                         <svg
@@ -1930,7 +1925,7 @@ export default function AgendaPage() {
                           <button
                             type="button"
                             onClick={handleDeleteEvent}
-                            className="px-4 py-2.5 border border-red-300 bg-white text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors mr-auto"
+                            className="px-4 py-2.5 border border-red-300 bg-white text-red-600 rounded-md hover:bg-red-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors mr-auto"
                             disabled={isSubmitting}
                           >
                             <svg
@@ -1951,7 +1946,7 @@ export default function AgendaPage() {
                           <button
                             type="button"
                             onClick={() => setIsEditEventModalOpen(false)}
-                            className="ml-2 px-4 py-2.5 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                            className="ml-2 px-4 py-2.5 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                             disabled={isSubmitting}
                           >
                             Annuler
@@ -1962,7 +1957,7 @@ export default function AgendaPage() {
                       <button
                         type="button"
                         onClick={handleUpdateEvent}
-                        className={`${isMobileView ? "w-full" : "ml-2"} px-4 py-2.5 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center transition-colors ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
+                        className={`${isMobileView ? "w-full" : "ml-2"} px-4 py-2.5 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center transition-colors ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? (

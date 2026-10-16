@@ -1,7 +1,7 @@
 "use client"; // Indique que ce composant s'exécute côté client
 
 import { useEffect, useState } from "react"; // Hooks React
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import { useRouter, useParams } from "next/navigation"; // Navigation et paramètres d'URL
 import { v4 as uuidv4 } from "uuid"; // Générateur d'identifiants uniques
 import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale
@@ -9,7 +9,6 @@ import Footer from "../components/sidebars/Footer"; // Pied de page
 import WhiteBackground from "../components/backgrounds/WhiteBackground"; // Fond blanc
 import Image from "next/image"; // Composant d'image optimisé
 
-const supabase = createClientComponentClient(); // Initialisation du client Supabase
 
 export default function PetProfileForm() {
   const router = useRouter(); // Hook de navigation
@@ -232,7 +231,7 @@ export default function PetProfileForm() {
           {/* Formulaire */}
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-screen-sm bg-[#475C99] text-black p-6 sm:p-8 rounded-2xl shadow-2xl border-4 border-black space-y-5"
+            className="w-full max-w-(--breakpoint-sm) bg-[#475C99] text-black p-6 sm:p-8 rounded-2xl shadow-2xl border-4 border-black space-y-5"
           >
             {/* Zone d'upload/prévisualisation de l'image */}
             <div className="flex flex-col items-center">

@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react"; // Hooks React
 import { FaFolder, FaChevronRight } from "react-icons/fa"; // Icônes de dossier et flèche
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Client Supabase
+import supabase from "@/lib/supabaseClient"; // Client Supabase
+import { isComptable as hasComptableFlag } from "@/lib/roles";
+import { getSignedDownloadUrl } from "@/lib/storage";
 import Image from "next/image"; // Composant d'image optimisé Next.js
 import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale de navigation
 import Footer from "../components/sidebars/Footer"; // Pied de page
 import { useAuth } from "../components/Auth/AuthProvider"; // Hook d'authentification
 import { useRouter } from "next/navigation"; // Navigation Next.js
-
-// 📌 Connexion à Supabase
-const supabase = createClientComponentClient();
 
 // ✅ Définition du type des fichiers et dossiers
 interface DocumentFile {
@@ -37,8 +36,21 @@ export default function Document() {
 
   // Détermination des droits d'accès
   const isAdmin = role === "admin";
-  const isComptable = user?.user_metadata?.comptable === true;
-  const hasComptabiliteAccess = isAdmin && isComptable; // Accès comptabilité (admin + comptable)
+  const hasComptabiliteAccess = hasComptableFlag(user); // Accès comptabilité (admin + comptable)
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  // Téléchargement via une URL signée temporaire (le bucket peut rester privé)
+  const handleDownload = async (file: DocumentFile) => {
+    setDownloadError(null);
+    const signedUrl = file.url
+      ? await getSignedDownloadUrl(file.url, "club-documents", file.name)
+      : null;
+    if (signedUrl) {
+      window.location.href = signedUrl;
+    } else {
+      setDownloadError(`Impossible de télécharger « ${file.name} ». Réessayez ou contactez le bureau.`);
+    }
+  };
 
   // 📁 Récupérer les fichiers du dossier courant avec filtrage selon le rôle
   useEffect(() => {
@@ -177,6 +189,12 @@ export default function Document() {
           </div>
         </div>
 
+        {downloadError && (
+          <p role="alert" className="mb-4 text-red-700">
+            {downloadError}
+          </p>
+        )}
+
         {/* 📄 Tableau des fichiers et dossiers */}
         <div className="overflow-auto max-h-[600px] border border-gray-300 rounded-md">
           <table className="w-full border border-gray-300 text-gray-700">
@@ -209,19 +227,23 @@ export default function Document() {
                         height="20"
                       />
                     )}
-                    {/* Lien pour télécharger le fichier ou ouvrir le dossier */}
+                    {/* Bouton pour ouvrir le dossier ou télécharger le fichier (accessible au clavier) */}
                     {file.is_folder ? (
-                      <span className="text-blue-500 hover:underline">
-                        {file.name}
-                      </span>
-                    ) : (
-                      <a
-                        href={file.url}
-                        download={file.name}
-                        className="text-blue-500 hover:underline"
+                      <button
+                        type="button"
+                        onClick={() => handleFolderClick(file.id, file.name)}
+                        className="text-blue-500 hover:underline text-left"
                       >
                         {file.name}
-                      </a>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleDownload(file)}
+                        className="text-blue-500 hover:underline text-left"
+                      >
+                        {file.name}
+                      </button>
                     )}
                   </td>
                   <td className="p-4">{file.size}</td>

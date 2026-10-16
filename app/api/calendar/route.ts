@@ -1,53 +1,79 @@
-import { google } from "googleapis";
+import { auth, calendar as googleCalendar, type calendar_v3 } from "@googleapis/calendar";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getRequestUser, requireRole } from "@/lib/supabase/server";
+import { getRole } from "@/lib/roles";
 
-// ─── Google Calendar Auth ───
-const auth = new google.auth.JWT({
-  email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-  scopes: ["https://www.googleapis.com/auth/calendar"],
-});
-
-const calendar = google.calendar({ version: "v3", auth });
-
-// ─── Supabase User Auth ───
-async function getUserFromRequest(req: NextRequest) {
-  const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-  if (!token) return null;
-
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    }
-  );
-
-  const { data } = await supabase.auth.getUser();
-  return data.user;
+// ─── Google Calendar (compte de service), initialisé à la première requête ───
+let calendarClient: calendar_v3.Calendar | null = null;
+function getCalendar() {
+  if (!calendarClient) {
+    const jwt = new auth.JWT({
+      email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      scopes: ["https://www.googleapis.com/auth/calendar"],
+    });
+    calendarClient = googleCalendar({ version: "v3", auth: jwt });
+  }
+  return calendarClient;
 }
+const CALENDAR_ID = () => process.env.GOOGLE_CALENDAR_ID!;
 
-// ─── Utilitaire : Extraire données d'une description ───
-function parseColorVisibility(description: string = "#3b82f6::public::") {
-  const [color, visibility, details] = description.split("::");
+const DEFAULT_COLOR = "#3b82f6";
+const HEX_COLOR = /^#[0-9a-f]{3,8}$/i;
+const EVENT_ID = /^[a-zA-Z0-9_-]{1,1024}$/;
+
+// La description Google stocke « couleur::visibilité::détails »
+function parseColorVisibility(description = "") {
+  const [color, visibility, ...rest] = description.split("::");
   return {
-    color: color || "#3b82f6",
-    visibility: visibility || "public",
-    details: details || "",
+    color: HEX_COLOR.test(color ?? "") ? color : DEFAULT_COLOR,
+    visibility: visibility === "private" ? "private" : "public",
+    details: rest.join("::"),
   };
 }
 
-// ─── GET : Récupérer les événements ───
+type EventInput = {
+  summary: string;
+  location: string;
+  description: string;
+  start: string;
+  end: string;
+};
+
+// Valide le corps envoyé par les formulaires d'agenda (formats historiques compris)
+function parseEventInput(body: any): EventInput | string {
+  const title = typeof body?.title === "string" ? body.title.trim() : "";
+  if (!title || title.length > 200) return "Titre manquant ou trop long.";
+
+  const start = new Date(body.start);
+  const end = new Date(body.end ?? body.start);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return "Dates invalides.";
+  if (end < start) return "La fin de l'événement précède son début.";
+
+  // Le champ « color » peut contenir la chaîne complète ou seulement la couleur
+  const parsed = parseColorVisibility(typeof body.color === "string" ? body.color : "");
+  const visibility = body.visibility === "private" || body.visibility === "public" ? body.visibility : parsed.visibility;
+  const rawDetails = typeof body.description === "string" ? body.description : parsed.details;
+  const details = rawDetails.replaceAll("::", ":").slice(0, 5000);
+  const location = typeof body.location === "string" ? body.location.slice(0, 300) : "";
+
+  return {
+    summary: title,
+    location,
+    description: `${parsed.color}::${visibility}::${details}`,
+    start: start.toISOString(),
+    end: end.toISOString(),
+  };
+}
+
+// ─── GET : événements à venir ; les privés sont réservés aux adhérents validés ───
 export async function GET(req: NextRequest) {
   try {
-    const user = await getUserFromRequest(req);
-    const isAuthenticated = !!user;
+    const role = getRole(await getRequestUser(req));
+    const canSeePrivate = role === "admin" || role === "adherent";
 
-    const response = await calendar.events.list({
-      calendarId: process.env.GOOGLE_CALENDAR_ID!,
+    const response = await getCalendar().events.list({
+      calendarId: CALENDAR_ID(),
       timeMin: new Date().toISOString(),
       maxResults: 100,
       singleEvents: true,
@@ -55,19 +81,15 @@ export async function GET(req: NextRequest) {
     });
 
     const events = (response.data.items || [])
-      .filter((event) => {
-        const { visibility } = parseColorVisibility(event.description || "");
-        return visibility === "public" || isAuthenticated;
-      })
-      .map((event) => {
-        const { color, visibility, details } = parseColorVisibility(event.description || "");
+      .map((event) => ({ event, meta: parseColorVisibility(event.description || "") }))
+      .filter(({ meta }) => meta.visibility === "public" || canSeePrivate)
+      .map(({ event, meta }) => {
         const start = event.start?.dateTime || (event.start?.date ? new Date(event.start.date + "T00:00:00").toISOString() : null);
         const end = event.end?.dateTime || (event.end?.date ? new Date(new Date(event.end.date).getTime() - 1).toISOString() : null);
-
         return {
           id: event.id,
           summary: event.summary,
-          description: `${color}::${visibility}::${details}`,
+          description: `${meta.color}::${meta.visibility}::${meta.details}`,
           start: { dateTime: start },
           end: { dateTime: end },
           location: event.location || "",
@@ -76,96 +98,83 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(events);
   } catch (error) {
-    console.error("Erreur API Google Calendar", error);
+    console.error("Erreur API Google Calendar :", error);
     return NextResponse.json({ error: "Impossible de récupérer les événements" }, { status: 500 });
   }
 }
 
-// ─── POST : Créer un événement ───
+// ─── POST : créer un événement (admin) ───
 export async function POST(req: NextRequest) {
+  const guard = await requireRole(req, "admin");
+  if ("response" in guard) return guard.response;
+
+  const input = parseEventInput(await req.json().catch(() => null));
+  if (typeof input === "string") return NextResponse.json({ error: input }, { status: 400 });
+
   try {
-    const { title, start, end, color, location, description } = await req.json();
-    const user = await getUserFromRequest(req);
-    const isAuthenticated = !!user;
-
-    const { color: parsedColor, visibility } = parseColorVisibility(color);
-    const safeVisibility = visibility === "private" && isAuthenticated ? "private" : "public";
-
-    const event = {
-      summary: title,
-      location: location || "",
-      description: `${parsedColor}::${safeVisibility}::${description || ""}`,
-      start: { dateTime: new Date(start).toISOString(), timeZone: "Europe/Paris" },
-      end: { dateTime: new Date(end).toISOString(), timeZone: "Europe/Paris" },
-    };
-
-    const response = await calendar.events.insert({
-      calendarId: process.env.GOOGLE_CALENDAR_ID!,
-      requestBody: event,
+    const response = await getCalendar().events.insert({
+      calendarId: CALENDAR_ID(),
+      requestBody: {
+        summary: input.summary,
+        location: input.location,
+        description: input.description,
+        start: { dateTime: input.start, timeZone: "Europe/Paris" },
+        end: { dateTime: input.end, timeZone: "Europe/Paris" },
+      },
     });
-
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Erreur ajout événement:", error);
+    console.error("Erreur ajout événement :", error);
     return NextResponse.json({ error: "Impossible d'ajouter l'événement" }, { status: 500 });
   }
 }
 
-// ─── PUT : Modifier un événement ───
+// ─── PUT : modifier un événement (admin) ───
 export async function PUT(req: NextRequest) {
-  try {
-    const { id, title, start, end, color, location, description } = await req.json();
-    const user = await getUserFromRequest(req);
-    if (!user) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-    }
+  const guard = await requireRole(req, "admin");
+  if ("response" in guard) return guard.response;
 
-    await calendar.events.update({
-      calendarId: process.env.GOOGLE_CALENDAR_ID!,
-      eventId: id,
+  const body = await req.json().catch(() => null);
+  if (typeof body?.id !== "string" || !EVENT_ID.test(body.id)) {
+    return NextResponse.json({ error: "ID de l'événement invalide" }, { status: 400 });
+  }
+  const input = parseEventInput(body);
+  if (typeof input === "string") return NextResponse.json({ error: input }, { status: 400 });
+
+  try {
+    await getCalendar().events.update({
+      calendarId: CALENDAR_ID(),
+      eventId: body.id,
       requestBody: {
-        summary: title,
-        location: location || "",
-        description: color, // déjà formaté en "color::visibility::desc"
-        start: {
-          dateTime: new Date(start).toISOString(),
-          timeZone: "Europe/Paris",
-        },
-        end: {
-          dateTime: new Date(end).toISOString(),
-          timeZone: "Europe/Paris",
-        },
+        summary: input.summary,
+        location: input.location,
+        description: input.description,
+        start: { dateTime: input.start, timeZone: "Europe/Paris" },
+        end: { dateTime: input.end, timeZone: "Europe/Paris" },
       },
     });
-
     return NextResponse.json({ message: "Événement mis à jour avec succès" });
   } catch (error) {
-    console.error("Erreur mise à jour événement:", error);
+    console.error("Erreur mise à jour événement :", error);
     return NextResponse.json({ error: "Impossible de mettre à jour l'événement" }, { status: 500 });
   }
 }
 
-// ─── DELETE : Supprimer un événement ───
+// ─── DELETE : supprimer un événement (admin) ───
 export async function DELETE(req: NextRequest) {
+  const guard = await requireRole(req, "admin");
+  if ("response" in guard) return guard.response;
+
+  const body = await req.json().catch(() => null);
+  if (typeof body?.id !== "string" || !EVENT_ID.test(body.id)) {
+    return NextResponse.json({ error: "ID de l'événement invalide" }, { status: 400 });
+  }
+
   try {
-    const user = await getUserFromRequest(req);
-    if (!user) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-    }
-
-    const { id } = await req.json();
-    if (!id) {
-      return NextResponse.json({ error: "ID de l'événement requis" }, { status: 400 });
-    }
-
-    await calendar.events.delete({
-      calendarId: process.env.GOOGLE_CALENDAR_ID!,
-      eventId: id,
-    });
-
-    return NextResponse.json({ message: "Événement supprimé avec succès" }, { status: 200 });
+    await getCalendar().events.delete({ calendarId: CALENDAR_ID(), eventId: body.id });
+    return NextResponse.json({ message: "Événement supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur suppression événement:", error);
+    console.error("Erreur suppression événement :", error);
     return NextResponse.json({ error: "Impossible de supprimer l'événement" }, { status: 500 });
   }
 }

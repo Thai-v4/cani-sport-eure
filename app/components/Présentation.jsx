@@ -43,7 +43,7 @@ export default function Presentation() {
         <div className="lg:col-span-5 space-y-8">
           {/* Cross */}
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
               <Image src="/cani-trail.png" alt="Cross icon" width={48} height={48} className="opacity-70" />
             </div>
             <div>
@@ -57,7 +57,7 @@ export default function Presentation() {
 
           {/* Trail */}
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
               <Image src="/cani-trail.png" alt="Trail icon" width={48} height={48} className="opacity-70" />
             </div>
             <div>
@@ -71,7 +71,7 @@ export default function Presentation() {
 
           {/* Marche */}
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
               <Image src="/cani-marche.png" alt="Marche icon" width={48} height={48} className="opacity-70" />
             </div>
             <div>
@@ -85,7 +85,7 @@ export default function Presentation() {
 
           {/* VTT */}
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
               <Image src="/cani-vtt.png" alt="VTT icon" width={48} height={48} className="opacity-70" />
             </div>
             <div>
@@ -99,7 +99,7 @@ export default function Presentation() {
 
           {/* Trottinette */}
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-full flex items-center justify-center">
               <Image src="/cani-trottinette.png" alt="Trottinette icon" width={48} height={48} className="opacity-70" />
             </div>
             <div>

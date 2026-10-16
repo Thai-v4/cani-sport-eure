@@ -2,7 +2,7 @@
 
 import React from "react"; // Ajoutez cet import
 import { useEffect, useState, useMemo } from "react";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -30,10 +30,6 @@ const Filter = dynamic(() => import("../components/SportFilter"), {
 });
 
 // Initialisation du client Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-);
 
 // Interface pour les données de sortie
 interface Track {
@@ -49,10 +45,10 @@ const SkeletonCard = () => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
     <div className="h-48 bg-gray-200"></div>
     <div className="p-4">
-      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
-      <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+      <div className="h-5 bg-gray-200 rounded-sm w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-200 rounded-sm w-1/2 mb-3"></div>
+      <div className="h-3 bg-gray-200 rounded-sm w-full mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded-sm w-5/6"></div>
     </div>
   </div>
 );
@@ -114,7 +110,6 @@ const SortiesPage = () => {
   useEffect(() => {
     const fetchTracks = async () => {
       setIsLoading(true);
-      console.log("📡 Envoi de la requête à Supabase...");
 
       try {
         const { data, error } = await supabase.rpc("get_gpx_tracks_geojson");
@@ -239,7 +234,7 @@ const SortiesPage = () => {
       1,
       currentPage - Math.floor(maxPageNumbersToShow / 2)
     );
-    let endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
+    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
 
     if (endPage - startPage + 1 < maxPageNumbersToShow) {
       startPage = Math.max(1, endPage - maxPageNumbersToShow + 1);
@@ -362,7 +357,7 @@ const SortiesPage = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Sidebar />
       <WhiteBackground>
-        <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -382,7 +377,7 @@ const SortiesPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+              className="bg-white rounded-lg shadow-xs p-4 border border-gray-100"
             >
               <h3 className="text-lg font-medium text-gray-800 mb-2">
                 Total des sorties
@@ -397,7 +392,7 @@ const SortiesPage = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
-                className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+                className="bg-white rounded-lg shadow-xs p-4 border border-gray-100"
               >
                 <h3 className="text-lg font-medium text-gray-800 mb-2 flex items-center">
                   <SportBadge sport={sport} />
@@ -408,10 +403,10 @@ const SortiesPage = () => {
           </div>
 
           {/* Barre de recherche et filtres */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-8">
+          <div className="bg-white rounded-lg shadow-xs border border-gray-100 p-4 mb-8">
             <div className="flex flex-col md:flex-row gap-4">
               {/* Recherche */}
-              <div className="relative flex-grow">
+              <div className="relative grow">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FaSearch className="text-gray-400" />
                 </div>
@@ -458,7 +453,7 @@ const SortiesPage = () => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="border border-gray-300 rounded-md text-sm p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-md text-sm p-1 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                 >
                   <option value={6}>6</option>
                   <option value={12}>12</option>
@@ -516,7 +511,7 @@ const SortiesPage = () => {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center py-16 bg-white rounded-lg shadow-sm border border-gray-100"
+                  className="text-center py-16 bg-white rounded-lg shadow-xs border border-gray-100"
                 >
                   <div className="text-gray-400 mb-4">
                     <svg
@@ -547,7 +542,7 @@ const SortiesPage = () => {
                         setSelectedSport(null);
                         setSearchQuery("");
                       }}
-                      className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       Réinitialiser les filtres
                     </button>

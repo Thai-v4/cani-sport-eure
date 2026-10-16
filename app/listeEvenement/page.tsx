@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 import { FaSearch, FaCalendarAlt, FaFilter, FaTimes } from "react-icons/fa";
 import WhiteBackground from "../components/backgrounds/WhiteBackground";
 import Sidebar from "../components/sidebars/Sidebar";
@@ -58,7 +58,7 @@ const ListeEvenement = () => {
           data.map(async (event) => {
             // Récupération des données de profil pour chaque événement
             const { data: profileData } = await supabase
-              .from("profils")
+              .from("profils_publics")
               .select("nom, photo_profil")
               .eq("id", event.id_profil)
               .single();
@@ -123,7 +123,7 @@ const ListeEvenement = () => {
       <Sidebar />
 
       <WhiteBackground>
-        <div className="flex-grow px-4 sm:px-6 lg:px-10 py-6 max-w-7xl mx-auto">
+        <div className="grow px-4 sm:px-6 lg:px-10 py-6 max-w-7xl mx-auto">
           {/* En-tête de la page */}
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-2">
@@ -142,7 +142,7 @@ const ListeEvenement = () => {
                 placeholder="Rechercher un événement ou un auteur..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-3 pl-12 pr-12 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
+                className="w-full py-3 pl-12 pr-12 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-xs transition-all duration-200"
               />
               <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
               {searchQuery && (
@@ -208,7 +208,7 @@ const ListeEvenement = () => {
                           type="date"
                           value={startDate}
                           onChange={(e) => setStartDate(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -223,7 +223,7 @@ const ListeEvenement = () => {
                           type="date"
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -252,10 +252,10 @@ const ListeEvenement = () => {
                 >
                   <div className="h-48 bg-gray-200"></div>
                   <div className="p-4">
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    <div className="h-6 bg-gray-200 rounded-sm w-3/4 mb-3"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-1/2 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-full mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-5/6"></div>
                   </div>
                 </div>
               ))}
@@ -275,7 +275,7 @@ const ListeEvenement = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="text-center py-12 bg-white rounded-xl shadow-xs border border-gray-100">
               <div className="text-gray-400 mb-4">
                 <svg
                   className="mx-auto h-12 w-12"
@@ -306,7 +306,7 @@ const ListeEvenement = () => {
                     setStartDate("");
                     setEndDate("");
                   }}
-                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Effacer les filtres
                 </button>

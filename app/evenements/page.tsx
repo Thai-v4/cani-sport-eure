@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"; // Hooks React pour l'état et les effets
 import EventCard from "../components/EventCard"; // Composant pour afficher un événement
 import AddEventModal from "../components/AddEventModal"; // Modal pour ajouter un événement
-import supabase from "../../lib/supabaseClient"; // Client Supabase pour la base de données
+import supabase from "@/lib/supabaseClient"; // Client Supabase pour la base de données
 import SidebarAdmin from "../components/SidebarAdmin"; // Barre latérale admin
 import { FaSearch } from "react-icons/fa"; // Icône de recherche
 import { useAuth } from "../components/Auth/AuthProvider"; // Hook d'authentification
@@ -58,7 +58,7 @@ const EventsPage = () => {
         data.map(async (event) => {
           // Récupération des données du profil pour chaque événement
           const { data: profileData } = await supabase
-            .from("profils")
+            .from("profils_publics")
             .select("nom, photo_profil")
             .eq("id", event.id_profil)
             .single();
@@ -104,7 +104,7 @@ const EventsPage = () => {
             placeholder="Rechercher un événement"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full py-2 pl-4 pr-10 text-base sm:text-lg border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-900 shadow-md"
+            className="w-full py-2 pl-4 pr-10 text-base sm:text-lg border rounded-full focus:outline-hidden focus:ring-2 focus:ring-blue-900 shadow-md"
           />
           <FaSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-900 text-base sm:text-lg" />
         </div>

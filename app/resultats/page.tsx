@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 import Sidebar from "../components/sidebars/Sidebar";
 import Footer from "../components/sidebars/Footer";
 import WhiteBackground from "../components/backgrounds/WhiteBackground";
@@ -11,10 +11,6 @@ import { FaRunning, FaHiking, FaWalking, FaBiking, FaTrophy, FaMedal, FaAward } 
 import { GiKickScooter } from "react-icons/gi";
 
 // Initialisation du client Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-);
 
 // Mapping des catégories sportives vers leurs IDs
 const subCategoryMap: Record<string, number> = {
@@ -130,7 +126,7 @@ const ResultsPage: React.FC = () => {
   // Appliquer filtres, tri et pagination
   const filteredAndSortedData = useMemo(() => {
     // Filtrer par terme de recherche
-    let filteredData = data.filter(item => {
+    const filteredData = data.filter(item => {
       const searchFields = [
         item.nomActivite,
         item.lieu,
@@ -293,7 +289,7 @@ const ResultsPage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Sidebar />
       <WhiteBackground>
-        <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -321,7 +317,7 @@ const ResultsPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setMobileView(false)}
-                    className={`p-2 rounded ${!mobileView ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`p-2 rounded-sm ${!mobileView ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`}
                     aria-label="Vue tableau"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -330,7 +326,7 @@ const ResultsPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setMobileView(true)}
-                    className={`p-2 rounded ${mobileView ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`p-2 rounded-sm ${mobileView ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`}
                     aria-label="Vue carte"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -421,12 +417,12 @@ const ResultsPage: React.FC = () => {
               {isLoading ? (
                 <div className="py-8">
                   <div className="animate-pulse space-y-4">
-                    <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-8"></div>
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-8 bg-gray-200 rounded-sm w-3/4 mx-auto mb-8"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-5/6"></div>
+                    <div className="h-4 bg-gray-200 rounded-sm w-3/4"></div>
                   </div>
                 </div>
               ) : (
@@ -469,7 +465,7 @@ const ResultsPage: React.FC = () => {
                               setItemsPerPage(Number(e.target.value));
                               setCurrentPage(1);
                             }}
-                            className="border border-gray-300 rounded p-1 text-sm"
+                            className="border border-gray-300 rounded-sm p-1 text-sm"
                           >
                             <option value={5}>5</option>
                             <option value={10}>10</option>
@@ -549,12 +545,12 @@ const ResultsPage: React.FC = () => {
                           {currentItems.map((item, index) => (
                             <div 
                               key={item.id || index} 
-                              className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+                              className="bg-white rounded-lg shadow-xs border border-gray-200 p-4"
                             >
                               <div className="flex justify-between items-start mb-2">
                                 <h3 className="font-medium text-blue-900">{item.nomActivite || 'Activité sans nom'}</h3>
                                 {item.classement && (
-                                  <div className="flex-shrink-0">
+                                  <div className="shrink-0">
                                     {renderClassement(item.classement)}
                                   </div>
                                 )}
@@ -600,7 +596,7 @@ const ResultsPage: React.FC = () => {
                       {/* Pagination adaptée au mobile */}
                       {totalPages > 1 && (
                         <div className="flex justify-center mt-6">
-                          <nav className="inline-flex rounded-md shadow-sm" aria-label="Pagination">
+                          <nav className="inline-flex rounded-md shadow-xs" aria-label="Pagination">
                             <button
                               className={`relative inline-flex items-center px-3 py-2 rounded-l-md border text-sm font-medium ${
                                 currentPage === 1 

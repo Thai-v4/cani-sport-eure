@@ -475,7 +475,7 @@ export default function MyCalendar({
                 .map((event) => (
                   <div
                     key={event.id}
-                    className="p-3 rounded-lg shadow-sm border-l-4 bg-white"
+                    className="p-3 rounded-lg shadow-xs border-l-4 bg-white"
                     style={{ borderLeftColor: event.color || "#3b82f6" }}
                     onClick={() => handleSelectEvent(event)}
                   >
@@ -581,7 +581,7 @@ export default function MyCalendar({
                   href={generateGoogleCalendarUrl(eventToEdit)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-green-600 text-white px-4 py-2 rounded"
+                  className="bg-green-600 text-white px-4 py-2 rounded-sm"
                 >
                   Importer
                 </a>
@@ -611,7 +611,7 @@ export default function MyCalendar({
                       setShowModal(true);
                       setShowActionModal(false);
                     }}
-                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-sm"
                   >
                     Modifier
                   </button>
@@ -620,7 +620,7 @@ export default function MyCalendar({
                       setShowDeleteModal(true);
                       setShowActionModal(false);
                     }}
-                    className="bg-red-600 text-white px-4 py-2 rounded"
+                    className="bg-red-600 text-white px-4 py-2 rounded-sm"
                   >
                     Supprimer
                   </button>
@@ -628,7 +628,7 @@ export default function MyCalendar({
               )}
               <button
                 onClick={() => setShowActionModal(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded"
+                className="bg-gray-400 text-white px-4 py-2 rounded-sm"
               >
                 Annuler
               </button>
@@ -694,7 +694,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-blue-500 focus:border-blue-500"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                   />
@@ -706,7 +706,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
@@ -718,7 +718,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                   />
@@ -730,7 +730,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
@@ -742,7 +742,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                   />
@@ -754,7 +754,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -765,7 +765,7 @@ export default function MyCalendar({
                     Description
                   </label>
                   <textarea
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     rows={3}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
@@ -778,7 +778,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="color"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={newColor}
                     onChange={(e) => setNewColor(e.target.value)}
                   />
@@ -789,7 +789,7 @@ export default function MyCalendar({
                     Visibilité
                   </label>
                   <select
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value)}
                   >
@@ -825,7 +825,7 @@ export default function MyCalendar({
       {/* Toast Notification */}
       {toast.show && (
         <div
-          className={`fixed bottom-4 right-4 px-6 py-3 rounded shadow-lg ${toast.type === "success" ? "bg-green-600" : "bg-red-600"} text-white`}
+          className={`fixed bottom-4 right-4 px-6 py-3 rounded-sm shadow-lg ${toast.type === "success" ? "bg-green-600" : "bg-red-600"} text-white`}
         >
           {toast.message}
           <button
@@ -911,7 +911,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-blue-500 focus:border-blue-500"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                   />
@@ -923,7 +923,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
@@ -935,7 +935,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                   />
@@ -947,7 +947,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
@@ -959,7 +959,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="time"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                   />
@@ -971,7 +971,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -982,7 +982,7 @@ export default function MyCalendar({
                     Description
                   </label>
                   <textarea
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     rows={3}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
@@ -995,7 +995,7 @@ export default function MyCalendar({
                   </label>
                   <input
                     type="color"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={newColor}
                     onChange={(e) => setNewColor(e.target.value)}
                   />
@@ -1006,7 +1006,7 @@ export default function MyCalendar({
                     Visibilité
                   </label>
                   <select
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2"
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value)}
                   >

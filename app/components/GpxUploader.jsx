@@ -1,14 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { DOMParser } from "@xmldom/xmldom";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 
 // 📌 Connexion à Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 const GpxUploader = () => {
   const [file, setFile] = useState(null);
@@ -33,7 +28,6 @@ const GpxUploader = () => {
 
       const ele = eleTag.length > 0 ? parseFloat(eleTag[0].textContent) : null;
 
-      console.log(`🔍 Point ${i}: lat=${lat}, lon=${lon}, ele=${ele}`);
 
       points.push([parseFloat(lon), parseFloat(lat), ele]);
     }
@@ -73,7 +67,6 @@ const GpxUploader = () => {
       return;
     }
   
-    console.log("✅ Fichier GPX uploadé :", data);
   
     // 📌 Étape 2 : Récupération de l'URL publique du fichier
     // 📌 Récupération de l'URL publique après l'upload
@@ -84,7 +77,6 @@ const GpxUploader = () => {
 
     const publicUrl = publicUrlData.publicUrl || `https://rgnnrsrdrfzvjtfevim.supabase.co/storage/v1/object/public/${filePath}`; 
 
-    console.log("🌍 URL publique du fichier GPX :", publicUrl);
 
   
     // 📌 Étape 3 : Génération de la date et heure actuelle
@@ -102,21 +94,7 @@ const GpxUploader = () => {
     // 📌 Étape 5 : Conversion des coordonnées en WKT (Well-Known Text)
     const wktLineString = `LINESTRINGZ(${coordinates.map(([lon, lat, ele]) => `${lon} ${lat} ${ele || 0}`).join(", ")})`;
   
-    console.log("🚀 Données envoyées à Supabase :", {
-      name: sanitizedFileName,
-      sport: sport,
-      date_time: dateToInsert,
-      file_url: publicUrl,
-      geom: `SRID=4326;${wktLineString}`
-    });
   
-    console.log("📝 Données envoyées à Supabase :", {
-      name: sanitizedFileName,
-      sport: sport,
-      date_time: dateToInsert,
-      file_url: publicUrl, // ✅ Vérification avant insertion
-      geom: `SRID=4326;${wktLineString}`
-    });
     
     // 📌 Étape 6 : Insérer les données en base avec `file_url`, `date_time`, et `sport`
     const { error: dbError } = await supabase

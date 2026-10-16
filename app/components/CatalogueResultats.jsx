@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { FaTrash, FaEdit, FaChevronRight, FaChevronDown, FaPlus } from "react-icons/fa";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient"; // Client Supabase
 import ModalAdd from "./AddResultatModal";
 import ModalEdit from "./ModalEditResultat";
 import ModalConfirm from "./ModalConfirm";
 
 export default function TableResultats({ isModalOpen, setIsModalOpen }) {
-  const supabase = createClientComponentClient();
   const [resultats, setResultats] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -176,7 +175,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
   }
 
   return (
-    <div className="bg-white rounded-lg w-full overflow-hidden shadow-sm">
+    <div className="bg-white rounded-lg w-full overflow-hidden shadow-xs">
       {/* Vue desktop - tableau standard */}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm text-gray-700 border-collapse">
@@ -334,7 +333,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
             </p>
           </div>
           <div className="flex justify-center sm:justify-end flex-1">
-            <nav className="inline-flex rounded-md shadow-sm -space-x-px">
+            <nav className="inline-flex rounded-md shadow-xs -space-x-px">
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}

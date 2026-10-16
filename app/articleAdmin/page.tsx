@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArticleCardAdmin } from "../components/ArticlesComponentsAdmin";
 import AddArticleModal from "../components/AddArticleModal";
 import EditArticleModal from "../components/EditArticleModal";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "@/lib/supabaseClient";
 import SidebarAdmin from "../components/SidebarAdmin";
 import ModalConfirm from "../components/ModalConfirm";
 import { useAuth } from "@/app/components/Auth/AuthProvider";
@@ -33,7 +33,6 @@ interface Article {
 }
 
 const ArticlesPage: React.FC = () => {
-  const supabase = createClientComponentClient();
   const { user, role, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
@@ -93,7 +92,7 @@ const ArticlesPage: React.FC = () => {
       const articlesWithProfiles = await Promise.all(
         data.map(async (article) => {
           const { data: profileData } = await supabase
-            .from("profils")
+            .from("profils_publics")
             .select("nom, photo_profil")
             .eq("id", article.id_profil)
             .single();
@@ -234,7 +233,7 @@ const ArticlesPage: React.FC = () => {
 
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm transition-colors self-end md:self-auto"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-xs transition-colors self-end md:self-auto"
                 >
                   <FaPlus className="mr-2" />
                   <span>Nouvel article</span>
@@ -242,16 +241,16 @@ const ArticlesPage: React.FC = () => {
               </div>
 
               {/* Barre de recherche et filtres */}
-              <div className="bg-white p-4 rounded-xl shadow-sm mb-6">
+              <div className="bg-white p-4 rounded-xl shadow-xs mb-6">
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   {/* Recherche */}
-                  <div className="relative flex-grow">
+                  <div className="relative grow">
                     <input
                       type="text"
                       placeholder="Rechercher un article"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full py-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full py-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   </div>
@@ -329,7 +328,7 @@ const ArticlesPage: React.FC = () => {
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                         </div>
                         <div>
@@ -341,7 +340,7 @@ const ArticlesPage: React.FC = () => {
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -372,7 +371,7 @@ const ArticlesPage: React.FC = () => {
                     </p>
                   </div>
                 ) : filteredArticles.length === 0 ? (
-                  <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+                  <div className="bg-white rounded-xl shadow-xs p-8 text-center">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FaSearch className="text-gray-400 text-xl" />
                     </div>

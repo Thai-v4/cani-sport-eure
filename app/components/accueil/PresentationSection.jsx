@@ -154,7 +154,7 @@ export default function Presentation() {
               className={`flex items-start gap-4 activity-item ${isVisible ? 'activity-visible' : ''}`} 
               style={{ animationDelay: `${0.5 + index * 0.2}s` }}
             >
-              <div className="w-26 h-26 flex-shrink-0 bg-white rounded-full flex items-center justify-center">
+              <div className="w-26 h-26 shrink-0 bg-white rounded-full flex items-center justify-center">
                 <Image src={activity.img} alt={`${activity.title} icon`} width={150} height={150} className="opacity-70" />
               </div>
               <div>

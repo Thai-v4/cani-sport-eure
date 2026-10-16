@@ -1,6 +1,6 @@
 "use client";
+import Link from "next/link";
 
-import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "../../components/Auth/AuthProvider"; // ✅ Utilisation du contexte
@@ -8,12 +8,7 @@ import BlueBackground from "../backgrounds/BlueBackground";
 import LogoutButton from "../Auth/LogoutButton";
 
 export default function Sidebar() {
-  const { user, role, isLoading } = useAuth();
-
-  useEffect(() => {
-    console.log("Rôle détecté :", role);
-    console.log("User :", user);
-  }, [user, role]);
+  const { user, role } = useAuth();
 
   const pathname = usePathname();
 
@@ -21,7 +16,7 @@ export default function Sidebar() {
     <>
       {/* Bouton d'ouverture de la sidebar */}
       <button
-        className="fixed top-4 right-4 primary_button shadow-lg transition p-2 z-[9999]"
+        className="fixed top-4 right-4 primary_button shadow-lg transition p-2 z-9999"
         onClick={() => {
           document
             .getElementById("sidebar")
@@ -40,13 +35,13 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         id="sidebar"
-        className="fixed top-0 right-0 h-full w-64 shadow-lg transform translate-x-full transition-transform duration-300 z-[9999] border-l-2 border-black"
+        className="fixed top-0 right-0 h-full w-64 shadow-lg transform translate-x-full transition-transform duration-300 z-9999 border-l-2 border-black"
       >
-        <div className="absolute inset-0 z-[9998]">
+        <div className="absolute inset-0 z-9998">
           <BlueBackground maxSize />
         </div>
 
-        <div className="relative z-[9999] flex flex-col items-center mt-16 space-y-4">
+        <div className="relative z-9999 flex flex-col items-center mt-16 space-y-4">
           <button
             className="absolute top-0 right-0 translate-y-[-90%] p-2 drop-shadow-lg"
             onClick={() => {
@@ -66,36 +61,36 @@ export default function Sidebar() {
 
           <ul className="primary_sidebar tracking-wide space-y-4 text-center">
             <li>
-              <a
+              <Link
                 href="/#accueil"
                 className={`hover:text-gray-300 ${pathname === "/accueil" ? "font-bold" : ""}`}
               >
                 Le Club
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/articles"
                 className={`hover:text-gray-300 ${pathname === "/articles" ? "font-bold" : ""}`}
               >
                 Articles
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/listeEvenement"
                 className={`hover:text-gray-300 ${pathname === "/listeEvenement" ? "font-bold" : ""}`}
               >
                 Événements
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/SortieCanine"
                 className={`hover:text-gray-300 ${pathname === "/SortieCanine" ? "font-bold" : ""}`}
               >
                 Catalogue des sorties
-              </a>
+              </Link>
             </li>
             <li>
               <a
@@ -118,44 +113,44 @@ export default function Sidebar() {
             {(role === "adherent" || role === "admin") && (
               <>
                 <li>
-                  <a
+                  <Link
                     href="/album"
                     className={`hover:text-gray-300 ${pathname === "/album" ? "font-bold" : ""}`}
                   >
                     Album
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/agenda"
                     className={`hover:text-gray-300 ${pathname === "/agenda" ? "font-bold" : ""}`}
                   >
                     Agenda
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/resultats"
                     className={`hover:text-gray-300 ${pathname === "/resultats" ? "font-bold" : ""}`}
                   >
                     Resultats
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/creation-profil"
                     className={`hover:text-gray-300 ${pathname === "/creation-profil" ? "font-bold" : ""}`}
                   >
                     Mon profil
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/dashboard/client"
                     className={`hover:text-gray-300 ${pathname === "/dashboard/client" ? "font-bold" : ""}`}
                   >
                     Tableau de bord
-                  </a>
+                  </Link>
                 </li>
               </>
             )}
@@ -164,17 +159,17 @@ export default function Sidebar() {
             {role === "admin" && (
               <>
                 <li>
-                  <a
+                  <Link
                     href="/Document"
                     className={`hover:text-gray-300 ${pathname === "/Document" ? "font-bold" : ""}`}
                   >
                     Documents
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/dashboard/admin" className="hover:text-gray-300">
+                  <Link href="/dashboard/admin" className="hover:text-gray-300">
                     Admin
-                  </a>
+                  </Link>
                 </li>
               </>
             )}
@@ -182,12 +177,12 @@ export default function Sidebar() {
             {/* 🔒 Se connecter / Se déconnecter */}
             {!user && (
               <li>
-                <a
+                <Link
                   href="/connexion"
                   className={`hover:text-yellow_primary ${pathname === "/dashboard/client" ? "font-bold" : ""}`}
                 >
                   Se connecter
-                </a>
+                </Link>
               </li>
             )}
             {user && (

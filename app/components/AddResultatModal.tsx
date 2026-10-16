@@ -2,12 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { FaTimes } from "react-icons/fa";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient"; // Client Supabase (session partagée)
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface ModalAddProps {
   isOpen: boolean;
@@ -220,7 +216,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
             <select
               value={id_profil}
               onChange={(e) => setIdProfil(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
             >
               <option value="">-- Sélectionner un participant --</option>
               {profils.map((p) => (
@@ -233,7 +229,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
             <select
               value={id_chien}
               onChange={(e) => setIdChien(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
             >
               <option value="">-- Sélectionner un chien --</option>
               {filteredChiens.map((c) => (
@@ -246,7 +242,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
             <select
               value={id_categorie}
               onChange={(e) => setIdCategorie(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
             >
               <option value="">-- Sélectionner une catégorie --</option>
               {categories.map((cat) => (
@@ -259,7 +255,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
             <select
               value={id_type}
               onChange={(e) => setIdType(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
             >
               <option value="">-- Sélectionner un type --</option>
               {types.map((t) => (
@@ -277,7 +273,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="p-3 border border-gray-300 rounded w-full"
+                className="p-3 border border-gray-300 rounded-sm w-full"
               />
             </div>
 
@@ -290,7 +286,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
                 step="1"
                 value={temps}
                 onChange={(e) => setTemps(e.target.value)}
-                className="p-3 border border-gray-300 rounded w-full"
+                className="p-3 border border-gray-300 rounded-sm w-full"
                 placeholder="Temps"
               />
             </div>
@@ -299,14 +295,14 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
               type="text"
               value={vitesse}
               onChange={(e) => setVitesse(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="Vitesse"
             />
             <input
               type="text"
               value={distance}
               onChange={(e) => setDistance(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="Distance"
             />
             <div>
@@ -314,7 +310,7 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="p-3 border border-gray-300 rounded w-full"
+                className="p-3 border border-gray-300 rounded-sm w-full"
               >
                 <option value="">-- Sélectionner une région --</option>
                 {regions.map((regionName) => (
@@ -328,28 +324,28 @@ const ModalAdd = ({ isOpen, onClose, onAdd }: ModalAddProps) => {
               type="text"
               value={lieu}
               onChange={(e) => setLieu(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="Lieu"
             />
             <input
               type="text"
               value={nomActivite}
               onChange={(e) => setNomActivite(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="Nom Activité"
             />
             <input
               type="text"
               value={kmAR}
               onChange={(e) => setKmAR(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="km Aller-Retour"
             />
             <input
               type="text"
               value={classement}
               onChange={(e) => setClassement(e.target.value)}
-              className="p-3 border border-gray-300 rounded"
+              className="p-3 border border-gray-300 rounded-sm"
               placeholder="Classement"
             />
           </div>

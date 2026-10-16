@@ -3,7 +3,7 @@ import { X, Upload, Image as ImageIcon, AlertCircle, CheckCircle, Loader, Save, 
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 
 interface ModalProps {
   isOpen: boolean;
@@ -365,7 +365,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                     placeholder="Titre de l'article"
                     className={`w-full px-4 py-3 rounded-lg border ${
                       fieldErrors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
+                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
                     maxLength={100}
                   />
                   {fieldErrors.title && (
@@ -391,7 +391,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                     rows={8}
                     className={`w-full px-4 py-3 rounded-lg border ${
                       fieldErrors.content ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
+                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
                   />
                   {fieldErrors.content && (
                     <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -434,14 +434,14 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                         <button
                           type="button"
                           onClick={handleCancelImageChange}
-                          className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded flex items-center text-sm"
+                          className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm flex items-center text-sm"
                         >
                           <X size={14} className="mr-1" /> Annuler
                         </button>
                         <button
                           type="button"
                           onClick={handleTriggerImageUpload}
-                          className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded flex items-center text-sm"
+                          className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-sm flex items-center text-sm"
                         >
                           <ImageIcon size={14} className="mr-1" /> Changer
                         </button>
@@ -516,7 +516,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
             <button
               type="button"
               onClick={handleCloseWithConfirmation}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-gray-500"
               disabled={isSubmitting}
             >
               Annuler
