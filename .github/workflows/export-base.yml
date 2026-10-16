@@ -1,0 +1,57 @@
+# Export mensuel de la base Supabase, CHIFFRÉ : le dépôt est public et les fichiers
+# produits par une tâche y sont téléchargeables par tout compte GitHub.
+# Restauration : voir « Restaurer un export » en bas de ce fichier.
+name: Export mensuel de la base
+
+on:
+  schedule:
+    - cron: "43 3 1 * *" # le 1er de chaque mois vers 5 h (heure de Paris)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exporter la base
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          mkdir export
+          # Client Postgres 17 : compatible avec les serveurs 15 et 17
+          docker run --rm -e DB="$SUPABASE_DB_URL" -v "$PWD/export":/out postgres:17 sh -c '
+            set -e
+            pg_dump "$DB" --schema=public --no-owner --no-privileges -f /out/public.sql
+            pg_dump "$DB" --data-only --table=auth.users --table=auth.identities -f /out/comptes.sql
+          '
+          ls -la export
+          test -s export/public.sql && test -s export/comptes.sql
+
+      - name: Chiffrer l'export
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          test -n "$BACKUP_PASSPHRASE"
+          name="cani-sport-eure-$(date -u +%Y-%m-%d)"
+          tar -czf "$name.tar.gz" -C export .
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 -o "$name.tar.gz.gpg" "$name.tar.gz"
+          rm -rf export "$name.tar.gz"
+          echo "ARCHIVE=$name.tar.gz.gpg" >> "$GITHUB_ENV"
+
+      - name: Conserver l'export chiffré (90 jours, soit les 3 derniers mois)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARCHIVE }}
+          path: ${{ env.ARCHIVE }}
+          retention-days: 90
+          if-no-files-found: error
+
+# Restaurer un export :
+#   1. Télécharger l'archive depuis l'onglet Actions (exécution du mois voulu).
+#   2. gpg --decrypt cani-sport-eure-AAAA-MM-JJ.tar.gz.gpg | tar -xz
+#   3. Sur un projet Supabase vide : activer l'extension postgis (schéma public),
+#      puis psql "<connexion>" -f public.sql et -f comptes.sql
+#   Les fichiers du stockage (photos, documents, GPX) ne sont pas inclus.

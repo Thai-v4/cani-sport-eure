@@ -1,0 +1,43 @@
+# Empêche la mise en veille du projet Supabase (plan gratuit : pause après 7 jours
+# sans activité) en interrogeant la base chaque semaine, et vérifie que le site répond.
+name: Maintien en éveil de Supabase
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # chaque lundi vers 8 h (heure de Paris)
+  workflow_dispatch:
+
+permissions:
+  actions: write # pour réactiver les tâches planifiées (voir la dernière étape)
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Interroger la base (activité Supabase)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/publication?select=id&limit=1")
+          echo "Réponse de Supabase : $code"
+          test "$code" = "200"
+
+      - name: Vérifier que le site répond
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://cani-sport-eure-three.vercel.app/)
+          echo "Réponse du site : $code"
+          test "$code" = "200"
+
+      # GitHub désactive les tâches planifiées d'un dépôt public après 60 jours sans
+      # activité. Réactiver explicitement les deux tâches remet ce compteur à zéro.
+      - name: Garder les tâches planifiées actives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in maintien-supabase.yml export-base.yml; do
+            gh api -X PUT "repos/${{ github.repository }}/actions/workflows/$wf/enable" && echo "$wf : active"
+          done
