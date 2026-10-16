@@ -263,13 +263,12 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md w-full overflow-hidden">
+    <div className="w-full overflow-hidden bg-paper">
       {/* Header avec titre et actions */}
       <div className="p-4 sm:p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-          <FaMapMarkedAlt className="mr-2 text-blue-600" />
-          Catalogue des Sorties
-        </h2>
+        <h1 className="display text-3xl md:text-4xl">
+          Sorties
+        </h1>
 
         <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-auto">
           {/* Barre de recherche */}
@@ -321,18 +320,14 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
             </button>
 
             {isFilterOpen && (
-              <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+              <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md bg-white ring-1 ring-black ring-opacity-5 z-10 border border-rule">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <button
                     onClick={() => {
                       setFilterType("all");
                       setIsFilterOpen(false);
                     }}
-                    className={`block px-4 py-2 text-sm w-full text-left ${
-                      filterType === "all"
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }`}
+                    className={`block px-4 py-2 text-sm w-full text-left ${ filterType === "all" ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-50" }`}
                     role="menuitem"
                   >
                     Toutes les catégories
@@ -345,11 +340,7 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
                         setFilterType(category);
                         setIsFilterOpen(false);
                       }}
-                      className={`block px-4 py-2 text-sm w-full text-left ${
-                        filterType === category
-                          ? "bg-gray-100 text-gray-900"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
+                      className={`block px-4 py-2 text-sm w-full text-left ${ filterType === category ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-50" }`}
                       role="menuitem"
                     >
                       {category}
@@ -541,11 +532,7 @@ export default function CatalogueSorties({ isModalOpen, setIsModalOpen }) {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center ${
-              notification.type === "success"
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
-            }`}
+            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg z-50 flex items-center ${ notification.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white" }`}
           >
             {notification.type === "success" ? (
               <svg

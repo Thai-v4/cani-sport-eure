@@ -98,7 +98,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, isEditable = false }) => {
   const formattedDate = timeSince(event.created_at);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4 border relative flex flex-col h-[500px]">
+    <div className="bg-white rounded-lg p-4 border relative flex flex-col h-[500px]">
       {/* Boutons Modifier/Supprimer */}
       {isEditable && (
         <div className="absolute top-3 right-3 flex space-x-2 text-gray-600">

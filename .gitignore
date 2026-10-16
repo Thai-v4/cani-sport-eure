@@ -42,3 +42,11 @@ debug.log
 
 # modèle de configuration versionné
 !.env.example
+
+# outils locaux
+.claude/
+
+# captures et journaux de revue Impeccable (locaux)
+.impeccable/review/
+.impeccable/questions/
+.impeccable/hook.cache.json

@@ -175,7 +175,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
   }
 
   return (
-    <div className="bg-white rounded-lg w-full overflow-hidden shadow-xs">
+    <div className="bg-white rounded-lg w-full overflow-hidden border border-rule">
       {/* Vue desktop - tableau standard */}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm text-gray-700 border-collapse">
@@ -207,7 +207,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
                 <td className="p-3 text-center">{res.distance} km</td>
                 <td className="p-3 text-center">
                   {res.classement ? (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-sm">
                       {res.classement}
                     </span>
                   ) : (
@@ -254,7 +254,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
                   </p>
                   <div className="mt-1 flex items-center text-sm text-gray-500">
                     <span className="mr-2">{res.date}</span>
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-sm">
                       {res.categorieNom}
                     </span>
                   </div>
@@ -333,15 +333,11 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
             </p>
           </div>
           <div className="flex justify-center sm:justify-end flex-1">
-            <nav className="inline-flex rounded-md shadow-xs -space-x-px">
+            <nav className="inline-flex rounded-md -space-x-px">
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border ${
-                  currentPage === 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-500 hover:bg-gray-50"
-                } text-sm font-medium border-gray-300`}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border ${ currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-500 hover:bg-gray-50" } text-sm font-medium border-gray-300`}
               >
                 <span className="sr-only">Précédent</span>
                 &larr;
@@ -352,11 +348,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
                 <button
                   key={index}
                   onClick={() => paginate(index + 1)}
-                  className={`relative inline-flex items-center px-4 py-2 border ${
-                    currentPage === index + 1
-                      ? "bg-blue-50 border-blue-500 z-10 text-blue-600"
-                      : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                  } text-sm font-medium`}
+                  className={`relative inline-flex items-center px-4 py-2 border ${ currentPage === index + 1 ? "bg-blue-50 border-blue-500 z-10 text-blue-600" : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" } text-sm font-medium`}
                 >
                   {index + 1}
                 </button>
@@ -365,11 +357,7 @@ export default function TableResultats({ isModalOpen, setIsModalOpen }) {
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === Math.ceil(resultats.length / itemsPerPage)}
-                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border ${
-                  currentPage === Math.ceil(resultats.length / itemsPerPage)
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-500 hover:bg-gray-50"
-                } text-sm font-medium border-gray-300`}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border ${ currentPage === Math.ceil(resultats.length / itemsPerPage) ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-500 hover:bg-gray-50" } text-sm font-medium border-gray-300`}
               >
                 <span className="sr-only">Suivant</span>
                 &rarr;

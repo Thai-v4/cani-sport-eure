@@ -1,35 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getRole } from "./lib/roles";
+import { ADMIN_PATHS, MEMBER_PATHS, matchesPath } from "./lib/routes";
 
 // Pages réservées, vérifiées côté serveur avant tout rendu.
 // La RLS Supabase reste la protection des données ; ceci protège l'accès aux écrans.
-const ADMIN_PATHS = [
-  "/dashboard/admin",
-  "/agendaAdmin",
-  "/articleAdmin",
-  "/resultatAdmin",
-  "/DocumentManager",
-  "/AlbumManager",
-  "/catalogue",
-  "/evenements",
-  "/tableauAdmin",
-];
-
-const MEMBER_PATHS = [
-  "/dashboard/client",
-  "/album",
-  "/agenda",
-  "/resultats",
-  "/creation-profil",
-  "/creation-chien",
-  "/Document",
-  "/galerie",
-  "/gallery",
-];
-
-const matches = (pathname: string, paths: string[]) =>
-  paths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+const matches = matchesPath;
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -320,14 +320,14 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
+      <div className="fixed inset-0 flex items-center justify-center bg-ink/60 z-50 p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.2 }}
           ref={modalRef}
-          className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col border border-rule"
         >
           {/* En-tête du modal */}
           <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -363,9 +363,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Titre de l'article"
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      fieldErrors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
+                    className={`w-full px-4 py-3 rounded-lg border ${ fieldErrors.title ? 'border-red-500 bg-red-50' : 'border-gray-300' } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
                     maxLength={100}
                   />
                   {fieldErrors.title && (
@@ -389,9 +387,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Contenu de l'article..."
                     rows={8}
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      fieldErrors.content ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
+                    className={`w-full px-4 py-3 rounded-lg border ${ fieldErrors.content ? 'border-red-500 bg-red-50' : 'border-gray-300' } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none`}
                   />
                   {fieldErrors.content && (
                     <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -425,8 +421,8 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                           className="object-cover"
                         />
                       </div>
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all">
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2 text-sm">
+                      <div className="absolute inset-0 bg-ink/0 group-hover: flex items-center justify-center transition-all">
+                        <div className="absolute bottom-0 left-0 right-0 bg-ink/60 text-white p-2 text-sm">
                           Nouvelle image sélectionnée
                         </div>
                       </div>
@@ -460,7 +456,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                           className="object-cover"
                         />
                       </div>
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-ink/0 group-hover: transition-all duration-200 flex items-center justify-center">
                         <div className="hidden group-hover:flex gap-2">
                           <button
                             type="button"
@@ -485,9 +481,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                   {(!currentImageUrl || (replaceImage && !imagePreview)) && (
                     <div 
                       onClick={handleTriggerImageUpload}
-                      className={`border-2 border-dashed ${
-                        fieldErrors.image ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-blue-500'
-                      } rounded-lg p-8 text-center cursor-pointer transition-colors`}
+                      className={`border-2 border-dashed ${ fieldErrors.image ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-blue-500' } rounded-lg p-8 text-center cursor-pointer transition-colors`}
                     >
                       <div className="flex flex-col items-center">
                         <ImageIcon className="h-12 w-12 text-gray-400 mb-3" />
@@ -525,11 +519,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
             <div className="flex items-center space-x-2">
               {notification && (
                 <span 
-                  className={`text-sm flex items-center ${
-                    notification.type === 'error' ? 'text-red-600' : 
-                    notification.type === 'success' ? 'text-green-600' : 
-                    'text-blue-600'
-                  }`}
+                  className={`text-sm flex items-center ${ notification.type === 'error' ? 'text-red-600' : notification.type === 'success' ? 'text-green-600' : 'text-blue-600' }`}
                 >
                   {notification.type === 'error' && <AlertCircle size={16} className="mr-1" />}
                   {notification.type === 'success' && <CheckCircle size={16} className="mr-1" />}
@@ -542,11 +532,7 @@ const EditArticleModal: React.FC<ModalProps> = ({ isOpen, onClose, onUpdate, art
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !hasChanges}
-                className={`px-5 py-2 rounded-md text-white font-medium flex items-center ${
-                  isSubmitting || !hasChanges
-                    ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                } transition-colors`}
+                className={`px-5 py-2 rounded-md text-white font-medium flex items-center ${ isSubmitting || !hasChanges ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700" } transition-colors`}
               >
                 {isSubmitting && <Loader size={16} className="mr-2 animate-spin" />}
                 Enregistrer les modifications

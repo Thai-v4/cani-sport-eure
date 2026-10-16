@@ -472,11 +472,11 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-auto pb-16">
         {/* Header */}
-        <div className="bg-white shadow-xs border-b border-gray-200 px-8 py-6">
+        <div className="bg-white border-b border-gray-200 px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                Tableau de bord administrateur
+              <h1 className="display text-3xl md:text-4xl">
+                Tableau de bord
               </h1>
               <p className="text-gray-600 mt-1">
                 Vue d&apos;ensemble des statistiques du club
@@ -486,11 +486,7 @@ export default function DashboardPage() {
               <button
                 onClick={refreshData}
                 disabled={isRefreshing}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition ${
-                  isRefreshing
-                    ? "bg-gray-100 cursor-not-allowed text-gray-400"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-300"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition ${ isRefreshing ? "bg-gray-100 cursor-not-allowed text-gray-400" : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-300" }`}
               >
                 <RefreshCcw
                   size={16}
@@ -504,7 +500,7 @@ export default function DashboardPage() {
 
         {/* Message d'erreur */}
         {error && (
-          <div className="mx-8 mt-6 p-4 bg-red-50 border-l-4 border-red-600 rounded-md flex items-start">
+          <div className="mx-8 mt-6 flex items-start border border-red-600 bg-red-50 p-4">
             <AlertTriangle
               className="text-red-600 mr-3 shrink-0"
               size={20}
@@ -529,7 +525,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -558,7 +554,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -580,7 +576,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -601,7 +597,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -636,7 +632,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.4 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <Activity className="mr-2 text-gray-700" size={20} />
@@ -722,7 +718,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
-              className="bg-white rounded-xl shadow-xs p-6 border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-gray-100"
             >
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <Calendar className="mr-2 text-gray-700" size={20} />
@@ -797,7 +793,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.6 }}
-            className="bg-white rounded-xl shadow-xs p-6 border border-gray-100 mt-8"
+            className="bg-white rounded-xl p-6 border border-gray-100 mt-8"
           >
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
               <BarChart2 className="mr-2 text-gray-700" size={20} />
@@ -845,28 +841,20 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.7 }}
-            className="bg-white rounded-xl shadow-xs p-6 border border-gray-100 mt-8"
+            className="bg-white rounded-xl p-6 border border-gray-100 mt-8"
           >
             <div className="border-b border-gray-200 mb-4">
               <div className="flex items-center justify-between flex-wrap">
                 <div className="flex mb-4">
                   <button
                     onClick={() => setActiveTab("performances")}
-                    className={`mr-4 pb-3 px-1 ${
-                      activeTab === "performances"
-                        ? "text-blue-600 border-b-2 border-blue-600 font-medium"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
+                    className={`mr-4 pb-3 px-1 ${ activeTab === "performances" ? "text-blue-600 border-b-2 border-blue-600 font-medium" : "text-gray-500 hover:text-gray-700" }`}
                   >
                     Performance par adhérent
                   </button>
                   <button
                     onClick={() => setActiveTab("resultats")}
-                    className={`mr-4 pb-3 px-1 ${
-                      activeTab === "resultats"
-                        ? "text-blue-600 border-b-2 border-blue-600 font-medium"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
+                    className={`mr-4 pb-3 px-1 ${ activeTab === "resultats" ? "text-blue-600 border-b-2 border-blue-600 font-medium" : "text-gray-500 hover:text-gray-700" }`}
                   >
                     Tous les résultats
                   </button>
@@ -1020,11 +1008,7 @@ export default function DashboardPage() {
                             <td className="px-4 py-4 whitespace-nowrap">
                               {res.classement ? (
                                 <span
-                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                    parseInt(res.classement) <= 3
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : "bg-gray-100 text-gray-800"
-                                  }`}
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium ${ parseInt(res.classement) <= 3 ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800" }`}
                                 >
                                   <Medal
                                     size={12}
@@ -1154,11 +1138,7 @@ export default function DashboardPage() {
                               <td className="px-4 py-4 whitespace-nowrap">
                                 {res.classement ? (
                                   <span
-                                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                      parseInt(res.classement) <= 3
-                                        ? "bg-yellow-100 text-yellow-800"
-                                        : "bg-gray-100 text-gray-800"
-                                    }`}
+                                    className={`inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium ${ parseInt(res.classement) <= 3 ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800" }`}
                                   >
                                     {parseInt(res.classement) <= 3 && (
                                       <Medal

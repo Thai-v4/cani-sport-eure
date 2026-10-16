@@ -96,7 +96,8 @@ const EventsPage = () => {
       {/* Barre latérale avec bouton d'ajout */}
       <SidebarAdmin onAdd={() => setIsModalOpen(true)} />
 
-      <div className="p-6 py-16 mx-auto flex-1 flex flex-col">
+      <div className="p-6 py-10 mx-auto flex-1 flex flex-col">
+        <h1 className="display mb-6 text-3xl md:text-4xl">Événements</h1>
         {/* Barre de recherche */}
         <div className="relative w-full max-w-xl mb-6">
           <input
@@ -104,7 +105,7 @@ const EventsPage = () => {
             placeholder="Rechercher un événement"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full py-2 pl-4 pr-10 text-base sm:text-lg border rounded-full focus:outline-hidden focus:ring-2 focus:ring-blue-900 shadow-md"
+            className="w-full py-2 pl-4 pr-10 text-base sm:text-lg border rounded-full focus:outline-hidden focus:ring-2 focus:ring-blue-900"
           />
           <FaSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-900 text-base sm:text-lg" />
         </div>

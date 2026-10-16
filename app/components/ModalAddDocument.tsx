@@ -21,6 +21,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [tone, setTone] = useState<"info" | "error" | "success">("error");
   const [visibility, setVisibility] = useState("public");
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
@@ -28,12 +29,12 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
-      setMessage("❌ Veuillez sélectionner au moins un fichier.");
+      setTone("error"); setMessage("Veuillez sélectionner au moins un fichier.");
       return;
     }
 
     setUploading(true);
-    setMessage("📡 Upload en cours...");
+    setTone("info"); setMessage("Upload en cours...");
     
     let allFilesUploaded = true; // Pour tracker si tous les fichiers ont été uploadés avec succès
 
@@ -51,7 +52,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
 
         if (error) {
           console.error("❌ Erreur d'upload :", error);
-          setMessage("❌ Erreur lors de l'upload de " + file.name);
+          setTone("error"); setMessage("Erreur lors de l'upload de " + file.name);
           allFilesUploaded = false;
           continue; // Passer au fichier suivant au lieu d'arrêter complètement
         }
@@ -81,7 +82,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
 
         if (dbError) {
           console.error("❌ Erreur d'insertion en base :", dbError);
-          setMessage("❌ Erreur d'insertion en base pour " + file.name);
+          setTone("error"); setMessage("Erreur d'insertion en base pour " + file.name);
           allFilesUploaded = false;
         }
       } catch (error) {
@@ -93,7 +94,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
     setUploading(false);
     
     if (allFilesUploaded) {
-      setMessage("✅ Tous les fichiers ont été ajoutés avec succès !");
+      setTone("success"); setMessage("Tous les fichiers ont été ajoutés avec succès !");
       setUploadSuccess(true);
       
       // Attendre un court instant pour que l'utilisateur voie le message de succès
@@ -109,7 +110,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
         setUploadSuccess(false);
       }, 1000);
     } else {
-      setMessage("⚠️ Certains fichiers n'ont pas pu être téléversés.");
+      setTone("error"); setMessage("Certains fichiers n'ont pas pu être téléversés.");
     }
   };
 
@@ -138,10 +139,10 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 flex items-center justify-center bg-ink/50"
       style={{ zIndex: 1000 }}
     >
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg relative border border-rule">
         {/* Bouton de fermeture */}
         <button
           onClick={onClose}
@@ -202,17 +203,13 @@ const ModalAddDocument: React.FC<ModalAddDocumentProps> = ({
         <button
           onClick={handleUpload}
           disabled={uploading || uploadSuccess}
-          className={`w-full py-2 rounded-lg text-white ${
-            uploading || uploadSuccess
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }`}
+          className={`w-full py-2 rounded-lg text-white ${ uploading || uploadSuccess ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700" }`}
         >
           {uploading ? "Upload en cours..." : "Ajouter un document"}
         </button>
 
         {/* Message d'état */}
-        <p className="text-center text-sm mt-2">{message}</p>
+        <p role="status" className={`text-center text-sm mt-2 ${tone === "success" ? "text-success" : tone === "info" ? "text-ink-2" : "text-danger"}`}>{message}</p>
       </div>
     </div>
   );

@@ -1,175 +1,126 @@
-"use client"; // Indique que ce composant s'exécute côté client
+"use client";
 
-import { useEffect, useState } from "react"; // Hooks React
-import { useRouter } from "next/navigation"; // Navigation entre pages
-import supabase from "@/lib/supabaseClient"; // Client Supabase pour la base de données
-import Image from "next/image"; // Composant image optimisé de Next.js
-import Sidebar from "../components/sidebars/Sidebar"; // Barre latérale de navigation
-import { useAuth } from "@/app/components/Auth/AuthProvider"; // Contexte d'authentification
-import Footer from "../components/sidebars/Footer"; // Pied de page
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import supabase from "@/lib/supabaseClient";
+import PageHeader from "../components/site/PageHeader";
 
-// Interface définissant la structure d'un album
-interface AlbumData {
-  name: string; // Nom de l'album
-  coverUrl: string; // URL de l'image de couverture
-  imageDates: string[]; // Dates des images de l'album pour le filtrage
-}
+type Album = { name: string; coverUrl: string; count: number; dates: string[] };
 
-const AlbumsPage = () => {
-  // États pour la gestion des albums et des filtres
-  const [albums, setAlbums] = useState<AlbumData[]>([]); // Liste des albums
-  const [searchTerm, setSearchTerm] = useState(""); // Terme de recherche
-  const [startDate, setStartDate] = useState(""); // Filtre date de début
-  const [endDate, setEndDate] = useState(""); // Filtre date de fin
-  const [loading, setLoading] = useState(true); // État de chargement
-  const router = useRouter(); // Router pour la navigation
-  const { role, isLoading } = useAuth(); // Informations d'authentification
+const IMAGE = /\.(png|jpe?g|gif|webp)$/i;
 
-  // Protection de la route - redirection si non connecté
+export default function AlbumsPage() {
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [query, setQuery] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+
   useEffect(() => {
-    if (!isLoading && role !== "admin" && role !== "adherent") {
-      router.push("/connexion");
-    }
-  }, [role, isLoading, router]);
-
-  // Hook d'effet vide (inutilisé)
-  useEffect(() => {
-    if (role !== "admin" && role !== "adherent") return;
-  });
-
-  // Récupération des albums depuis Supabase
-  useEffect(() => {
-    const fetchAlbums = async () => {
-      setLoading(true);
-      // Récupération des dossiers (albums) dans le stockage
+    const load = async () => {
       const { data: folders, error } = await supabase.storage.from("photo").list("", {
-        limit: 100,
+        limit: 200,
         sortBy: { column: "name", order: "asc" },
       });
-
       if (error) {
-        console.error("Erreur lors de la récupération des albums :", error);
-        setLoading(false);
+        setStatus("error");
         return;
       }
-
-      // Pour chaque dossier, récupérer les images qu'il contient
-      const albumPromises = folders.map(async (folder) => {
-        try {
-          const { data: images, error: imageError } = await supabase.storage.from("photo").list(folder.name, { limit: 100 });
-
-          // Ignorer les dossiers sans images ou avec erreur
-          if (imageError || !images || images.length === 0) {
-            return null;
-          }
-
-          // Filtrer pour ne garder que les fichiers image
-          const validImages = images.filter(img => img.name.match(/\.(png|jpe?g|gif|bmp|webp)$/i));
-          if (validImages.length === 0) return null;
-
-          // Utiliser la première image comme couverture
-          const coverImage = validImages[0];
-
-          // Récupérer les dates des images pour le filtrage
-          const imageDates = validImages
-            .map(img => img.created_at)
-            .filter(date => date !== undefined) as string[];
-
-          // Générer l'URL publique pour l'image de couverture
-          const publicUrl = supabase.storage.from("photo").getPublicUrl(`${folder.name}/${coverImage.name}`).data?.publicUrl;
-
+      const results = await Promise.all(
+        (folders ?? []).map(async (folder) => {
+          const { data: files } = await supabase.storage.from("photo").list(folder.name, { limit: 500 });
+          const images = (files ?? []).filter((f) => IMAGE.test(f.name));
+          if (images.length === 0) return null;
           return {
             name: folder.name,
-            coverUrl: publicUrl || "/placeholder.png",
-            imageDates,
+            coverUrl: supabase.storage.from("photo").getPublicUrl(`${folder.name}/${images[0].name}`).data.publicUrl,
+            count: images.length,
+            dates: images.map((i) => i.created_at).filter(Boolean) as string[],
           };
-        } catch (error) {
-          console.error(`❌ Erreur pour l'album ${folder.name}`, error);
-          return null;
-        }
-      });
-
-      // Attendre que toutes les promesses soient résolues et filtrer les valeurs null
-      const resolvedAlbums = (await Promise.all(albumPromises)).filter((album) => album !== null) as AlbumData[];
-      setAlbums(resolvedAlbums);
-      setLoading(false);
+        })
+      );
+      setAlbums(results.filter((a): a is Album => a !== null));
+      setStatus("ready");
     };
-
-    fetchAlbums();
+    load();
   }, []);
 
-  // Filtrage des albums selon les critères de recherche et de date
-  const filteredAlbums = albums.filter((album) => {
-    // Vérifie si au moins une image de l'album est dans l'intervalle de dates choisi
-    const albumHasImageInDateRange = album.imageDates.some((date) => {
-      const imageDate = new Date(date);
-      const matchesStartDate = startDate === "" || imageDate >= new Date(startDate);
-      const matchesEndDate = endDate === "" || imageDate <= new Date(`${endDate}T23:59:59`);
-      return matchesStartDate && matchesEndDate;
-    });
-
-    // Filtre par nom et par date
-    return (searchTerm === "" || album.name.toLowerCase().includes(searchTerm.toLowerCase())) && albumHasImageInDateRange;
-  });
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return albums.filter(
+      (a) =>
+        (!q || a.name.toLowerCase().includes(q)) &&
+        (!from && !to
+          ? true
+          : a.dates.some((d) => {
+              const day = d.slice(0, 10);
+              return (!from || day >= from) && (!to || day <= to);
+            }))
+    );
+  }, [albums, query, from, to]);
 
   return (
-    <div>
-    <div className="min-h-screen pr-8 pl-8 py-12" style={{ backgroundImage: "url('/fond.png')", backgroundSize: "cover" }}>
-      <Sidebar /> {/* Barre latérale de navigation */}
-      {/* Titre de la page */}
-      <h1 className="text-3xl font-bold mb-8 text-left text-black font-opendyslexic" 
-      style={{
-        fontSize: "36px",
-        fontFamily: "opendyslexic, sans-serif",
-      }}>Galerie d&apos;albums</h1>
-
-      {/* Filtres de recherche et de date */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        <input
-          type="text"
-          placeholder="Rechercher une image"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border-2 border-secondary p-3 rounded-full text-black w-[500px] max-w-full"
-        />
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="border-2 border-secondary p-2 rounded-md text-black"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="border-2 border-secondary p-2 rounded-md text-black"
-        />
-      </div>
-
-      {/* Affichage conditionnel selon l'état de chargement et les résultats */}
-      {loading ? (
-        <p className="text-gray-500 font-calibri text-left">Chargement des albums...</p>
-      ) : filteredAlbums.length > 0 ? (
-        // Grille responsive d'albums
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-          {filteredAlbums.map((album) => (
-            // Album cliquable qui redirige vers la page de détails
-            <div key={album.name} className="relative group cursor-pointer mb-4" onClick={() => router.push(`/gallery/${encodeURIComponent(album.name)}`)}>
-              <Image src={album.coverUrl} alt={album.name} width={500} height={500} className="w-full h-auto object-cover border-2 border-black rounded-lg" />
-              {/* Overlay au survol montrant le nom de l'album */}
-              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
-                <p className="text-white font-bold text-lg">{album.name}</p>
-              </div>
+    <>
+      <PageHeader title="Album photo" description="Les photos des sorties et des courses du club, réservées aux adhérents.">
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="mt-10 grid gap-4 border-y border-rule py-5 md:grid-cols-[1fr_auto_auto] md:items-end">
+          <div>
+            <label htmlFor="recherche-album" className="field-label">
+              Rechercher un album
+            </label>
+            <div className="relative">
+              <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-3" />
+              <input id="recherche-album" type="search" value={query} onChange={(e) => setQuery(e.target.value)} className="field pl-9" />
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-gray-500 font-calibri text-left">Aucun album disponible.</p>
-      )}
-    </div>
-    <Footer /> {/* Pied de page */}
-    </div>
-  );
-};
+          </div>
+          <div>
+            <label htmlFor="album-du" className="field-label">
+              Photos du
+            </label>
+            <input id="album-du" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="field" />
+          </div>
+          <div>
+            <label htmlFor="album-au" className="field-label">
+              Au
+            </label>
+            <input id="album-au" type="date" value={to} onChange={(e) => setTo(e.target.value)} className="field" />
+          </div>
+        </form>
+      </PageHeader>
 
-export default AlbumsPage;
+      <div className="site-container pb-24">
+        {status === "loading" && (
+          <div aria-hidden className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="aspect-[4/3] bg-wash" />
+            ))}
+          </div>
+        )}
+        {status === "error" && <p className="text-ink-2">Les albums ne se chargent pas pour le moment. Réessayez un peu plus tard.</p>}
+        {status === "ready" && filtered.length === 0 && (
+          <p className="border-t border-ink pt-6 text-ink-2">
+            {albums.length === 0 ? "Aucun album pour l'instant." : "Aucun album ne correspond à ces critères."}
+          </p>
+        )}
+        {status === "ready" && filtered.length > 0 && (
+          <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((album) => (
+              <li key={album.name}>
+                <Link href={`/gallery/${encodeURIComponent(album.name)}`} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-wash">
+                    <Image src={album.coverUrl} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                  </div>
+                  <h2 className="mt-3 text-xl font-bold group-hover:text-line">{album.name}</h2>
+                  <p className="text-sm text-ink-3">
+                    {album.count} photo{album.count > 1 ? "s" : ""}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+}

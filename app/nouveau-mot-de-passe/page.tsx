@@ -1,203 +1,129 @@
-"use client"; // Indique que ce composant s'exécute côté client
+"use client";
 
-import { useEffect, useState } from "react"; // Import des hooks React
-import supabase from "@/lib/supabaseClient"; // Client Supabase
-import { useRouter } from "next/navigation"; // Hook de navigation Next.js
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Icônes pour afficher/masquer le mot de passe
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { EmailOtpType } from "@supabase/supabase-js";
+import supabase from "@/lib/supabaseClient";
+import { passwordError } from "@/lib/password";
+import AuthFrame, { FormAlert } from "../components/account/AuthFrame";
+import PasswordField from "../components/account/PasswordField";
 
-export default function NouveauMotDePassePage() {
-  // Initialisation du client Supabase et du router
+type LinkState = "checking" | "valid" | "invalid";
+
+export default function NewPasswordPage() {
   const router = useRouter();
-
-  // États pour les champs de formulaire
+  const [linkState, setLinkState] = useState<LinkState>("checking");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState<string | null>(null); // Message de succès
-  const [error, setError] = useState<string | null>(null); // Message d'erreur
-  const [loading, setLoading] = useState(false); // État de chargement
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
 
-  // États pour l'affichage/masquage des mots de passe
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Récupération et validation du token depuis l'URL
+  // Le lien reçu par email ouvre une session de récupération :
+  // - « token_hash » (modèle d'email Supabase recommandé) → vérification explicite ;
+  // - « code » (flux PKCE) → échangé automatiquement par le client Supabase.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const access_token = params.get("access_token");
-    const type = params.get("type");
+    const tokenHash = params.get("token_hash");
+    const type = params.get("type") as EmailOtpType | null;
 
-    if (access_token && type === "recovery") {
-      // Configuration de la session avec le token de récupération
-      supabase.auth.setSession({
-        access_token,
-        refresh_token: "",
-      });
-
-      // Écoute des changements d'état d'authentification
-      const { data: authListener } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-        }
-      );
-
-      // Nettoyage de l'écouteur lors du démontage du composant
-      return () => {
-        authListener.subscription.unsubscribe();
-      };
-    }
-  }, [supabase]);
-
-  // Vérifier la session au chargement
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Erreur de session:", error);
-        setError(
-          "Le lien a peut-être expiré. Veuillez redemander un nouveau lien."
-        );
+    const check = async () => {
+      if (tokenHash && type === "recovery") {
+        const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+        setLinkState(otpError ? "invalid" : "valid");
         return;
       }
-
-      if (!session) {
-        setError(
-          "Session invalide. Veuillez redemander un nouveau lien de réinitialisation."
-        );
-      }
+      const { data } = await supabase.auth.getSession();
+      setLinkState(data.session ? "valid" : "invalid");
     };
 
-    checkSession();
-  }, [supabase]);
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setLinkState("valid");
+    });
+    check();
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
-  // Gestion de la soumission du formulaire
-  const handleUpdatePassword = async (e: React.FormEvent) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+  const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
-    setMessage(null);
-
-    // Validation du mot de passe
-    const hasNumber = /\d/.test(password); // Vérifie s'il contient un chiffre
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Vérifie s'il contient un caractère spécial
-
-    // Vérification de la longueur minimale
-    if (password.length < 12) {
-      setError("Le mot de passe doit contenir au moins 12 caractères.");
-      return;
-    }
-
-    // Vérification des exigences de complexité
-    if (!hasNumber || !hasSpecialChar) {
-      setError(
-        "Le mot de passe doit contenir au moins un chiffre et un caractère spécial."
-      );
-      return;
-    }
-
-    // Vérification de la correspondance des mots de passe
-    if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
-      return;
-    }
+    const weak = passwordError(password);
+    if (weak) return setError(weak);
+    if (password !== confirmPassword) return setError("Les deux mots de passe ne correspondent pas.");
 
     setLoading(true);
-
-    // Mise à jour du mot de passe via Supabase
-    const { error } = await supabase.auth.updateUser({ password });
-
+    const { error: updateError } = await supabase.auth.updateUser({ password });
     setLoading(false);
 
-    if (error) {
-      console.error("Erreur de mise à jour:", error);
-      setError("Une erreur est survenue. Le lien a peut-être expiré.");
-    } else {
-      // Affichage du message de succès et redirection
-      setMessage("Mot de passe mis à jour avec succès !");
-      setTimeout(() => router.push("/connexion"), 2000); // Redirection après 2 secondes
+    if (updateError) {
+      setError("Le mot de passe n'a pas pu être changé. Redemandez un lien et réessayez.");
+      return;
     }
+    await supabase.auth.signOut();
+    setDone(true);
   };
 
-  // Interface utilisateur du formulaire
+  if (done) {
+    return (
+      <AuthFrame title="Mot de passe changé">
+        <p className="text-lg text-ink-2">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+        <button type="button" onClick={() => router.push("/connexion")} className="btn-line mt-8">
+          Se connecter
+        </button>
+      </AuthFrame>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-900">
-      <div className="card w-full max-w-sm bg-white shadow-xl p-6 md:p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Nouveau mot de passe
-        </h2>
+    <AuthFrame title="Nouveau mot de passe">
+      {linkState === "checking" && <p className="text-ink-2">Vérification du lien…</p>}
 
-        {/* Affichage des messages de succès ou d'erreur */}
-        {message && (
-          <div className="alert alert-success shadow-lg mb-4">
-            <span>{message}</span>
-          </div>
-        )}
-        {error && (
-          <div className="alert alert-error shadow-lg mb-4">
-            <span>{error}</span>
-          </div>
-        )}
+      {linkState === "invalid" && (
+        <>
+          <FormAlert>Ce lien n&apos;est plus valide ou a déjà servi.</FormAlert>
+          <Link href="/mot-de-passe-oublie" className="btn-line">
+            Demander un nouveau lien
+          </Link>
+        </>
+      )}
 
-        <form onSubmit={handleUpdatePassword}>
-          {/* Champ de nouveau mot de passe avec toggle visibilité */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span>Nouveau mot de passe</span>
-            </label>
-            <div className="flex items-center bg-white border border-gray-300 rounded-lg px-3 focus-within:border-blue-500">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-white flex-1 py-3 focus:outline-hidden"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </div>
-
-          {/* Champ de confirmation avec toggle visibilité */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span>Confirmer le mot de passe</span>
-            </label>
-            <div className="flex items-center bg-white border border-gray-300 rounded-lg px-3 focus-within:border-blue-500">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="••••••••"
+      {linkState === "valid" && (
+        <>
+          {error && <FormAlert>{error}</FormAlert>}
+          <form onSubmit={handleUpdate} className="space-y-5">
+            <PasswordField
+              id="mot-de-passe"
+              label="Nouveau mot de passe"
+              value={password}
+              onChange={setPassword}
+              autoComplete="new-password"
+              showRules
+            />
+            <div>
+              <PasswordField
+                id="confirmation"
+                label="Confirmer le mot de passe"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-white flex-1 py-3 focus:outline-hidden"
-                required
+                onChange={setConfirmPassword}
+                autoComplete="new-password"
+                invalid={mismatch}
+                describedBy={mismatch ? "confirmation-erreur" : undefined}
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
+              {mismatch && (
+                <p id="confirmation-erreur" className="field-error">
+                  Les deux mots de passe ne correspondent pas.
+                </p>
+              )}
             </div>
-          </div>
-
-          {/* Bouton de soumission avec état de chargement */}
-          <button
-            type="submit"
-            className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
-            disabled={loading}
-          >
-            {loading ? "Mise à jour..." : "Changer le mot de passe"}
-          </button>
-        </form>
-      </div>
-    </div>
+            <button type="submit" disabled={loading} className="btn-line w-full">
+              {loading ? "Enregistrement…" : "Enregistrer le mot de passe"}
+            </button>
+          </form>
+        </>
+      )}
+    </AuthFrame>
   );
 }

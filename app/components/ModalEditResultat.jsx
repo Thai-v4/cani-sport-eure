@@ -135,7 +135,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
     <AnimatePresence>
       {isOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4" 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4" 
           onClick={handleOutsideClick}
         >
           <motion.div
@@ -143,7 +143,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black bg-opacity-50"
+            className="fixed inset-0 bg-ink/50"
           />
           
           <motion.div
@@ -152,19 +152,21 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="bg-white rounded-xl shadow-lg w-full max-w-lg relative z-10 overflow-hidden"
+            className="bg-white rounded-xl w-full max-w-lg relative z-10 overflow-hidden border border-rule"
             onClick={e => e.stopPropagation()}
           >
             {/* En-tête */}
-            <div className="bg-linear-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
+            <div className="border-b border-rule px-6 py-4 text-ink">
               <button
+                type="button"
+                aria-label="Fermer"
                 onClick={onClose}
-                className="absolute top-4 right-4 text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
+                className="absolute top-4 right-4 p-1.5 text-ink-3 hover:bg-wash hover:text-ink"
               >
                 <FaTimes className="w-5 h-5" />
               </button>
               <h2 className="text-xl font-bold">Modifier un Résultat</h2>
-              <p className="text-blue-100 text-sm mt-1">
+              <p className="mt-1 text-sm text-ink-3">
                 {data?.nomActivite || "Détails de l'activité"}
               </p>
             </div>
@@ -178,11 +180,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className={`mb-4 p-3 rounded-md text-sm ${
-                      notification.type === "success" 
-                        ? "bg-green-50 text-green-800 border border-green-200" 
-                        : "bg-red-50 text-red-800 border border-red-200"
-                    }`}
+                    className={`mb-4 p-3 rounded-md text-sm ${ notification.type === "success" ? "bg-green-50 text-green-800 border border-green-200" : "bg-red-50 text-red-800 border border-red-200" }`}
                   >
                     {notification.message}
                   </motion.div>
@@ -208,9 +206,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
                       placeholder="Exemple: Course des Héros"
                       value={formData.nomActivite}
                       onChange={handleChange}
-                      className={`pl-10 w-full p-2.5 border rounded-lg ${
-                        errors.nomActivite ? "border-red-500 bg-red-50" : "border-gray-300"
-                      }`}
+                      className={`pl-10 w-full p-2.5 border rounded-lg ${ errors.nomActivite ? "border-red-500 bg-red-50" : "border-gray-300" }`}
                     />
                   </div>
                   {errors.nomActivite && (
@@ -235,9 +231,7 @@ const ModalEditResultat = ({ isOpen, onClose, data, onUpdate }) => {
                         placeholder="Ville/lieu"
                         value={formData.lieu}
                         onChange={handleChange}
-                        className={`pl-10 w-full p-2.5 border rounded-lg ${
-                          errors.lieu ? "border-red-500 bg-red-50" : "border-gray-300"
-                        }`}
+                        className={`pl-10 w-full p-2.5 border rounded-lg ${ errors.lieu ? "border-red-500 bg-red-50" : "border-gray-300" }`}
                       />
                     </div>
                     {errors.lieu && (

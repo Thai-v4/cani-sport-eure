@@ -481,11 +481,11 @@ export default function DocumentManager() {
       {/* Contenu principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 shadow-xs">
+        <header className="bg-white border-b border-gray-200">
           <div className="px-4 py-4 sm:px-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h1 className="text-2xl font-semibold text-gray-800">
-                Gestionnaire de documents
+              <h1 className="display text-3xl md:text-4xl">
+                Documents
               </h1>
 
               <div className="flex items-center gap-2">
@@ -567,11 +567,7 @@ export default function DocumentManager() {
                   )}
                   <button
                     onClick={() => handleBreadcrumbClick(index)}
-                    className={`px-2 py-1 rounded hover:bg-gray-200 ${
-                      index === folderPath.length - 1
-                        ? "font-medium text-blue-600 bg-blue-50"
-                        : "text-gray-700"
-                    }`}
+                    className={`px-2 py-1 rounded hover:bg-gray-200 ${ index === folderPath.length - 1 ? "font-medium text-blue-600 bg-blue-50" : "text-gray-700" }`}
                   >
                     {index === 0 ? (
                       <FaFolderOpen className="inline mr-1.5" />
@@ -605,7 +601,7 @@ export default function DocumentManager() {
           {/* Indicateur de chargement */}
           {isLoading2 && (
             <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
+              <div className="bg-white p-4 rounded-lg border border-rule">
                 <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
                 <p className="mt-2 text-sm text-gray-700">Chargement...</p>
               </div>
@@ -653,7 +649,7 @@ export default function DocumentManager() {
 
           {/* Vue Liste */}
           {viewMode === "list" && filteredAndSortedFiles().length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -804,7 +800,7 @@ export default function DocumentManager() {
               {filteredAndSortedFiles().map((file) => (
                 <div
                   key={file.id}
-                  className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-xs hover:shadow-md transition-shadow"
+                  className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden transition-shadow"
                 >
                   <div
                     className="p-4 cursor-pointer flex flex-col items-center"
@@ -848,7 +844,7 @@ export default function DocumentManager() {
                     </button>
 
                     {showActionMenu === file.id && (
-                      <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                      <div className="absolute right-0 mt-1 w-48 bg-white rounded-md z-10 border border-gray-200">
                         <div className="py-1">
                           {file.is_folder ? (
                             <button
@@ -892,13 +888,13 @@ export default function DocumentManager() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 overflow-y-auto bg-ink/50 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-lg shadow-xl max-w-md w-full"
+              className="bg-white rounded-lg max-w-md w-full border border-rule"
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
@@ -926,7 +922,7 @@ export default function DocumentManager() {
                       id="folder-name"
                       value={newFolderName}
                       onChange={(e) => setNewFolderName(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Mon dossier"
                       autoFocus
                     />
@@ -943,7 +939,7 @@ export default function DocumentManager() {
                       id="folder-access"
                       value={newFolderAccess}
                       onChange={(e) => setNewFolderAccess(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="adherent">Adhérents (connectés)</option>
                       <option value="admin">Admin (restreint)</option>
@@ -980,13 +976,13 @@ export default function DocumentManager() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 overflow-y-auto bg-ink/50 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-lg shadow-xl max-w-md w-full"
+              className="bg-white rounded-lg max-w-md w-full border border-rule"
             >
               <div className="p-6">
                 <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
@@ -1042,11 +1038,7 @@ export default function DocumentManager() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center ${
-              notification.type === "success"
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
-            }`}
+            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg z-50 flex items-center ${ notification.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white" }`}
           >
             {notification.type === "success" ? (
               <svg
