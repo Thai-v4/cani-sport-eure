@@ -1,10 +1,15 @@
-# Empêche la mise en veille du projet Supabase (plan gratuit : pause après 7 jours
-# sans activité) en interrogeant la base chaque semaine, et vérifie que le site répond.
+# Empêche la mise en veille du projet Supabase et vérifie que le site répond.
+# Le plan gratuit met en pause les projets dont l'activité est « trop faible sur 7 jours » :
+# d'après la documentation, il faut quelques requêtes par jour. Une seule requête par
+# semaine n'a pas suffi (projet mis en pause le 22 novembre 2026 malgré un ping le 16).
+# https://supabase.com/docs/guides/platform/free-project-pausing
 name: Maintien en éveil de Supabase
 
 on:
   schedule:
-    - cron: "17 6 * * 1" # chaque lundi vers 8 h (heure de Paris)
+    # Deux fois par jour : GitHub retarde souvent les tâches planifiées de plusieurs heures
+    # et peut en sauter une, la seconde sert de marge.
+    - cron: "17 5,17 * * *"
   workflow_dispatch:
 
 permissions:
@@ -20,11 +25,16 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "$SUPABASE_URL/rest/v1/publication?select=id&limit=1")
-          echo "Réponse de Supabase : $code"
-          test "$code" = "200"
+          # Plusieurs lectures, sur des tables ouvertes au rôle anonyme
+          echec=0
+          for table in publication evenements profils_publics; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+              -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+              "$SUPABASE_URL/rest/v1/$table?select=id&limit=1")
+            echo "Réponse de Supabase ($table) : $code"
+            test "$code" = "200" || echec=1
+          done
+          exit $echec
 
       - name: Vérifier que le site répond
         run: |
