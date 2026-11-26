@@ -48,7 +48,7 @@
     "commitizen": "^4.3.2",
     "cz-conventional-changelog": "^3.3.0",
     "daisyui": "^5.7.47",
-    "eslint": "^10",
+    "eslint": "^10.15.0",
     "eslint-config-next": "^16.4.6",
     "postcss": "^8.5.28",
     "prettier": "^3.9.9",
